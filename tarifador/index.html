@@ -174,11 +174,15 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
   </div>
   <textarea id="texto" readonly spellcheck="false"></textarea>
   <div style="margin-top:10px;display:flex;gap:9px;flex-wrap:wrap;align-items:center">
-    <button type="button" class="big primary" id="btnDrive">Guardar en Drive</button>
-    <button type="button" class="big ghost" id="btnBajar">Descargar</button>
+    <button type="button" class="big primary" id="btnPdf">Propuesta en PDF</button>
+    <button type="button" class="big ghost" id="btnDrive">Guardar en Drive</button>
+    <button type="button" class="big ghost" id="btnBajar">Descargar texto</button>
     <button type="button" class="big ghost" id="btnCopy">Copiar texto</button>
     <span class="copied hidden" id="copiado">Copiado</span>
   </div>
+  <p class="hint" style="margin-top:8px">El PDF lleva las tres opciones explicadas. Se abre en una pestaña
+  nueva con el diálogo de impresión: elige <strong>Guardar como PDF</strong> y activa
+  <strong>Gráficos de fondo</strong> en "Más ajustes", o la portada saldrá en blanco.</p>
   <p class="estado" id="estadoDrive"></p>
   <p class="hint" id="avisoPreview" style="margin-top:2px"></p>
 </section>
@@ -999,6 +1003,249 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
     CUSTOM = {};
     guardarCustom();
     render();
+  });
+
+  /* ============ propuesta imprimible ============ */
+
+  /* Narrativa por nivel, compuesta desde lo que lleva de verdad cada opción. */
+  function narrativa(r, nivel){
+    var v = r.v, f = [];
+    var esDesayuno = (v.comida === 'b1' || v.comida === 'b2');
+    var hayBarra = v.modal > 0 && v.bcant > 0;
+    var hayJuego = (v.bays > 0 && v.baysh > 0) || v.f1 || v.dardos;
+
+    if (esDesayuno){
+      f.push(nivel === 0
+        ? 'Un formato de mañana directo y bien resuelto, pensado para grupos que vienen a trabajar y necesitan comer bien sin perder tiempo.'
+        : nivel === 1
+        ? 'El equilibrio que recomendamos para una reunión de mañana: desayuno completo, espacio propio para la parte de contenido y actividad después para que el grupo se suelte.'
+        : 'La versión más cuidada del formato de mañana, con una estación de café más completa y reposición atendida durante todo el servicio.');
+    } else if (hayJuego && hayBarra){
+      f.push(nivel === 0
+        ? 'Una experiencia centrada en la actividad y el ambiente social, sin más añadidos de los necesarios. Funciona muy bien cuando el objetivo es que el grupo juegue, compita y se relaje.'
+        : nivel === 1
+        ? 'Nuestra propuesta principal: actividad, bebida y gastronomía integradas durante toda la experiencia, de manera que nadie tenga que interrumpir el juego para comer.'
+        : 'La propuesta completa. Carta de barra premium, gastronomía ampliada y una capa de ambiente y producción que convierte el evento en algo que se recuerda.');
+    } else {
+      f.push(nivel === 0
+        ? 'Un formato contenido y fácil de gestionar, con lo esencial bien ejecutado.'
+        : nivel === 1
+        ? 'El formato que recomendamos: cubre lo que el grupo espera sin excesos.'
+        : 'La versión ampliada, con la gastronomía y el servicio llevados un paso más allá.');
+    }
+
+    if (v.bays > 0 && v.baysh > 0 && hayJuego){
+      f.push('El grupo dispone de ' + v.bays + ' simulador' + (v.bays>1?'es contiguos':'') +
+        ' durante ' + hh(v.baysh) + ', con rotación libre entre las actividades: nadie espera turno mirando.');
+    }
+    if (v.modal === 2 && v.bcant > 0){
+      f.push('La barra abierta de ' + hh(v.bcant) + ' se sirve en sala, sin tickets ni colas, y el precio está cerrado por persona: ' +
+        'lo que consuma el grupo no cambia la factura.');
+    } else if (v.modal === 1 && v.bcant > 0){
+      f.push('Cada asistente dispone de ' + n1(v.bcant) + ' consumiciones, canjeables cuando quiera durante el evento.');
+    }
+    if (v.comida === 'c' && v.pases > 0){
+      f.push('Los ' + v.pases + ' pases se reparten en distintos momentos de la experiencia para que se pueda comer sin parar la actividad.');
+    }
+    return f;
+  }
+
+  function docPropuesta(){
+    var b = brief();
+    var pf = Math.max(1, b.paxfac || b.paxmin);
+    var grupo = b.paxmin === b.paxmax ? b.paxmin + ' personas' : b.paxmin + ' a ' + b.paxmax + ' personas';
+    var TIERP = ['#5E7385', '#2F6B43', '#A8793B'];
+    var ROT = ['La opción contenida', 'Nuestra recomendación', 'La experiencia completa'];
+
+    function fin(hIni, dur){
+      var p = String(hIni).split(':');
+      var t = (parseInt(p[0],10) || 0) * 60 + (parseInt(p[1],10) || 0) + dur * 60;
+      t = ((t % 1440) + 1440) % 1440;
+      return String(Math.floor(t/60)).padStart(2,'0') + ':' + String(Math.round(t%60)).padStart(2,'0');
+    }
+
+    var css =
+      '@page{size:A4;margin:0}'+
+      '*{box-sizing:border-box}'+
+      'body{margin:0;font-family:"IBM Plex Sans",Helvetica,Arial,sans-serif;font-size:10.5pt;line-height:1.6;color:#12211A;background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}'+
+      '.hoja{width:210mm;min-height:297mm;padding:24mm 22mm;position:relative;page-break-after:always;break-after:page}'+
+      '.hoja:last-child{page-break-after:auto;break-after:auto}'+
+      '.portada{background:#0E2A19;color:#F2EFE6;padding:34mm 22mm;display:flex;flex-direction:column}'+
+      '.marca{font-family:"IBM Plex Mono",monospace;font-size:8pt;letter-spacing:.24em;text-transform:uppercase;color:#7FD6A0;margin:0}'+
+      '.portada h1{font-family:Archivo,Helvetica,Arial,sans-serif;font-weight:800;font-size:40pt;line-height:1;letter-spacing:-.02em;margin:16mm 0 0;max-width:150mm}'+
+      '.portada .cli{font-family:Archivo,sans-serif;font-weight:700;font-size:17pt;margin:9mm 0 0;color:#fff}'+
+      '.portada .meta{font-family:"IBM Plex Mono",monospace;font-size:9pt;color:#9DB6A6;margin:3mm 0 0;line-height:1.9}'+
+      '.portada .tres{margin-top:auto;border-top:1px solid #2A4A36;padding-top:7mm;display:flex;gap:6mm}'+
+      '.portada .tres div{flex:1}'+
+      '.portada .tres .n{font-family:"IBM Plex Mono",monospace;font-size:7.5pt;letter-spacing:.16em;text-transform:uppercase;color:#7FD6A0}'+
+      '.portada .tres .p{font-family:Archivo,sans-serif;font-weight:800;font-size:19pt;color:#fff;margin-top:1mm}'+
+      '.portada .tres .u{font-size:8pt;color:#9DB6A6}'+
+      '.portada .pie{margin-top:7mm;font-family:"IBM Plex Mono",monospace;font-size:8pt;color:#6F8A7B}'+
+      'h2{font-family:Archivo,sans-serif;font-weight:700;font-size:19pt;letter-spacing:-.01em;margin:0 0 3mm;color:#0E2A19}'+
+      '.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:7.5pt;letter-spacing:.2em;text-transform:uppercase;color:#2F6B43;margin:0 0 2mm}'+
+      'p{margin:0 0 3.5mm;max-width:150mm}'+
+      '.cmp{display:flex;gap:5mm;margin-top:8mm}'+
+      '.cmp .col{flex:1;border-top:2.5pt solid var(--t);padding-top:4mm}'+
+      '.cmp .col .n{font-family:"IBM Plex Mono",monospace;font-size:7.5pt;letter-spacing:.14em;text-transform:uppercase;color:var(--t);font-weight:600}'+
+      '.cmp .col .rot{font-size:8.5pt;color:#5C6E64;margin:1mm 0 3mm;min-height:9mm}'+
+      '.cmp .col .p{font-family:Archivo,sans-serif;font-weight:800;font-size:23pt;color:#0E2A19;line-height:1}'+
+      '.cmp .col .u{font-size:8pt;color:#5C6E64;margin-bottom:4mm}'+
+      '.cmp .col ul{margin:0;padding:0;list-style:none;font-size:8.8pt;line-height:1.5;color:#31423A}'+
+      '.cmp .col li{padding:1.6mm 0;border-top:.4pt solid #E2E6E0}'+
+      '.dia{margin-top:9mm;border:.6pt solid #D8DED8;border-left:2.5pt solid #A8793B;padding:5mm 6mm}'+
+      '.dia h3{font-family:Archivo,sans-serif;font-size:11.5pt;margin:0 0 2mm;color:#0E2A19}'+
+      '.dia .t{display:grid;grid-template-columns:auto 1fr;gap:1.5mm 5mm;font-size:9pt;color:#31423A}'+
+      '.dia .t b{font-family:"IBM Plex Mono",monospace;color:#2F6B43;font-weight:600;white-space:nowrap}'+
+      '.op .cab{border-top:3pt solid var(--t);padding-top:5mm;display:flex;justify-content:space-between;align-items:flex-start;gap:8mm}'+
+      '.op .cab .izq .n{font-family:"IBM Plex Mono",monospace;font-size:8pt;letter-spacing:.16em;text-transform:uppercase;color:var(--t);font-weight:600}'+
+      '.op .cab .izq h2{margin:1mm 0 0;font-size:26pt}'+
+      '.op .cab .der{text-align:right;white-space:nowrap}'+
+      '.op .cab .der .p{font-family:Archivo,sans-serif;font-weight:800;font-size:30pt;line-height:1;color:#0E2A19}'+
+      '.op .cab .der .u{font-size:8.5pt;color:#5C6E64;margin-top:1mm}'+
+      '.op .narr{margin-top:6mm;font-size:10.5pt;color:#31423A}'+
+      '.op .narr p:first-child{font-size:12pt;color:#12211A}'+
+      '.inc{margin-top:7mm}'+
+      '.inc .eyebrow{margin-bottom:3mm}'+
+      '.inc ul{margin:0;padding:0;list-style:none;columns:2;column-gap:8mm;font-size:9.5pt;color:#31423A}'+
+      '.inc li{padding:1.8mm 0;break-inside:avoid;border-top:.4pt solid #E2E6E0;padding-left:4mm;position:relative}'+
+      '.inc li::before{content:"";position:absolute;left:0;top:3.6mm;width:1.6mm;height:1.6mm;background:var(--t)}'+
+      '.cierre{margin-top:8mm;background:#F4F6F3;border-left:2.5pt solid var(--t);padding:5mm 6mm;font-size:9.5pt}'+
+      '.cierre .l{display:grid;grid-template-columns:1fr auto;gap:1.5mm 6mm;font-family:"IBM Plex Mono",monospace;color:#31423A}'+
+      '.cierre .l b{color:#0E2A19}'+
+      '.cierre .nota{margin:3mm 0 0;font-size:8.5pt;color:#5C6E64;font-style:italic}'+
+      '.cond{display:flex;gap:8mm;margin-top:8mm}'+
+      '.cond div{flex:1}'+
+      '.cond h3{font-family:Archivo,sans-serif;font-size:12pt;margin:0 0 2.5mm;color:#0E2A19}'+
+      '.cond ol,.cond ul{margin:0;padding-left:5mm;font-size:9.5pt;color:#31423A;line-height:1.65}'+
+      '.firma{margin-top:14mm;border-top:.6pt solid #D8DED8;padding-top:5mm;font-size:9pt;color:#5C6E64}'+
+      '.firma b{color:#0E2A19;font-family:Archivo,sans-serif;font-size:11pt}'+
+      '.folio{position:absolute;bottom:12mm;left:22mm;right:22mm;display:flex;justify-content:space-between;'+
+      'font-family:"IBM Plex Mono",monospace;font-size:7.5pt;color:#93A398;border-top:.4pt solid #E2E6E0;padding-top:3mm}';
+
+    var h = '<!doctype html><html lang="es"><head><meta charset="utf-8">' +
+      '<title>Propuesta de evento · ' + esc(b.cliente) + ' · Five Iron Golf Madrid</title>' +
+      '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;600&display=swap">' +
+      '<style>' + css + '</style></head><body>';
+
+    /* ---- portada ---- */
+    h += '<section class="hoja portada">' +
+      '<p class="marca">Five Iron Golf · Madrid</p>' +
+      '<h1>Propuesta de evento</h1>' +
+      '<p class="cli">' + esc(b.cliente) + '</p>' +
+      '<p class="meta">' + grupo + ' · ' + hh(b.horas) + ' de experiencia' +
+      (b.fecha ? '<br>' + esc(b.fecha) : '') +
+      '<br>' + b.inicio + ' – ' + fin(b.inicio, b.horas) + '</p>' +
+      '<div class="tres">';
+    R.forEach(function(r, i){
+      h += '<div><div class="n">' + NOMBRES[i] + '</div><div class="p">' + eur0.format(r.precio) +
+           '</div><div class="u">por persona</div></div>';
+    });
+    h += '</div><p class="pie">Tres opciones para el mismo grupo. Precios por persona, sin IVA. ' +
+         'Tarifa calculada para un mínimo facturable de ' + pf + ' asistentes.</p></section>';
+
+    /* ---- comparativa ---- */
+    h += '<section class="hoja"><p class="eyebrow">De un vistazo</p>' +
+      '<h2>Las tres opciones, comparadas</h2>' +
+      '<p>Las tres montan el mismo evento para el mismo grupo: cambian la gastronomía, la carta de ' +
+      'barra y la capa de ambiente. La actividad y el espacio reservado son los mismos en todas.</p>' +
+      '<div class="cmp">';
+    R.forEach(function(r, i){
+      h += '<div class="col" style="--t:' + TIERP[i] + '"><div class="n">' + NOMBRES[i] + '</div>' +
+           '<div class="rot">' + ROT[i] + '</div>' +
+           '<div class="p">' + eur0.format(r.precio) + '</div><div class="u">por persona, sin IVA</div><ul>';
+      inclusiones(r.v).forEach(function(x){ h += '<li>' + esc(x) + '</li>'; });
+      h += '</ul></div>';
+    });
+    h += '</div>';
+
+    var v1 = R[1].v;
+    h += '<div class="dia"><h3>El día del evento</h3><div class="t">' +
+      '<b>' + b.inicio + '</b><span>Llegada del grupo' + (v1.tour ? ', recepción y Welcome Tour por las instalaciones' : '') +
+        (v1.wcoffee ? '. Welcome Coffee servido a la llegada' : (v1.wcoctel ? '. Cóctel de bienvenida' : '')) + '.</span>';
+    if (v1.bays > 0 && v1.baysh > 0){
+      h += '<b>+20 min</b><span>Apertura de los simuladores' + (v1.equipos ? ' y reparto de equipos' : '') +
+        '. A partir de aquí el grupo rota libremente entre las actividades.</span>';
+    }
+    if (v1.comida === 'c' && v1.pases > 0){
+      h += '<b>Durante</b><span>Los ' + v1.pases + ' pases de cóctel salen en distintos momentos, bandejeados en sala.</span>';
+    } else if (v1.comida === 'b1' || v1.comida === 'b2'){
+      h += '<b>Durante</b><span>Servicio de desayuno con reposición atendida' + (v1.lounge ? ', y Members Lounge disponible para la parte de contenido' : '') + '.</span>';
+    }
+    h += '<b>' + fin(b.inicio, b.horas) + '</b><span>Cierre de la experiencia. Un responsable de Five Iron acompaña al grupo de principio a fin.</span>' +
+      '</div></div>' +
+      '<div class="folio"><span>' + esc(b.cliente) + '</span><span>Five Iron Golf Madrid · events@5iberia.com</span></div></section>';
+
+    /* ---- una página por opción ---- */
+    R.forEach(function(r, i){
+      var v = r.v;
+      h += '<section class="hoja op" style="--t:' + TIERP[i] + '">' +
+        '<div class="cab"><div class="izq"><div class="n">Opción ' + (i+1) + ' de 3</div>' +
+        '<h2>' + NOMBRES[i] + '</h2></div>' +
+        '<div class="der"><div class="p">' + eur0.format(r.precio) + '</div>' +
+        '<div class="u">por persona · sin IVA<br>' + eur2.format(r.precio * (1 + v.iva)) + ' con IVA</div></div></div>';
+
+      h += '<div class="narr">';
+      narrativa(r, i).forEach(function(p){ h += '<p>' + esc(p) + '</p>'; });
+      h += '</div>';
+
+      h += '<div class="inc"><p class="eyebrow">Qué incluye</p><ul>';
+      inclusiones(v).forEach(function(x){ h += '<li>' + esc(x) + '</li>'; });
+      h += '</ul></div>';
+
+      h += '<div class="cierre"><div class="l">';
+      if (r.pAdd > 0){
+        h += '<span>Base por persona</span><b>' + eur0.format(r.precioBase) + '</b>' +
+             '<span>Simuladores, ' + hh(v.baysh) + '</span><b>+ ' + eur0.format(r.pAdd) + '</b>';
+      }
+      h += '<span>Precio por persona, sin IVA</span><b>' + eur0.format(r.precio) + '</b>' +
+           '<span>Precio por persona, IVA incluido</span><b>' + eur2.format(r.precio * (1 + v.iva)) + '</b>' +
+           '<span>Total estimado con ' + pf + ' asistentes</span><b>' + eur0.format(r.min.conIva) + '</b>';
+      if (b.paxmax > pf){
+        h += '<span>Total estimado con ' + b.paxmax + ' asistentes</span><b>' + eur0.format(r.max.conIva) + '</b>';
+      }
+      h += '</div><p class="nota">Tarifa calculada para un mínimo facturable de ' + pf + ' asistentes. ' +
+           'Si el grupo final es menor, se factura ese mínimo.</p></div>';
+
+      h += '<div class="folio"><span>' + NOMBRES[i] + ' · ' + eur0.format(r.precio) + ' por persona</span>' +
+           '<span>' + (i + 3) + ' / ' + (R.length + 3) + '</span></div></section>';
+    });
+
+    /* ---- condiciones ---- */
+    h += '<section class="hoja"><p class="eyebrow">Para cerrar</p><h2>Condiciones y próximos pasos</h2>' +
+      '<div class="cond"><div><h3>Condiciones</h3><ul>' +
+      '<li>Validez de la propuesta: 15 días desde su envío.</li>' +
+      '<li>Anticipo del 30 % para bloquear la fecha en agenda.</li>' +
+      '<li>Número final de asistentes a confirmar con 72 horas de antelación.</li>' +
+      '<li>La reserva de los simuladores queda en firme con la confirmación y el anticipo.</li>' +
+      '<li>Precios por persona sin IVA. El IVA aplicable se detalla en la factura.</li>' +
+      '<li>Cualquier ajuste de formato, horario o gastronomía se recalcula al momento.</li>' +
+      '</ul></div><div><h3>Próximos pasos</h3><ol>' +
+      '<li>Confirmas la opción elegida.</li>' +
+      '<li>Bloqueamos la fecha y los simuladores en agenda.</li>' +
+      '<li>Cerramos el detalle de gastronomía y horarios.</li>' +
+      '<li>Recibes la hoja de evento con el timing definitivo.</li>' +
+      '</ol></div></div>' +
+      '<div class="firma"><b>Five Iron Golf Madrid</b><br>events@5iberia.com<br>' +
+      'Estaremos encantados de enseñaros el espacio antes de decidir.</div>' +
+      '<div class="folio"><span>' + esc(b.cliente) + '</span><span>Five Iron Golf Madrid</span></div></section>';
+
+    return h + '</body></html>';
+  }
+
+  $('btnPdf').addEventListener('click', function(){
+    if (!R.length) return;
+    var w = window.open('', '_blank');
+    if (!w){
+      $('estadoDrive').className = 'estado mal';
+      $('estadoDrive').textContent = 'El navegador ha bloqueado la pestaña nueva. Permite las ventanas ' +
+        'emergentes de este sitio y vuelve a pulsar.';
+      return;
+    }
+    w.document.open();
+    w.document.write(docPropuesta());
+    w.document.close();
+    w.focus();
+    setTimeout(function(){ try { w.print(); } catch(e){} }, 900);
   });
 
   /* ============ conexión con Drive ============ */
