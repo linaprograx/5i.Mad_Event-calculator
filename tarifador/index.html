@@ -1068,9 +1068,9 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
       '@page{size:A4;margin:0}'+
       '*{box-sizing:border-box}'+
       'body{margin:0;font-family:"IBM Plex Sans",Helvetica,Arial,sans-serif;font-size:10.5pt;line-height:1.6;color:#12211A;background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}'+
-      '.hoja{width:210mm;min-height:297mm;padding:24mm 22mm;position:relative;page-break-after:always;break-after:page}'+
+      '.hoja{width:100%;min-height:296mm;padding:24mm 22mm;position:relative;page-break-after:always;break-after:page}'+
       '.hoja:last-child{page-break-after:auto;break-after:auto}'+
-      '.portada{background:#0E2A19;color:#F2EFE6;padding:34mm 22mm;display:flex;flex-direction:column}'+
+      '.portada{background:#0E2A19;color:#F2EFE6;padding:34mm 22mm;display:flex;flex-direction:column;min-height:296mm}'+
       '.marca{font-family:"IBM Plex Mono",monospace;font-size:8pt;letter-spacing:.24em;text-transform:uppercase;color:#7FD6A0;margin:0}'+
       '.portada h1{font-family:Archivo,Helvetica,Arial,sans-serif;font-weight:800;font-size:40pt;line-height:1;letter-spacing:-.02em;margin:16mm 0 0;max-width:150mm}'+
       '.portada .cli{font-family:Archivo,sans-serif;font-weight:700;font-size:17pt;margin:9mm 0 0;color:#fff}'+
@@ -1092,7 +1092,7 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
       '.cmp .col .u{font-size:8pt;color:#5C6E64;margin-bottom:4mm}'+
       '.cmp .col ul{margin:0;padding:0;list-style:none;font-size:8.8pt;line-height:1.5;color:#31423A}'+
       '.cmp .col li{padding:1.6mm 0;border-top:.4pt solid #E2E6E0}'+
-      '.dia{margin-top:9mm;border:.6pt solid #D8DED8;border-left:2.5pt solid #A8793B;padding:5mm 6mm}'+
+      '.dia{margin-top:9mm;break-inside:avoid;page-break-inside:avoid;border:.6pt solid #D8DED8;border-left:2.5pt solid #A8793B;padding:5mm 6mm}'+
       '.dia h3{font-family:Archivo,sans-serif;font-size:11.5pt;margin:0 0 2mm;color:#0E2A19}'+
       '.dia .t{display:grid;grid-template-columns:auto 1fr;gap:1.5mm 5mm;font-size:9pt;color:#31423A}'+
       '.dia .t b{font-family:"IBM Plex Mono",monospace;color:#2F6B43;font-weight:600;white-space:nowrap}'+
@@ -1158,22 +1158,8 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
     });
     h += '</div>';
 
-    var v1 = R[1].v;
-    h += '<div class="dia"><h3>El día del evento</h3><div class="t">' +
-      '<b>' + b.inicio + '</b><span>Llegada del grupo' + (v1.tour ? ', recepción y Welcome Tour por las instalaciones' : '') +
-        (v1.wcoffee ? '. Welcome Coffee servido a la llegada' : (v1.wcoctel ? '. Cóctel de bienvenida' : '')) + '.</span>';
-    if (v1.bays > 0 && v1.baysh > 0){
-      h += '<b>+20 min</b><span>Apertura de los simuladores' + (v1.equipos ? ' y reparto de equipos' : '') +
-        '. A partir de aquí el grupo rota libremente entre las actividades.</span>';
-    }
-    if (v1.comida === 'c' && v1.pases > 0){
-      h += '<b>Durante</b><span>Los ' + v1.pases + ' pases de cóctel salen en distintos momentos, bandejeados en sala.</span>';
-    } else if (v1.comida === 'b1' || v1.comida === 'b2'){
-      h += '<b>Durante</b><span>Servicio de desayuno con reposición atendida' + (v1.lounge ? ', y Members Lounge disponible para la parte de contenido' : '') + '.</span>';
-    }
-    h += '<b>' + fin(b.inicio, b.horas) + '</b><span>Cierre de la experiencia. Un responsable de Five Iron acompaña al grupo de principio a fin.</span>' +
-      '</div></div>' +
-      '<div class="folio"><span>' + esc(b.cliente) + '</span><span>Five Iron Golf Madrid · events@5iberia.com</span></div></section>';
+    h += '<div class="folio"><span>' + esc(b.cliente) + '</span><span>Five Iron Golf Madrid · events@5iberia.com</span></div></section>';
+
 
     /* ---- una página por opción ---- */
     R.forEach(function(r, i){
@@ -1212,6 +1198,22 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
 
     /* ---- condiciones ---- */
     h += '<section class="hoja"><p class="eyebrow">Para cerrar</p><h2>Condiciones y próximos pasos</h2>' +
+      '<p>Así se desarrolla la jornada con la opción recomendada. El horario se ajusta al detalle una vez confirmada la fecha.</p>';
+    var v1 = R[1].v;
+    h += '<div class="dia"><h3>El día del evento</h3><div class="t">' +
+      '<b>' + b.inicio + '</b><span>Llegada del grupo' + (v1.tour ? ', recepción y Welcome Tour por las instalaciones' : '') +
+        (v1.wcoffee ? '. Welcome Coffee servido a la llegada' : (v1.wcoctel ? '. Cóctel de bienvenida' : '')) + '.</span>';
+    if (v1.bays > 0 && v1.baysh > 0){
+      h += '<b>+20 min</b><span>Apertura de los simuladores' + (v1.equipos ? ' y reparto de equipos' : '') +
+        '. A partir de aquí el grupo rota libremente entre las actividades.</span>';
+    }
+    if (v1.comida === 'c' && v1.pases > 0){
+      h += '<b>Durante</b><span>Los ' + v1.pases + ' pases de cóctel salen en distintos momentos, bandejeados en sala.</span>';
+    } else if (v1.comida === 'b1' || v1.comida === 'b2'){
+      h += '<b>Durante</b><span>Servicio de desayuno con reposición atendida' + (v1.lounge ? ', y Members Lounge disponible para la parte de contenido' : '') + '.</span>';
+    }
+    h += '<b>' + fin(b.inicio, b.horas) + '</b><span>Cierre de la experiencia. Un responsable de Five Iron acompaña al grupo de principio a fin.</span>' +
+      '</div></div>' +
       '<div class="cond"><div><h3>Condiciones</h3><ul>' +
       '<li>Validez de la propuesta: 15 días desde su envío.</li>' +
       '<li>Anticipo del 30 % para bloquear la fecha en agenda.</li>' +
