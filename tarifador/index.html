@@ -1,0 +1,1093 @@
+<title>Tarifador de Eventos 5i</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ground:#0B100D;--surface:#121915;--raised:#19221C;--line:#26332A;--line-soft:#1E2922;
+  --ink:#E9F0EA;--ink-dim:#93A798;--ink-faint:#65786B;
+  --fairway:#5FC97F;--fairway-deep:#2F6B43;--brass:#D2A15C;--slate:#7C93A6;
+  --warn:#E3B45C;--bad:#EC7361;--field:#F3F6F3;--field-ink:#0B100D;--r:4px;
+  --display:'Archivo','Helvetica Neue',Arial,sans-serif;
+  --body:'IBM Plex Sans','Helvetica Neue',Arial,sans-serif;
+  --mono:'IBM Plex Mono','SF Mono',Menlo,monospace;
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font-family:var(--body);font-size:14px;line-height:1.5;
+  margin:0;padding-block:0 48px;padding-left:20px;padding-right:20px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1260px;margin:0 auto}
+header.top{display:flex;flex-wrap:wrap;gap:20px;align-items:flex-end;justify-content:space-between;
+  padding-block:26px 16px;border-bottom:1px solid var(--line)}
+.brandline{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--fairway);margin:0 0 6px}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(25px,4vw,38px);letter-spacing:-.02em;line-height:1;margin:0;text-wrap:balance}
+.tagline{color:var(--ink-dim);margin:8px 0 0;max-width:58ch}
+.switch{display:inline-flex;align-items:center;gap:9px;cursor:pointer;border:1px solid var(--line);border-radius:999px;
+  padding:7px 13px 7px 11px;background:var(--surface);color:var(--ink-dim);font-size:12px;user-select:none;flex-shrink:0}
+.switch input{accent-color:var(--fairway);width:14px;height:14px;margin:0}
+.switch:hover{border-color:var(--fairway-deep);color:var(--ink)}
+
+.plantilla{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin-top:18px;
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}
+.plantilla .f{flex:1 1 340px}
+
+#form{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:6px 32px;margin-top:20px}
+.grp{min-width:0;margin:0 0 18px}
+.grp h3{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--fairway);margin:0 0 2px;font-weight:600}
+.grp .note{color:var(--ink-faint);font-size:11.5px;margin:0 0 12px;line-height:1.4}
+.rows{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px 14px}
+.f{display:flex;flex-direction:column;gap:5px;min-width:0}
+.f.wide{grid-column:1/-1}
+.f label{font-size:12px;color:var(--ink-dim);font-weight:500}
+.f .hint{font-size:11px;color:var(--ink-faint);line-height:1.35}
+select{font-family:var(--body);font-size:14px;font-weight:500;background:var(--field);color:var(--field-ink);
+  border:1px solid var(--field);border-radius:var(--r);padding:9px 10px;width:100%;min-width:0}
+select:focus-visible,.switch:focus-within,button:focus-visible,summary:focus-visible,input:focus-visible{outline:2px solid var(--fairway);outline-offset:2px}
+select.alerta{border-color:var(--bad);box-shadow:0 0 0 1px var(--bad)}
+.pactado{border-left:2px solid var(--fairway-deep);padding-left:12px}
+.checkcol{display:flex;flex-direction:column;gap:7px}
+.chk{display:flex;align-items:flex-start;gap:9px;cursor:pointer;user-select:none;font-size:12.5px;color:var(--ink-dim);line-height:1.35}
+.chk input{accent-color:var(--fairway);width:15px;height:15px;margin:2px 0 0;flex-shrink:0}
+.chk:hover{color:var(--ink)}
+
+.railhead{display:flex;align-items:baseline;justify-content:space-between;gap:12px;border-top:1px solid var(--line);padding-top:20px;margin-top:6px}
+.railhead h2{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-dim);margin:0;font-weight:500}
+.pax{font-family:var(--mono);font-size:11px;color:var(--ink-faint);text-align:right}
+#ofertas{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px;align-items:start}
+@media(max-width:980px){#ofertas{grid-template-columns:1fr}}
+.vacio{grid-column:1/-1;border:1px dashed var(--line);border-radius:var(--r);padding:34px 22px;text-align:center;color:var(--ink-faint)}
+.vacio strong{display:block;color:var(--ink-dim);font-weight:600;font-size:15px;margin-bottom:6px}
+
+.offer{background:var(--surface);border:1px solid var(--line);border-top:2px solid var(--tier,var(--line));
+  border-radius:var(--r);padding:15px 17px;display:flex;flex-direction:column}
+.offer.reco{background:var(--raised);border-color:var(--fairway-deep)}
+.offer-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.offer-name{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--tier,var(--ink-dim));font-weight:600}
+.badge{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:3px 7px;border-radius:2px;white-space:nowrap}
+.b-ok{background:rgba(95,201,127,.14);color:var(--fairway)}
+.b-warn{background:rgba(227,180,92,.14);color:var(--warn)}
+.b-bad{background:rgba(236,115,97,.15);color:var(--bad)}
+.pblock{margin:12px 0 0}
+.pblock .big{font-family:var(--display);font-weight:800;font-size:30px;letter-spacing:-.02em;line-height:1.1;font-variant-numeric:tabular-nums}
+.pblock .u{font-family:var(--mono);font-size:11px;color:var(--ink-dim);display:block;margin-top:1px}
+.pblock select{margin-top:8px}
+.sug{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);margin:7px 0 0;line-height:1.45}
+.sug button{background:none;border:0;color:var(--fairway);font-family:var(--mono);font-size:10.5px;padding:0;cursor:pointer;text-decoration:underline;font-weight:500}
+.factura{display:grid;grid-template-columns:1fr auto;gap:3px 10px;margin-top:12px;padding-top:11px;
+  border-top:1px solid var(--line-soft);font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);font-variant-numeric:tabular-nums}
+.factura b{color:var(--ink);font-weight:600}
+.factura .k{color:var(--ink-dim)}
+.inc{margin:12px 0 0;padding:11px 0 0;border-top:1px solid var(--line-soft);font-size:12px;color:var(--ink-dim);line-height:1.5;display:flex;flex-direction:column;gap:4px}
+.inc span::before{content:"· ";color:var(--fairway)}
+.metrics{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:11px;padding-top:10px;border-top:1px solid var(--line-soft);
+  font-family:var(--mono);font-size:11px;color:var(--ink-faint);font-variant-numeric:tabular-nums}
+.metrics b{color:var(--ink-dim);font-weight:500}
+.reason{margin:9px 0 0;font-size:11.5px;line-height:1.45;color:var(--warn)}
+.reason.stop{color:var(--bad)}
+
+.bloqueo{margin-top:20px;border:1px solid var(--line);border-left:2px solid var(--brass);border-radius:var(--r);background:var(--surface);padding:14px 16px}
+.bloqueo h3{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--brass);margin:0 0 8px;font-weight:600}
+.bloqueo p{margin:0;color:var(--ink-dim);font-size:12.5px;line-height:1.6;max-width:88ch}
+.bloqueo b{color:var(--ink);font-weight:600}
+
+.actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+button.big{font-family:var(--body);font-size:13px;font-weight:600;cursor:pointer;border-radius:var(--r);padding:13px 20px;border:1px solid transparent}
+.primary{background:var(--fairway);color:#06180D}
+.primary:hover{background:#6FD98D}
+.primary:disabled{background:var(--line);color:var(--ink-faint);cursor:not-allowed}
+.ghost{background:transparent;color:var(--ink-dim);border-color:var(--line)}
+.ghost:hover{color:var(--ink);border-color:var(--fairway-deep)}
+
+details{border-top:1px solid var(--line);margin-top:22px}
+details summary{cursor:pointer;padding:14px 0;list-style:none;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim)}
+details summary::-webkit-details-marker{display:none}
+details summary::before{content:"+ ";color:var(--fairway)}
+details[open] summary::before{content:"– "}
+#salida{margin-top:22px;border:1px solid var(--fairway-deep);border-radius:var(--r);background:var(--surface);padding:16px}
+#salida h3{font-family:var(--display);font-size:16px;margin:0 0 4px;font-weight:700}
+#salida p.sub{margin:0 0 12px;color:var(--ink-dim);font-size:12px}
+textarea{width:100%;min-height:360px;background:var(--ground);color:var(--ink);border:1px solid var(--line);border-radius:var(--r);
+  font-family:var(--mono);font-size:12px;line-height:1.6;padding:13px;resize:vertical}
+.copied{color:var(--fairway);font-size:12px;margin-left:10px}
+.estado{margin:11px 0 0;font-size:12.5px;line-height:1.5;min-height:19px;color:var(--ink-dim)}
+.estado.ok{color:var(--fairway)}
+.estado.mal{color:var(--bad)}
+.estado a{color:var(--fairway)}
+.params{color:var(--ink-dim);font-size:12.5px;line-height:1.6;max-width:70ch}
+.params h4{color:var(--ink);font-size:13px;margin:16px 0 4px;font-family:var(--body);font-weight:600}
+.params code{font-family:var(--mono);color:var(--brass);font-size:12px}
+footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:var(--ink-faint);font-size:11.5px}
+.hidden{display:none!important}
+
+/* ---------- modal de valor propio ---------- */
+.overlay{position:fixed;inset:0;background:rgba(4,8,6,.82);display:flex;align-items:center;justify-content:center;padding:20px;z-index:50}
+.modal{background:var(--raised);border:1px solid var(--fairway-deep);border-radius:6px;padding:20px;width:100%;max-width:400px}
+.modal h4{font-family:var(--display);font-size:17px;margin:0 0 4px;font-weight:700;color:var(--ink)}
+.modal p{margin:0 0 14px;color:var(--ink-dim);font-size:12.5px;line-height:1.5}
+.modal input{width:100%;font-family:var(--body);font-size:15px;background:var(--field);color:var(--field-ink);
+  border:1px solid var(--field);border-radius:var(--r);padding:10px 11px}
+.modal .err{color:var(--bad);font-size:12px;margin:8px 0 0;min-height:18px}
+.modal .btns{display:flex;gap:9px;margin-top:12px}
+.modal .btns button{flex:1}
+
+@media print{body{background:#fff;color:#000}#form,.actions,.switch,details,#salida,footer,.plantilla{display:none}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="wrap">
+<header class="top">
+  <div>
+    <p class="brandline">Five Iron Golf · Madrid</p>
+    <h1>Tarifador de eventos</h1>
+    <p class="tagline">Todo se elige de una lista. Compón la experiencia, mira el suelo, decide el precio por persona.</p>
+  </div>
+  <label class="switch" for="modo"><input type="checkbox" id="modo"> Modo cliente</label>
+</header>
+
+<div class="plantilla">
+  <div class="f">
+    <label for="tpl">Empezar desde una propuesta ya hecha</label>
+    <select id="tpl"><option value="-1">Configuración libre</option></select>
+    <span class="hint">Carga los datos de una propuesta real del catálogo. Luego ajustas lo que cambie.</span>
+  </div>
+</div>
+
+<div id="form"></div>
+
+<div class="railhead">
+  <h2>Las tres opciones</h2>
+  <span class="pax" id="railpax"></span>
+</div>
+<div id="ofertas"></div>
+<div id="aviso"></div>
+
+<div class="actions">
+  <button type="button" class="big primary" id="btnGen">Generar propuesta</button>
+  <button type="button" class="big ghost" id="btnPrint">Imprimir</button>
+</div>
+
+<section id="salida" class="hidden">
+  <h3>Texto de la propuesta</h3>
+  <p class="sub">Con el formato de vuestras propuestas. Sin costes ni márgenes.</p>
+  <div class="f" style="max-width:260px;margin-bottom:12px">
+    <label for="cual">Opción a enviar</label>
+    <select id="cual"><option value="0">Esencial</option><option value="1" selected>Recomendada</option><option value="2">Premium</option></select>
+  </div>
+  <textarea id="texto" readonly spellcheck="false"></textarea>
+  <div style="margin-top:10px;display:flex;gap:9px;flex-wrap:wrap;align-items:center">
+    <button type="button" class="big primary" id="btnDrive">Guardar en Drive</button>
+    <button type="button" class="big ghost" id="btnBajar">Descargar</button>
+    <button type="button" class="big ghost" id="btnCopy">Copiar texto</button>
+    <span class="copied hidden" id="copiado">Copiado</span>
+  </div>
+  <p class="estado" id="estadoDrive"></p>
+  <p class="hint" id="avisoPreview" style="margin-top:2px"></p>
+</section>
+
+<details id="conf">
+  <summary>Conexión con Google Drive</summary>
+  <div class="params">
+    <p>Con esto activado, el botón <strong>Guardar en Drive</strong> crea un Google Doc con la propuesta
+    en una carpeta fija de tu Drive, sin descargar nada y sin salir de esta página.</p>
+    <p id="confEstado" style="color:var(--ink)"></p>
+    <div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:12px">
+      <button type="button" class="big ghost" id="btnUrl">Pegar la URL del conector</button>
+      <button type="button" class="big ghost" id="btnTok">Pegar la clave</button>
+      <button type="button" class="big ghost" id="btnOlvidar">Olvidar conexión</button>
+    </div>
+    <p style="margin-top:14px">La URL y la clave se guardan solo en este navegador. Cada persona que use
+    la herramienta tiene que pegarlas una vez en el suyo. El archivo <code>guardar_propuesta.gs</code>
+    del paquete explica cómo obtenerlas: son cinco minutos y una sola vez.</p>
+  </div>
+</details>
+
+<details>
+  <summary>Cómo calcula y con qué números</summary>
+  <div class="params">
+    <h4>Qué hace y qué no</h4>
+    <p>No suma tarifa pública línea a línea: eso daba precios que no vendéis. Calcula el <b>coste real por persona</b> al mínimo facturable, le aplica los umbrales de margen y te da un suelo y un precio recomendado. El precio final lo pones tú, como en vuestras propuestas de 60 €, 75 € o 86,40 €.</p>
+    <h4>Coste de materia prima</h4>
+    <p>Pase de cóctel <code>1,09 €</code> por persona y pase. Welcome Coffee <code>1,80 €</code>. Cóctel de bienvenida <code>1,85 €</code>. Breakfast Experience <code>4,75 €</code>. Five Iron Breakfast <code>6,00 €</code>. Consumición de cerveza, vino o refresco <code>1,35 €</code>; premium con destilados <code>1,85 €</code>. Consumibles <code>0,65 €</code> por persona.</p>
+    <p>Salen de aplicar vuestros objetivos de food cost —<code>25 %</code> en comida de eventos, <code>30 %</code> en cerveza y vino— sobre los precios de carta. Cuando el libro de escandallos tenga las fichas de los pases de evento cerradas, se sustituyen por el coste real.</p>
+    <h4>Consumo estimado de barra abierta</h4>
+    <p>Por persona: <code>2,5</code> consumiciones la primera hora, <code>2,0</code> la segunda, <code>1,5</code> la tercera, <code>1,2</code> a partir de ahí. Tres horas son 6 consumiciones. Sirve para el coste, no para el precio.</p>
+    <h4>Personal</h4>
+    <p>Coste empresa por hora: sala <code>18 €</code>, barra <code>18 €</code>, cocina <code>20 €</code>, anfitrión <code>16 €</code>, técnico <code>25 €</code>, seguridad <code>22 €</code>, limpieza <code>16 €</code>. Horas del evento más <code>1,5 h</code> de montaje y desmontaje. Un camarero cada 25 personas, barra cada 40, cocina cada 40, anfitrión desde 40, técnico con cuatro simuladores o más, seguridad desde 80. DJ contratado <code>300 €</code>, decoración <code>180 €</code>.</p>
+    <h4>Suelo y recomendado</h4>
+    <p>El suelo deja un resultado operativo del <code>12 %</code> al mínimo facturable. El recomendado apunta al <code>25 %</code>. Los dos se redondean al alza al múltiplo de 5 €.</p>
+    <h4>Valor de bloqueo</h4>
+    <p>Lo que ganaríais vendiendo esos simuladores al público durante esas horas, a <code>39 €/h</code> off-peak o <code>49 €/h</code> peak. No se resta del margen, pero si se come una parte grande de la factura el evento no compensa. El umbral de aviso está en el <code>40 %</code>.</p>
+    <h4>Franjas</h4>
+    <p>Off-peak de lunes a jueves de 8:00 a 20:00 y viernes de 8:00 a 16:00. El resto, peak. Sábado y domingo, peak completo. Si eliges una fecha del calendario, el día de la semana se deduce solo.</p>
+    <h4>Opciones propias</h4>
+    <p>En cualquier desplegable puedes elegir <b>Otro…</b> y escribir un valor. Se queda guardado en ese navegador para las próximas veces. Si lo borras todo desde el pie, vuelve a las opciones de fábrica.</p>
+  </div>
+</details>
+
+<footer>
+  Herramienta interna de dirección y F&amp;B. Aproximación comercial para responder rápido; el cierre económico definitivo vive en el libro de escandallos. Eventos: events@5iberia.com ·
+  <button type="button" class="ghost" id="btnReset" style="padding:4px 9px;font-size:11px;margin-left:6px">Borrar opciones propias</button>
+</footer>
+</div>
+
+<div id="modalHost"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ============ parámetros de negocio ============ */
+  var T = {
+    golfOff:39, golfPeak:49,
+    costePase:1.09, costeWCoffee:1.80, costeWCoctel:1.85, costeB1:4.75, costeB2:6.00,
+    costeCons:[0,1.35,1.85], curva:[2.5,2.0,1.5,1.2],
+    consumible:0.65, comision:0.014, costeDJ:300, costeDec:180,
+    ch:{ sala:18, barra:18, cocina:20, anfitrion:16, tecnico:25, seguridad:22, limpieza:16 },
+    RO_MIN:0.12, RO_OBJ:0.25, MC_MIN:0.60, DTO_MAX:10, AFORO:120, PAX_BAY:6, BLOQUEO_MAX:0.40,
+    addon1h:8, addon2h:12, addonHoraExtra:4,
+    nombresBarra:['','cerveza, vino, refrescos y agua','premium con destilados']
+  };
+
+  /* add-on comercial de simuladores por persona.
+     Datos de direccion: 1 h = 8 EUR/pax, 2 h = 12 EUR/pax.
+     Media hora, la mitad del primer tramo; de la tercera hora en adelante, +4 EUR/pax. */
+  function addonPax(horas){
+    if (horas <= 0) return 0;
+    if (horas <= 0.5) return T.addon1h / 2;
+    if (horas <= 1) return T.addon1h;
+    if (horas <= 2) return T.addon2h;
+    return T.addon2h + Math.ceil(horas - 2) * T.addonHoraExtra;
+  }
+
+  var eur0 = new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR',minimumFractionDigits:0,maximumFractionDigits:0});
+  var eur2 = new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR',minimumFractionDigits:2,maximumFractionDigits:2});
+  function pct(x){ return (x*100).toFixed(1).replace('.',',') + ' %'; }
+  function n1(x){ return x.toFixed(1).replace('.',','); }
+  function hh(x){ return (x % 1 === 0 ? x.toString() : x.toFixed(1).replace('.',',')) + ' h'; }
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
+  function techo5(x){ return Math.max(0, Math.ceil(x / 5) * 5); }
+  function $(id){ return document.getElementById(id); }
+
+  /* ============ opciones guardadas en el navegador ============ */
+  var CUSTOM = {};
+  function cargarCustom(){
+    try { CUSTOM = JSON.parse(localStorage.getItem('5i.tarifador.custom') || '{}') || {}; }
+    catch(e){ CUSTOM = {}; }
+  }
+  function guardarCustom(){
+    try { localStorage.setItem('5i.tarifador.custom', JSON.stringify(CUSTOM)); } catch(e){}
+  }
+  cargarCustom();
+
+  /* ============ generadores de listas ============ */
+  var DIAS_SEM = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+  var MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+
+  function listaFechas(){
+    var out = [{ v:'', t:'Sin fecha definida' }];
+    var hoy = new Date();
+    for (var i = 0; i < 180; i++){
+      var d = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate() + i);
+      var iso = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+      out.push({ v:iso, t: DIAS_SEM[d.getDay()] + ' ' + d.getDate() + ' de ' + MESES[d.getMonth()] });
+    }
+    return out;
+  }
+  function listaHoras(){
+    var out = [];
+    for (var hr = 8; hr <= 23; hr++){
+      for (var m = 0; m < 60; m += 30){
+        var s = String(hr).padStart(2,'0') + ':' + String(m).padStart(2,'0');
+        out.push({ v:s, t:s });
+      }
+    }
+    return out;
+  }
+  function rango(a, b, paso, suf){
+    var out = [];
+    for (var x = a; x <= b + 1e-9; x += paso){
+      var r = Math.round(x * 100) / 100;
+      out.push({ v:String(r), t: (r % 1 === 0 ? String(r) : n1(r)) + (suf || '') });
+    }
+    return out;
+  }
+  function listaPax(){
+    var out = [{ v:'0', t:'0' }];
+    var i;
+    for (i = 2; i <= 60; i++) out.push({ v:String(i), t:String(i) });
+    for (i = 65; i <= 200; i += 5) out.push({ v:String(i), t:String(i) });
+    return out;
+  }
+  function listaPrecios(){
+    var out = [];
+    for (var p = 15; p <= 250; p += 5) out.push({ v:String(p), t:eur0.format(p) });
+    return out;
+  }
+
+  /* ============ estado ============ */
+  var S = {
+    cliente:'Team Building Social', fechaISO:'', fechaTexto:'24 de septiembre', dia:'LJ', inicio:'18:00',
+    paxmin:'10', paxmax:'17', paxfac:'12', horas:'3',
+    bays:'4', baysh:'3', excl:'0', simcobro:'0',
+    f1:true, dardos:true, tour:true, coord:true, equipos:true, lounge:false, av:false,
+    musica:'0', dec:false,
+    comida:'0', pases:'3', wcoffee:true, wcoctel:true,
+    modal:'2', btipo:'1', bcant:'3',
+    iva:'10', dto:'0'
+  };
+  var PRECIOS = ['55','60','75'];
+
+  /* ============ definición de campos ============ */
+  function opts(id){
+    switch(id){
+      case 'cliente': return [
+        {v:'Team Building Social', t:'Team Building Social'},
+        {v:'Team Building Full Experience', t:'Team Building Full Experience'},
+        {v:'Corporate Lunch & Play', t:'Corporate Lunch & Play'},
+        {v:'Five Iron Afterwork', t:'Five Iron Afterwork'},
+        {v:'Business Breakfast & Networking', t:'Business Breakfast & Networking'},
+        {v:'Corporate Night', t:'Corporate Night'},
+        {v:'Cumpleaños', t:'Cumpleaños'},
+        {v:'Despedida', t:'Despedida'},
+        {v:'Evento de agencia', t:'Evento de agencia'}
+      ];
+      case 'fechaISO': return listaFechas();
+      case 'fechaTexto': return [
+        {v:'', t:'Sin fecha definida'},
+        {v:'A determinar', t:'A determinar'},
+        {v:'Pendiente de confirmar', t:'Pendiente de confirmar'}
+      ];
+      case 'dia': return [{v:'LJ',t:'Lunes a jueves'},{v:'V',t:'Viernes'},{v:'SD',t:'Sábado o domingo'}];
+      case 'inicio': return listaHoras();
+      case 'paxmin': case 'paxmax': case 'paxfac': return listaPax();
+      case 'horas': return rango(1, 10, 0.5, ' h');
+      case 'bays': return rango(0, 14, 1);
+      case 'baysh': return rango(0, 10, 0.5, ' h');
+      case 'excl': return [{v:'0',t:'Sin exclusividad'},{v:'1',t:'Zona reservada para el grupo'},{v:'2',t:'Exclusividad del espacio'}];
+      case 'simcobro': return [
+        {v:'0',t:'Incluidos en el precio por persona'},
+        {v:'1',t:'Add-on aparte: +8 € 1 h · +12 € 2 h'}
+      ];
+      case 'musica': return [{v:'0',t:'Ambiente del local'},{v:'1',t:'DJ contratado'}];
+      case 'comida': return [
+        {v:'0',t:'Sin comida'},
+        {v:'c',t:'Pases de cóctel servidos en sala'},
+        {v:'b1',t:'Breakfast Experience'},
+        {v:'b2',t:'Five Iron Breakfast · coffee station completa'}
+      ];
+      case 'pases': return rango(1, 10, 1, ' pases');
+      case 'modal': return [
+        {v:'0',t:'Sin bebida incluida'},
+        {v:'1',t:'Consumiciones cerradas por persona'},
+        {v:'2',t:'Barra abierta durante el evento'}
+      ];
+      case 'btipo': return [{v:'1',t:'Cerveza, vino, refrescos y agua'},{v:'2',t:'Premium con destilados'}];
+      case 'bcant': return S.modal === '1' ? rango(1, 10, 1, ' consumiciones') : rango(0.5, 8, 0.5, ' h');
+      case 'iva': return [{v:'10',t:'10 % · hostelería'},{v:'21',t:'21 %'}];
+      case 'dto': return rango(0, 40, 5, ' %');
+      case 'precio': return listaPrecios();
+    }
+    return [];
+  }
+  /* campos que admiten valor propio y de qué tipo */
+  var LIBRES = { cliente:'texto', fechaTexto:'texto', inicio:'hora', paxmin:'entero', paxmax:'entero',
+                 paxfac:'entero', horas:'decimal', bays:'entero', baysh:'decimal', pases:'entero',
+                 bcant:'decimal', dto:'decimal', precio:'decimal' };
+
+  function selHTML(id, valor, claveOpts){
+    var clave = claveOpts || id;
+    var lista = opts(clave).slice();
+    var extra = CUSTOM[clave] || [];
+    extra.forEach(function(x){ lista.push({ v:x, t:x + ' ·' }); });
+    var hay = lista.some(function(o){ return o.v === String(valor); });
+    if (!hay && String(valor) !== '') lista.unshift({ v:String(valor), t:String(valor) + ' ·' });
+    var h = '<select id="c_' + id + '" data-campo="' + id + '" data-opts="' + clave + '">';
+    lista.forEach(function(o){
+      h += '<option value="' + esc(o.v) + '"' + (String(o.v) === String(valor) ? ' selected' : '') + '>' + esc(o.t) + '</option>';
+    });
+    if (LIBRES[clave]) h += '<option value="__otro__">Otro…</option>';
+    return h + '</select>';
+  }
+  function campo(id, label, hint, ancho, claveOpts){
+    return '<div class="f' + (ancho ? ' wide' : '') + '"><label for="c_' + id + '">' + label + '</label>' +
+      selHTML(id, S[id] !== undefined ? S[id] : '', claveOpts) +
+      (hint ? '<span class="hint">' + hint + '</span>' : '') + '</div>';
+  }
+  function check(id, label){
+    return '<label class="chk"><input type="checkbox" data-chk="' + id + '"' + (S[id] ? ' checked' : '') + '> ' + label + '</label>';
+  }
+
+  /* ============ render del formulario ============ */
+  function diaDesdeISO(iso){
+    if (!iso) return null;
+    var p = iso.split('-');
+    var d = new Date(parseInt(p[0],10), parseInt(p[1],10)-1, parseInt(p[2],10));
+    var w = d.getDay();
+    if (w === 0 || w === 6) return 'SD';
+    if (w === 5) return 'V';
+    return 'LJ';
+  }
+  function fechaLegible(){
+    if (S.fechaISO){
+      var o = listaFechas().filter(function(x){ return x.v === S.fechaISO; })[0];
+      return o ? o.t : S.fechaISO;
+    }
+    return S.fechaTexto || '';
+  }
+
+  function renderForm(){
+    var diaAuto = diaDesdeISO(S.fechaISO);
+    var h = '';
+
+    h += '<section class="grp"><h3>El evento</h3>' +
+      '<p class="note">El rango de asistentes es lo que más mueve el resultado. El mínimo facturable es tu red de seguridad.</p>' +
+      '<div class="rows pactado">' +
+      campo('cliente', 'Cliente o referencia', '', true) +
+      campo('fechaISO', 'Fecha', diaAuto ? 'El día de la semana se deduce de la fecha.' : 'Elige una fecha o deja sin definir.', true) +
+      (S.fechaISO ? '' : campo('fechaTexto', 'Texto de fecha para la propuesta', '', true)) +
+      campo('paxmin', 'Asistentes mín.') +
+      campo('paxmax', 'Asistentes máx.') +
+      campo('paxfac', 'Mínimo facturable', 'Todo el control económico usa este número.') +
+      campo('horas', 'Duración') +
+      (diaAuto ? '' : campo('dia', 'Día')) +
+      campo('inicio', 'Hora de inicio', diaAuto ? 'Con la fecha elegida, el día es ' +
+        ({LJ:'de lunes a jueves', V:'viernes', SD:'fin de semana'})[diaAuto] + '.' : '') +
+      '</div></section>';
+
+    h += '<section class="grp"><h3>Experiencia</h3>' +
+      '<p class="note">Los simuladores bloquean capacidad vendible. Eso se vigila en el aviso de bloqueo.</p>' +
+      '<div class="rows pactado">' +
+      campo('bays', 'Simuladores golf') +
+      campo('baysh', 'Horas de simulador') +
+      campo('simcobro', 'Cómo se cobran los simuladores',
+        S.simcobro === '1' ? 'Con ' + hh(parseFloat(S.baysh) || 0) + ' el add-on es ' +
+          eur0.format(addonPax(parseFloat(S.baysh) || 0)) + ' por persona, que se suma al precio base.'
+        : 'El precio por persona ya los incluye.', true) +
+      campo('excl', 'Exclusividad', '', true) +
+      '<div class="f wide"><div class="checkcol">' +
+        check('f1', 'Acceso a simuladores de Fórmula 1') +
+        check('dardos', 'Acceso a dardos electrónicos') +
+        check('tour', 'Recepción del grupo y Welcome Tour') +
+        check('coord', 'Welcome y coordinación Five Iron') +
+        check('equipos', 'Organización de equipos y rotación entre actividades') +
+        check('lounge', 'Members Lounge para charla o presentación') +
+        check('av', 'Soporte audiovisual con las pantallas') +
+      '</div></div>' +
+      campo('musica', 'Música', '', true) +
+      '<div class="f wide"><div class="checkcol">' + check('dec', 'Decoración temática') + '</div></div>' +
+      '</div></section>';
+
+    h += '<section class="grp"><h3>Comida</h3>' +
+      '<p class="note">Esencial baja un escalón y Premium sube uno.</p><div class="rows">' +
+      campo('comida', 'Formato', '', true) +
+      (S.comida === 'c' ? campo('pases', 'Pases por persona',
+        'Coste de materia prima: ' + eur2.format(T.costePase * parseFloat(S.pases || 0)) + ' por persona.', true) : '') +
+      '<div class="f wide"><div class="checkcol">' +
+        check('wcoffee', 'Welcome Coffee a la llegada') +
+        check('wcoctel', 'Cóctel de bienvenida por persona') +
+      '</div></div></div></section>';
+
+    var consEst = S.modal === '2' ? consumoEstimado(parseFloat(S.bcant || 0)) : 0;
+    h += '<section class="grp"><h3>Bebida</h3>' +
+      '<p class="note">El precio de la barra va dentro del precio por persona. Aquí definimos qué se sirve, para estimar el coste.</p><div class="rows">' +
+      campo('modal', 'Modalidad', '', true) +
+      (S.modal !== '0' ? campo('btipo', 'Carta', '', true) : '') +
+      (S.modal !== '0' ? campo('bcant', S.modal === '1' ? 'Consumiciones por persona' : 'Horas de barra',
+        S.modal === '2' ? 'Consumo estimado: ' + n1(consEst) + ' consumiciones por persona.'
+                        : 'Coste estimado: ' + eur2.format(T.costeCons[parseInt(S.btipo,10)]) + ' por consumición.', true) : '') +
+      '</div></section>';
+
+    h += '<section class="grp"><h3>Precio de venta</h3>' +
+      '<p class="note">Los precios por persona se eligen en cada tarjeta de oferta, más abajo.</p><div class="rows">' +
+      campo('iva', 'IVA a aplicar', 'Que la asesoría lo confirme una vez.') +
+      campo('dto', 'Descuento', 'Más del 10 % necesita aprobación.') +
+      '</div></section>';
+
+    $('form').innerHTML = h;
+  }
+
+  /* ============ modal de valor propio ============ */
+  function pedirValor(titulo, tipo, cb){
+    var host = $('modalHost');
+    host.innerHTML =
+      '<div class="overlay" id="ov"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="mt">' +
+      '<h4 id="mt">' + esc(titulo) + '</h4>' +
+      '<p>' + (tipo === 'texto' ? 'Escribe el valor. Se guardará en este navegador para las próximas veces.'
+             : tipo === 'hora' ? 'Escribe la hora en formato 24 h, por ejemplo 21:30.'
+             : tipo === 'entero' ? 'Escribe un número entero.'
+             : 'Escribe el número. Puedes usar decimales con coma, por ejemplo 70,80.') + '</p>' +
+      '<input type="text" id="mi" autocomplete="off">' +
+      '<p class="err" id="me"></p>' +
+      '<div class="btns"><button type="button" class="big primary" id="mok">Guardar</button>' +
+      '<button type="button" class="big ghost" id="mno">Cancelar</button></div>' +
+      '</div></div>';
+    var inp = $('mi'), err = $('me');
+    inp.focus();
+    function cerrar(){ host.innerHTML = ''; }
+    function aceptar(){
+      var raw = inp.value.trim();
+      if (!raw){ err.textContent = 'No puede quedar vacío.'; return; }
+      var val = raw;
+      if (tipo === 'hora'){
+        var m = raw.match(/^(\d{1,2})[:.h]?(\d{2})?$/);
+        if (!m){ err.textContent = 'Formato no válido. Usa por ejemplo 21:30.'; return; }
+        var hr = parseInt(m[1],10), mi = parseInt(m[2] || '0',10);
+        if (hr > 23 || mi > 59){ err.textContent = 'Esa hora no existe.'; return; }
+        val = String(hr).padStart(2,'0') + ':' + String(mi).padStart(2,'0');
+      } else if (tipo === 'entero' || tipo === 'decimal'){
+        var nn = parseFloat(raw.replace(',','.'));
+        if (isNaN(nn) || nn < 0){ err.textContent = 'Escribe un número válido.'; return; }
+        if (tipo === 'entero') nn = Math.round(nn);
+        val = String(Math.round(nn * 100) / 100);
+      }
+      cerrar();
+      cb(val);
+    }
+    $('mok').addEventListener('click', aceptar);
+    $('mno').addEventListener('click', cerrar);
+    inp.addEventListener('keydown', function(e){
+      if (e.key === 'Enter'){ e.preventDefault(); aceptar(); }
+      if (e.key === 'Escape'){ cerrar(); }
+    });
+    $('ov').addEventListener('click', function(e){ if (e.target.id === 'ov') cerrar(); });
+  }
+  function anadirCustom(clave, valor){
+    if (!CUSTOM[clave]) CUSTOM[clave] = [];
+    if (CUSTOM[clave].indexOf(valor) === -1) CUSTOM[clave].push(valor);
+    guardarCustom();
+  }
+
+  /* ============ motor ============ */
+  function consumoEstimado(hrs){
+    var tot = 0, resto = hrs;
+    for (var i = 0; i < 4 && resto > 0; i++){ var t = Math.min(1, resto); tot += T.curva[i] * t; resto -= t; }
+    if (resto > 0) tot += T.curva[3] * resto;
+    return tot;
+  }
+  function repartoGolf(dia, inicio, dur){
+    if (dur <= 0) return { off:0, peak:0 };
+    if (dia === 'SD') return { off:0, peak:dur };
+    var frontera = (dia === 'V') ? 16 : 20;
+    var p = String(inicio).split(':');
+    var t = parseInt(p[0],10) + (parseInt(p[1],10) || 0)/60;
+    if (isNaN(t)) t = 20;
+    if (t >= frontera || t < 8) return { off:0, peak:dur };
+    var off = Math.min(dur, frontera - t);
+    return { off:off, peak:dur - off };
+  }
+
+  function brief(){
+    var diaAuto = diaDesdeISO(S.fechaISO);
+    return {
+      cliente:S.cliente, fecha:fechaLegible(),
+      paxmin:parseInt(S.paxmin,10) || 0, paxmax:parseInt(S.paxmax,10) || 0, paxfac:parseInt(S.paxfac,10) || 0,
+      horas:parseFloat(S.horas) || 0, dia: diaAuto || S.dia, inicio:S.inicio,
+      bays:parseInt(S.bays,10) || 0, baysh:parseFloat(S.baysh) || 0, excl:parseInt(S.excl,10) || 0,
+      simcobro:S.simcobro,
+      f1:S.f1, dardos:S.dardos, tour:S.tour, coord:S.coord, equipos:S.equipos, lounge:S.lounge, av:S.av,
+      musica:parseInt(S.musica,10) || 0, dec:S.dec,
+      comida:S.comida, pases:parseInt(S.pases,10) || 0, wcoffee:S.wcoffee, wcoctel:S.wcoctel,
+      modal:parseInt(S.modal,10) || 0, btipo:parseInt(S.btipo,10) || 1, bcant:parseFloat(S.bcant) || 0,
+      iva:(parseFloat(S.iva) || 0) / 100, dto:parseFloat(S.dto) || 0
+    };
+  }
+
+  function variante(b, nivel){
+    var v = JSON.parse(JSON.stringify(b));
+    if (nivel === 0){
+      if (v.comida === 'c' && v.pases > 1) v.pases -= 1;
+      else if (v.comida === 'b2') v.comida = 'b1';
+      if (v.btipo > 1) v.btipo = 1;
+      if (v.modal === 2 && v.bcant > 2) v.bcant = 2;
+      v.dec = false; v.musica = 0;
+    } else if (nivel === 2){
+      if (v.comida === 'c') v.pases += 1;
+      else if (v.comida === 'b1') v.comida = 'b2';
+      else if (v.comida === '0'){ v.comida = 'c'; v.pases = 3; }
+      if (v.modal === 1){ v.modal = 2; v.bcant = Math.max(2, b.horas); }
+      else if (v.modal === 2){ v.bcant = b.bcant + 1; }
+      if (v.modal > 0) v.btipo = 2;
+      v.wcoctel = true;
+      if (b.paxfac >= 40){ v.musica = 1; v.dec = true; }
+    }
+    return v;
+  }
+
+  function costes(v, pax){
+    var cpp = T.consumible;
+    if (v.comida === 'c') cpp += T.costePase * v.pases;
+    else if (v.comida === 'b1') cpp += T.costeB1;
+    else if (v.comida === 'b2') cpp += T.costeB2;
+    if (v.wcoffee) cpp += T.costeWCoffee;
+    if (v.wcoctel) cpp += T.costeWCoctel;
+    var cons = v.modal === 1 ? v.bcant : (v.modal === 2 ? consumoEstimado(v.bcant) : 0);
+    cpp += T.costeCons[v.btipo] * cons;
+
+    var hp = v.horas + 1.5, eq = [];
+    if (pax > 0){
+      eq.push({ r:'Sala', n:Math.max(1,Math.ceil(pax/25)), hh:hp, c:T.ch.sala });
+      if (v.modal > 0 && v.bcant > 0) eq.push({ r:'Barra', n:Math.max(1,Math.ceil(pax/40)), hh:hp, c:T.ch.barra });
+      if (v.comida !== '0' || v.wcoffee) eq.push({ r:'Cocina', n:Math.max(1,Math.ceil(pax/40)), hh:hp, c:T.ch.cocina });
+      if (pax > 40) eq.push({ r:'Anfitrión', n:1, hh:hp, c:T.ch.anfitrion });
+      if (v.bays >= 4) eq.push({ r:'Técnico', n:1, hh:v.horas, c:T.ch.tecnico });
+      if (pax >= 80) eq.push({ r:'Seguridad', n:1, hh:hp, c:T.ch.seguridad });
+      eq.push({ r:'Limpieza', n:Math.max(1,Math.ceil(pax/50)), hh:2, c:T.ch.limpieza });
+    }
+    var personal = eq.reduce(function(s,e){ return s + e.n * e.hh * e.c; }, 0);
+    var fijos = (v.musica === 1 ? T.costeDJ : 0) + (v.dec ? T.costeDec : 0);
+    return { cpp:cpp, cons:cons, personal:personal, fijos:fijos, eq:eq };
+  }
+
+  function bloqueo(v){
+    if (v.bays <= 0 || v.baysh <= 0) return { valor:0, off:0, peak:0 };
+    var rep = repartoGolf(v.dia, v.inicio, v.baysh);
+    return { valor: v.bays * (rep.off * T.golfOff + rep.peak * T.golfPeak), off:rep.off, peak:rep.peak };
+  }
+
+  function evaluar(v, precioBase){
+    var pf = Math.max(1, v.paxfac || v.paxmin || 1);
+    var px = Math.max(pf, v.paxmax || pf);
+    var dto = Math.max(0, Math.min(40, v.dto)) / 100;
+    var pAdd = (v.simcobro === '1' && v.bays > 0) ? addonPax(v.baysh) : 0;
+    var precio = precioBase + pAdd;
+    var pnet = precio * (1 - dto);
+    var c = costes(v, pf), cMax = costes(v, px);
+
+    function escenario(pax, cc){
+      var neto = pnet * pax;
+      var comision = neto * (1 + v.iva) * T.comision;
+      var variables = cc.cpp * pax + comision;
+      var total = variables + cc.personal + cc.fijos;
+      return { pax:pax, neto:neto, conIva:neto * (1 + v.iva), variables:variables,
+               mc: neto > 0 ? (neto - variables) / neto : 0,
+               ro: neto > 0 ? (neto - total) / neto : 0, deja: neto - total };
+    }
+    var min = escenario(pf, c), max = escenario(px, cMax);
+
+    function suelo(ro){
+      var fijo = (c.personal + c.fijos) / pf;
+      var den = 1 - ro - T.comision * (1 + v.iva);
+      if (den <= 0) return 0;
+      return ((c.cpp + fijo) / den) / (1 - dto);
+    }
+    var sSuelo = techo5(suelo(T.RO_MIN)), sReco = techo5(suelo(T.RO_OBJ));
+    var bl = bloqueo(v);
+    var peso = min.conIva > 0 ? bl.valor / min.conIva : 0;
+
+    var estado = 'ok', motivos = [];
+    if (precio <= 0){ estado='bad'; motivos.push('Falta el precio por persona.'); }
+    else {
+      if (min.mc < T.MC_MIN){ estado='bad'; motivos.push('Margen de contribución ' + pct(min.mc) + ' al mínimo facturable, por debajo del 60 %.'); }
+      if (min.ro < T.RO_MIN){ estado='bad'; motivos.push('Resultado operativo ' + pct(min.ro) + ' al mínimo facturable, por debajo del 12 %.'); }
+      if (estado === 'bad') motivos.push('No bajes de ' + eur0.format(sSuelo) + ' por persona.');
+    }
+    if (estado === 'ok' && v.dto > T.DTO_MAX){ estado='warn'; motivos.push('Descuento del ' + v.dto + ' %: aprobación de dirección.'); }
+    if (estado === 'ok' && peso > T.BLOQUEO_MAX){
+      estado='warn'; motivos.push('El bloqueo de simuladores vale ' + eur0.format(bl.valor) + ', el ' + pct(peso) + ' de la factura mínima.');
+    }
+    if (estado === 'ok' && px > T.AFORO){ estado='warn'; motivos.push('Por encima del aforo de 120 personas.'); }
+    if (estado === 'ok' && v.bays > 0 && px > v.bays * T.PAX_BAY + 6){
+      estado='warn'; motivos.push('Con ' + v.bays + ' simuladores van cómodas ' + (v.bays*T.PAX_BAY) + ' personas y pueden venir ' + px + '.');
+    }
+    return { v:v, precio:precio, precioBase:precioBase, pAdd:pAdd, min:min, max:max, c:c,
+             sSuelo:sSuelo, sReco:sReco, bl:bl, peso:peso, estado:estado, motivos:motivos, dto:dto };
+  }
+
+  function inclusiones(v){
+    var L = [];
+    if (v.tour) L.push('Recepción del grupo y Welcome Tour por Five Iron');
+    if (v.wcoffee) L.push('Welcome Coffee a la llegada');
+    if (v.wcoctel) L.push('Cóctel de bienvenida por persona');
+    if (v.bays > 0 && v.baysh > 0 && v.simcobro !== '1')
+      L.push(v.bays + ' simulador' + (v.bays>1?'es':'') + ' de golf contiguo' + (v.bays>1?'s':'') +
+             ' reservado' + (v.bays>1?'s':'') + ' para el grupo durante ' + hh(v.baysh));
+    if (v.f1) L.push('Acceso a simuladores de Fórmula 1');
+    if (v.dardos) L.push('Acceso a dardos electrónicos');
+    if (v.excl === 1) L.push('Zona reservada para el grupo');
+    if (v.excl === 2) L.push('Exclusividad del espacio');
+    if (v.lounge) L.push('Uso del Members Lounge para la charla o presentación');
+    if (v.av) L.push('Soporte audiovisual con las pantallas disponibles');
+    if (v.modal === 1 && v.bcant > 0) L.push(n1(v.bcant) + ' consumiciones por persona de ' + T.nombresBarra[v.btipo]);
+    if (v.modal === 2 && v.bcant > 0) L.push('Barra abierta durante ' + hh(v.bcant) + ' de ' + T.nombresBarra[v.btipo]);
+    if (v.comida === 'c') L.push(v.pases + ' pases de picoteo servidos en distintos momentos de la experiencia');
+    if (v.comida === 'b1') L.push('Breakfast Experience: café e infusiones, zumo, agua, mini bollería, fruta, tostadas, mini sándwiches, tortilla y selección de quesos');
+    if (v.comida === 'b2') L.push('Five Iron Breakfast: coffee station completa, zumos, fruta, bollería, tostadas, mini sándwiches, tortilla y selección de quesos, con reposición cuidada durante el servicio');
+    if (v.musica === 1) L.push('Música con DJ');
+    if (v.dec) L.push('Decoración temática');
+    if (v.equipos) L.push('Organización de equipos y rotación libre entre actividades');
+    if (v.coord) L.push('Welcome y coordinación Five Iron durante todo el evento');
+    return L;
+  }
+
+  var NOMBRES = ['Esencial','Recomendada','Premium'];
+  var TIER = ['var(--slate)','var(--fairway)','var(--brass)'];
+  var R = [];
+
+  function hayEvento(b){
+    if (b.paxfac < 1 && b.paxmin < 1) return false;
+    if (b.horas <= 0) return false;
+    return (b.bays > 0 && b.baysh > 0) || b.comida !== '0' || (b.modal > 0 && b.bcant > 0) || b.wcoffee || b.wcoctel;
+  }
+
+  function renderResultados(){
+    var b = brief(), cliente = $('modo').checked;
+
+    if (!hayEvento(b)){
+      R = [];
+      $('railpax').textContent = '';
+      $('aviso').innerHTML = '';
+      $('ofertas').innerHTML = '<div class="vacio"><strong>Todavía no hay evento que valorar</strong>' +
+        (b.horas <= 0 ? 'Elige cuánto dura el evento.' :
+         (b.paxfac < 1 && b.paxmin < 1) ? 'Elige cuántos asistentes vienen.' :
+         'Añade al menos un simulador, comida o bebida.') + '</div>';
+      $('btnGen').disabled = true;
+      $('salida').classList.add('hidden');
+      return;
+    }
+    $('btnGen').disabled = false;
+    R = [0,1,2].map(function(n){ return evaluar(variante(b, n), parseFloat(PRECIOS[n]) || 0); });
+
+    var pf = Math.max(1, b.paxfac || b.paxmin), px = Math.max(pf, b.paxmax || pf);
+    $('railpax').textContent = (b.paxmin === b.paxmax ? b.paxmin + ' personas' : b.paxmin + '–' + b.paxmax + ' personas') +
+      ' · mínimo facturable ' + pf + ' · ' + hh(b.horas) + ' · ' +
+      ({LJ:'lunes a jueves', V:'viernes', SD:'fin de semana'})[b.dia] + ' desde las ' + b.inicio;
+
+    var html = '';
+    R.forEach(function(r, i){
+      var badge = r.estado === 'ok' ? '<span class="badge b-ok">Aprobada</span>'
+                : r.estado === 'warn' ? '<span class="badge b-warn">Visto bueno</span>'
+                : '<span class="badge b-bad">Bloqueada</span>';
+      html += '<article class="offer' + (i===1?' reco':'') + '" style="--tier:' + TIER[i] + '">';
+      html += '<div class="offer-top"><span class="offer-name">' + NOMBRES[i] + '</span>' + (cliente ? '' : badge) + '</div>';
+      html += '<div class="pblock"><span class="big">' + eur0.format(r.precio) + '</span>' +
+              '<span class="u">por persona · sin IVA' +
+              (r.pAdd > 0 ? '<br>' + eur0.format(r.precioBase) + ' base + ' + eur0.format(r.pAdd) +
+                            ' de simuladores' : '') + '</span>' +
+              selHTML('precio' + i, PRECIOS[i], 'precio') +
+              (r.pAdd > 0 ? '<span class="hint" style="margin-top:5px;display:block">El desplegable fija el precio base.</span>' : '') +
+              '</div>';
+      html += '<div class="factura"><span class="k">Con IVA por persona</span><b>' +
+              eur2.format(r.precio * (1 - r.dto) * (1 + r.v.iva)) + '</b>';
+      if (pf !== px){
+        html += '<span class="k">Factura con ' + pf + ' (mínimo)</span><b>' + eur0.format(r.min.conIva) + '</b>' +
+                '<span class="k">Factura con ' + px + '</span><b>' + eur0.format(r.max.conIva) + '</b>';
+      } else {
+        html += '<span class="k">Factura total con IVA</span><b>' + eur0.format(r.min.conIva) + '</b>';
+      }
+      html += '</div>';
+      if (!cliente){
+        html += '<p class="sug">Suelo ' + eur0.format(r.sSuelo) + ' · recomendado ' + eur0.format(r.sReco) +
+                (r.pAdd > 0 ? ' (totales, add-on incluido)' : '') +
+                ' &nbsp;<button type="button" data-usa="' + i + '" data-v="' +
+                Math.max(0, techo5(r.sReco - r.pAdd)) + '">usar recomendado</button></p>';
+      }
+      html += '<div class="inc">';
+      inclusiones(r.v).forEach(function(x){ html += '<span>' + esc(x) + '</span>'; });
+      html += '</div>';
+      if (!cliente){
+        html += '<div class="metrics"><span>Coste/pax <b>' + eur2.format(r.c.cpp) + '</b></span>' +
+                '<span>Personal <b>' + eur0.format(r.c.personal + r.c.fijos) + '</b></span>' +
+                '<span>MC <b>' + pct(r.min.mc) + '</b></span>' +
+                '<span>RO <b>' + pct(r.min.ro) + '</b></span>' +
+                '<span>Deja al mínimo <b>' + eur0.format(r.min.deja) + '</b></span>';
+        if (pf !== px) html += '<span>Deja al máximo <b>' + eur0.format(r.max.deja) + '</b></span>';
+        html += '</div>';
+        if (r.motivos.length) html += '<p class="reason' + (r.estado==='bad'?' stop':'') + '">' + esc(r.motivos.join(' ')) + '</p>';
+      }
+      html += '</article>';
+    });
+    $('ofertas').innerHTML = html;
+
+    var rr = R[1], bl = rr.bl;
+    if (!cliente && bl.valor > 0){
+      var nec = Math.ceil(bl.valor / (T.BLOQUEO_MAX * rr.precio * (1 + rr.v.iva)));
+      var txt = 'Bloqueas <b>' + rr.v.bays + ' simulador' + (rr.v.bays>1?'es':'') + '</b> durante ' + hh(rr.v.baysh) +
+        '. A tarifa pública eso vale <b>' + eur0.format(bl.valor) + '</b>' +
+        (bl.off > 0 && bl.peak > 0 ? ' (' + hh(bl.off) + ' off-peak y ' + hh(bl.peak) + ' peak)' :
+         bl.peak > 0 ? ' en franja peak' : ' en franja off-peak') + '. Con ' + pf + ' personas a ' +
+        eur0.format(rr.precio) + ' facturas ' + eur0.format(rr.min.conIva) + ', así que el bloqueo se come el <b>' +
+        pct(rr.peso) + '</b> de la factura.';
+      txt += rr.peso > T.BLOQUEO_MAX
+        ? ' Para que baje del 40 % necesitas <b>' + nec + ' personas</b> a ese precio, o menos simuladores, o subir el precio.'
+        : ' Está dentro de lo razonable.';
+      $('aviso').innerHTML = '<div class="bloqueo"><h3>Coste de oportunidad del bloqueo</h3><p>' + txt + '</p></div>';
+    } else {
+      $('aviso').innerHTML = '';
+    }
+
+    Array.prototype.forEach.call(document.querySelectorAll('[data-usa]'), function(btn){
+      btn.addEventListener('click', function(){
+        PRECIOS[parseInt(btn.getAttribute('data-usa'),10)] = btn.getAttribute('data-v');
+        render();
+      });
+    });
+
+    if (!$('salida').classList.contains('hidden')) generarTexto();
+  }
+
+  function render(foco){
+    renderForm();
+    renderResultados();
+    if (foco){ var el = $(foco); if (el) el.focus(); }
+  }
+
+  /* ============ texto de la propuesta ============ */
+  function generarTexto(){
+    if (!R.length) return;
+    var i = parseInt($('cual').value,10), r = R[i], v = r.v, o = [];
+    var pf = Math.max(1, v.paxfac || v.paxmin);
+    o.push('FIVE IRON GOLF MADRID');
+    o.push('');
+    o.push('PROPUESTA · ' + NOMBRES[i].toUpperCase());
+    o.push(eur0.format(r.pAdd > 0 ? r.precioBase : r.precio) + ' por persona' +
+           (r.pAdd > 0 ? ' (' + eur0.format(r.precio) + ' con simuladores)' : ''));
+    o.push('');
+    o.push('Duración: hasta ' + hh(v.horas));
+    o.push('Grupo: ' + (v.paxmin === v.paxmax ? v.paxmin + ' personas' : v.paxmin + '–' + v.paxmax + ' personas'));
+    if (v.fecha) o.push('Fecha: ' + v.fecha);
+    o.push('');
+    o.push('INCLUYE');
+    inclusiones(v).forEach(function(x){ o.push('· ' + x); });
+    o.push('');
+    o.push('El grupo podrá ir rotando libremente entre las diferentes actividades durante');
+    o.push('la experiencia.');
+    o.push('');
+    if (r.pAdd > 0){
+      o.push('A ESTA OPCIÓN SE LE AÑADE');
+      o.push('· ' + hh(v.baysh) + ' de simulador de golf (' + v.bays + ' simulador' + (v.bays>1?'es':'') +
+             ' reservado' + (v.bays>1?'s':'') + ' para el grupo): +' + eur0.format(r.pAdd) + ' por persona');
+      o.push('');
+    }
+    o.push('PRECIO');
+    if (r.pAdd > 0){
+      o.push('Base: ' + eur0.format(r.precioBase) + ' por persona (sin IVA)');
+      o.push('Simuladores: +' + eur0.format(r.pAdd) + ' por persona (sin IVA)');
+    }
+    o.push('Precio final: ' + eur0.format(r.precio) + ' por persona (sin IVA) · ' +
+           eur2.format(r.precio * (1 + v.iva)) + ' con IVA');
+    o.push('Tarifa calculada para un mínimo facturable de ' + pf + ' asistentes.');
+    o.push('');
+    o.push('CONDICIONES');
+    o.push('· Validez de la propuesta: 15 días.');
+    o.push('· Anticipo para bloquear fecha: 30 %.');
+    o.push('· Número final de asistentes: a confirmar con 72 horas de antelación.');
+    o.push('· La reserva de simuladores queda en firme con la confirmación y el anticipo.');
+    o.push('');
+    o.push('events@5iberia.com');
+    $('texto').value = o.join('\n');
+  }
+
+  /* ============ plantillas ============ */
+  var PLANTILLAS = [
+    { n:'Team Building Social · 10–17 pax', p:['55','60','75'], c:{ cliente:'Team Building Social',
+      paxmin:'10', paxmax:'17', paxfac:'12', horas:'3', dia:'LJ', inicio:'18:00', bays:'4', baysh:'3', excl:'0',
+      f1:true, dardos:true, tour:true, coord:true, equipos:true, lounge:false, av:false, musica:'0', dec:false,
+      comida:'0', pases:'3', wcoffee:true, wcoctel:true, modal:'2', btipo:'1', bcant:'3' } },
+    { n:'Team Building Full Experience · 10–17 pax', p:['65','75','90'], c:{ cliente:'Team Building Full Experience',
+      paxmin:'10', paxmax:'17', paxfac:'12', horas:'3', dia:'LJ', inicio:'18:00', bays:'4', baysh:'3', excl:'0',
+      f1:true, dardos:true, tour:true, coord:true, equipos:true, lounge:false, av:false, musica:'0', dec:false,
+      comida:'c', pases:'3', wcoffee:false, wcoctel:false, modal:'2', btipo:'1', bcant:'3' } },
+    { n:'Breakfast Experience + 2 h de simuladores · 35–50 pax', p:['17','19','24'], c:{ cliente:'Business Breakfast & Networking',
+      paxmin:'35', paxmax:'50', paxfac:'35', horas:'3', dia:'LJ', inicio:'09:30', bays:'2', baysh:'2', excl:'0', simcobro:'1',
+      f1:false, dardos:false, tour:true, coord:true, equipos:false, lounge:true, av:true, musica:'0', dec:false,
+      comida:'b1', pases:'3', wcoffee:false, wcoctel:false, modal:'0', btipo:'1', bcant:'0' } },
+    { n:'Five Iron Breakfast + 2 h de simuladores · 35–50 pax', p:['19','24','30'], c:{ cliente:'Business Breakfast & Networking',
+      paxmin:'35', paxmax:'50', paxfac:'35', horas:'3', dia:'LJ', inicio:'09:30', bays:'2', baysh:'2', excl:'0', simcobro:'1',
+      f1:false, dardos:false, tour:true, coord:true, equipos:false, lounge:true, av:true, musica:'0', dec:false,
+      comida:'b2', pases:'3', wcoffee:false, wcoctel:false, modal:'0', btipo:'1', bcant:'0' } },
+    { n:'Corporate Lunch & Play · 50 pax', p:['48','54','64'], c:{ cliente:'Corporate Lunch & Play',
+      paxmin:'50', paxmax:'50', paxfac:'45', horas:'4', dia:'LJ', inicio:'11:00', bays:'2', baysh:'3', excl:'1',
+      f1:false, dardos:false, tour:true, coord:true, equipos:false, lounge:false, av:false, musica:'0', dec:false,
+      comida:'c', pases:'5', wcoffee:false, wcoctel:false, modal:'1', btipo:'1', bcant:'3' } },
+    { n:'Five Iron Afterwork · 100 pax', p:['62','71','85'], c:{ cliente:'Five Iron Afterwork',
+      paxmin:'100', paxmax:'100', paxfac:'85', horas:'5', dia:'LJ', inicio:'16:00', bays:'4', baysh:'4', excl:'2',
+      f1:false, dardos:false, tour:true, coord:true, equipos:false, lounge:false, av:false, musica:'1', dec:false,
+      comida:'c', pases:'5', wcoffee:false, wcoctel:false, modal:'2', btipo:'1', bcant:'2' } },
+    { n:'Team Building Experience · 30 pax', p:['58','66','79'], c:{ cliente:'Team Building Social',
+      paxmin:'30', paxmax:'30', paxfac:'25', horas:'4', dia:'LJ', inicio:'18:00', bays:'4', baysh:'3', excl:'0',
+      f1:true, dardos:true, tour:true, coord:true, equipos:true, lounge:false, av:false, musica:'1', dec:false,
+      comida:'c', pases:'6', wcoffee:false, wcoctel:false, modal:'1', btipo:'1', bcant:'4' } },
+    { n:'Five Iron Corporate Night · 80 pax', p:['76','86','104'], c:{ cliente:'Corporate Night',
+      paxmin:'80', paxmax:'80', paxfac:'70', horas:'5', dia:'V', inicio:'19:00', bays:'6', baysh:'4', excl:'2',
+      f1:true, dardos:true, tour:true, coord:true, equipos:true, lounge:false, av:false, musica:'1', dec:false,
+      comida:'c', pases:'7', wcoffee:false, wcoctel:false, modal:'2', btipo:'1', bcant:'3' } }
+  ];
+  PLANTILLAS.forEach(function(p, i){
+    var op = document.createElement('option');
+    op.value = String(i); op.textContent = p.n;
+    $('tpl').appendChild(op);
+  });
+  $('tpl').addEventListener('change', function(){
+    var i = parseInt($('tpl').value,10);
+    if (i < 0) return;
+    var p = PLANTILLAS[i];
+    Object.keys(p.c).forEach(function(k){ S[k] = p.c[k]; });
+    S.fechaISO = '';
+    PRECIOS = p.p.slice();
+    render();
+  });
+
+  /* ============ eventos ============ */
+  document.addEventListener('change', function(e){
+    var el = e.target;
+
+    if (el.hasAttribute && el.hasAttribute('data-chk')){
+      S[el.getAttribute('data-chk')] = el.checked;
+      render();
+      return;
+    }
+    if (el.tagName === 'SELECT' && el.hasAttribute('data-campo')){
+      var campoId = el.getAttribute('data-campo');
+      var clave = el.getAttribute('data-opts');
+      var val = el.value;
+
+      if (val === '__otro__'){
+        pedirValor('Valor propio', LIBRES[clave] || 'texto', function(nuevo){
+          anadirCustom(clave, nuevo);
+          aplicar(campoId, nuevo);
+          render('c_' + campoId);
+        });
+        /* dejar el selector en su valor anterior mientras el modal está abierto */
+        el.value = campoId.indexOf('precio') === 0 ? PRECIOS[parseInt(campoId.slice(6),10)] : S[campoId];
+        return;
+      }
+      aplicar(campoId, val);
+      render('c_' + campoId);
+    }
+  });
+
+  function aplicar(campoId, val){
+    if (campoId.indexOf('precio') === 0){
+      PRECIOS[parseInt(campoId.slice(6),10)] = val;
+      return;
+    }
+    S[campoId] = val;
+    if (campoId === 'paxmin' && parseInt(S.paxmax,10) < parseInt(val,10)) S.paxmax = val;
+    if (campoId === 'paxmax' && parseInt(S.paxmin,10) > parseInt(val,10)) S.paxmin = val;
+    if (campoId === 'paxmin' || campoId === 'paxmax'){
+      var mn = parseInt(S.paxmin,10) || 0;
+      if ((parseInt(S.paxfac,10) || 0) > (parseInt(S.paxmax,10) || 0)) S.paxfac = S.paxmax;
+      if ((parseInt(S.paxfac,10) || 0) < 1) S.paxfac = String(mn);
+    }
+    if (campoId === 'modal'){
+      if (val === '1' && parseFloat(S.bcant) > 10) S.bcant = '3';
+      if (val === '2' && parseFloat(S.bcant) > 8) S.bcant = '3';
+      if (val !== '0' && parseFloat(S.bcant) <= 0) S.bcant = val === '1' ? '3' : '2';
+    }
+  }
+
+  $('modo').addEventListener('change', renderResultados);
+  $('cual').addEventListener('change', generarTexto);
+  $('btnGen').addEventListener('click', function(){
+    if (!R.length) return;
+    $('salida').classList.remove('hidden');
+    generarTexto();
+    $('salida').scrollIntoView({ behavior:'smooth', block:'start' });
+  });
+  $('btnPrint').addEventListener('click', function(){ window.print(); });
+  $('btnCopy').addEventListener('click', function(){
+    var ta = $('texto'); ta.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch(e){ ok = false; }
+    if (!ok && navigator.clipboard){ navigator.clipboard.writeText(ta.value).then(avisar); return; }
+    if (ok) avisar();
+  });
+  function avisar(){
+    var c = $('copiado'); c.classList.remove('hidden');
+    setTimeout(function(){ c.classList.add('hidden'); }, 1800);
+  }
+  $('btnReset').addEventListener('click', function(){
+    CUSTOM = {};
+    guardarCustom();
+    render();
+  });
+
+  /* ============ conexión con Drive ============ */
+  function cfg(k){ try { return localStorage.getItem('5i.drive.' + k) || ''; } catch(e){ return ''; } }
+  function setCfg(k, v){ try { localStorage.setItem('5i.drive.' + k, v); } catch(e){} }
+
+  function pintarConf(){
+    var u = cfg('url'), t = cfg('token');
+    $('confEstado').textContent = (u && t) ? 'Conexión configurada. El botón Guardar en Drive está activo.'
+      : !u ? 'Falta la URL del conector.' : 'Falta la clave.';
+  }
+  pintarConf();
+
+  function nombreDoc(){
+    if (!R.length) return 'Propuesta 5i';
+    var i = parseInt($('cual').value,10), r = R[i], v = r.v;
+    var f = new Date();
+    var fech = f.getFullYear() + '-' + String(f.getMonth()+1).padStart(2,'0') + '-' + String(f.getDate()).padStart(2,'0');
+    return '5i Propuesta · ' + v.cliente + ' · ' + NOMBRES[i] + ' · ' + fech;
+  }
+
+  $('btnUrl').addEventListener('click', function(){
+    pedirValor('URL del conector de Drive', 'texto', function(v){
+      if (v.indexOf('https://script.google.com/') !== 0){
+        $('confEstado').textContent = 'Esa no parece la URL de un conector de Apps Script.';
+        return;
+      }
+      setCfg('url', v); pintarConf();
+    });
+  });
+  $('btnTok').addEventListener('click', function(){
+    pedirValor('Clave del conector', 'texto', function(v){ setCfg('token', v); pintarConf(); });
+  });
+  $('btnOlvidar').addEventListener('click', function(){
+    setCfg('url',''); setCfg('token',''); pintarConf();
+    $('estadoDrive').textContent = ''; $('estadoDrive').className = 'estado';
+  });
+
+  /* La vista previa de Claude no permite descargas; en Vercel sí. */
+  if (window.self !== window.top){
+    $('avisoPreview').textContent = 'Estás en la vista previa: el botón Descargar no funciona aquí, ' +
+      'pero sí en la versión publicada. Guardar en Drive y Copiar texto funcionan en las dos.';
+  }
+
+  $('btnBajar').addEventListener('click', function(){
+    var blob = new Blob([$('texto').value], { type:'text/plain;charset=utf-8' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = nombreDoc().replace(/[\\/:*?"<>|]/g, '-') + '.txt';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  });
+
+  $('btnDrive').addEventListener('click', function(){
+    var url = cfg('url'), token = cfg('token'), est = $('estadoDrive');
+    if (!url || !token){
+      est.className = 'estado mal';
+      est.textContent = 'Falta configurar la conexión. Ábrela en "Conexión con Google Drive", justo debajo.';
+      $('conf').open = true;
+      return;
+    }
+    est.className = 'estado';
+    est.textContent = 'Guardando en Drive…';
+    var btn = $('btnDrive');
+    btn.disabled = true;
+    fetch(url, {
+      method:'POST',
+      headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+      body: JSON.stringify({ token:token, nombre:nombreDoc(), texto:$('texto').value })
+    }).then(function(res){ return res.json(); }).then(function(d){
+      btn.disabled = false;
+      if (d && d.ok){
+        est.className = 'estado ok';
+        est.innerHTML = 'Guardado en Drive: <a href="' + esc(d.url) + '" target="_blank" rel="noopener">' +
+                        esc(d.nombre) + '</a>';
+      } else {
+        est.className = 'estado mal';
+        est.textContent = 'El conector ha respondido con un error: ' + ((d && d.error) || 'desconocido') +
+          '. Revisa que la clave coincida con la del script.';
+      }
+    }).catch(function(){
+      btn.disabled = false;
+      est.className = 'estado mal';
+      est.textContent = 'No he podido contactar con el conector. Comprueba que la implementación de Apps Script ' +
+        'esté publicada con acceso "cualquier persona" y que la URL termine en /exec.';
+    });
+  });
+
+  render();
+})();
+</script>

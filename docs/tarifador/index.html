@@ -1,0 +1,159 @@
+<title>Cómo funciona el Tarifador 5i</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ground:#0B100D;--surface:#121915;--raised:#19221C;--line:#26332A;--line-soft:#1E2922;
+  --ink:#E9F0EA;--ink-dim:#93A798;--ink-faint:#65786B;
+  --fairway:#5FC97F;--fairway-deep:#2F6B43;--brass:#D2A15C;--slate:#7C93A6;
+  --warn:#E3B45C;--bad:#EC7361;--r:4px;
+  --display:'Archivo','Helvetica Neue',Arial,sans-serif;
+  --body:'IBM Plex Sans','Helvetica Neue',Arial,sans-serif;
+  --mono:'IBM Plex Mono','SF Mono',Menlo,monospace;
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.65;
+  margin:0;padding-block:0 60px;padding-left:20px;padding-right:20px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:760px;margin:0 auto}
+
+header{padding-block:40px 24px;border-bottom:1px solid var(--line)}
+.brandline{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--fairway);margin:0 0 10px}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(30px,6vw,48px);letter-spacing:-.025em;line-height:1.02;margin:0;text-wrap:balance}
+.lede{color:var(--ink-dim);margin:14px 0 0;font-size:16.5px;max-width:60ch}
+
+h2{font-family:var(--display);font-weight:700;font-size:21px;letter-spacing:-.01em;margin:40px 0 10px;text-wrap:balance}
+h3{font-family:var(--body);font-weight:600;font-size:15px;color:var(--ink);margin:22px 0 4px}
+p{margin:0 0 14px;max-width:66ch}
+strong{color:var(--ink);font-weight:600}
+em{color:var(--fairway);font-style:normal;font-weight:500}
+.eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--fairway);margin:40px 0 0}
+.eyebrow + h2{margin-top:6px}
+
+/* secuencia: los pasos son un orden real, no decoración */
+ol.flow{list-style:none;counter-reset:p;padding:0;margin:22px 0 0;display:flex;flex-direction:column;gap:1px}
+ol.flow li{counter-increment:p;background:var(--surface);border-left:2px solid var(--fairway-deep);
+  padding:14px 18px 14px 46px;position:relative}
+ol.flow li::before{content:counter(p);position:absolute;left:16px;top:14px;
+  font-family:var(--mono);font-size:11px;color:var(--fairway);font-weight:600}
+ol.flow b{display:block;color:var(--ink);font-weight:600;font-size:14.5px;margin-bottom:2px}
+ol.flow span{color:var(--ink-dim);font-size:13.5px;line-height:1.55}
+
+.datos{border:1px solid var(--line);border-radius:var(--r);margin:20px 0 0;overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:420px}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line-soft);vertical-align:top}
+thead th{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);
+  font-weight:500;border-bottom-color:var(--line);background:var(--surface)}
+td:last-child{font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--ink-dim);white-space:nowrap}
+tbody tr:last-child td{border-bottom:0}
+.fuente{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:2px 6px;border-radius:2px}
+.f-dir{background:rgba(95,201,127,.14);color:var(--fairway)}
+.f-der{background:rgba(210,161,92,.14);color:var(--brass)}
+
+.caja{background:var(--surface);border:1px solid var(--line);border-left:2px solid var(--brass);
+  border-radius:var(--r);padding:16px 18px;margin:22px 0}
+.caja h3{margin-top:0}
+.caja p:last-child{margin-bottom:0}
+.ejemplo{background:var(--raised);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;margin:20px 0}
+.ejemplo .l{display:grid;grid-template-columns:1fr auto;gap:2px 12px;font-family:var(--mono);font-size:13px;
+  color:var(--ink-dim);font-variant-numeric:tabular-nums}
+.ejemplo .l b{color:var(--ink);font-weight:600}
+.ejemplo .cierre{margin:12px 0 0;color:var(--ink);font-size:14px}
+.limites{display:flex;flex-direction:column;gap:9px;margin:18px 0 0}
+.limites div{color:var(--ink-dim);font-size:14px;padding-left:16px;position:relative;line-height:1.55}
+.limites div::before{content:"—";position:absolute;left:0;color:var(--bad)}
+footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:var(--ink-faint);font-size:12px}
+</style>
+
+<div class="wrap">
+
+<header>
+  <p class="brandline">Five Iron Golf · Madrid · Documento interno</p>
+  <h1>Cómo funciona el tarifador de eventos</h1>
+  <p class="lede">Una herramienta para poner precio a un evento en dos minutos, con el margen a la vista y sin depender de que nadie se acuerde de las tarifas.</p>
+</header>
+
+<p class="eyebrow">El problema</p>
+<h2>Por qué hacía falta</h2>
+<p>Cada petición de evento llega distinta: veinte personas un jueves por la tarde, cien un viernes por la noche, un desayuno de empresa para cuarenta. Y cada una había que valorarla a mano, cruzando de memoria las tarifas de simulador, lo que cuesta la comida, cuánta gente hace falta en sala y qué margen deja.</p>
+<p>El riesgo no era equivocarse por arriba. Era decir un precio bonito que <strong>no cubriera el coste de bloquear media sala durante tres horas</strong>, y no darse cuenta hasta el cierre del mes.</p>
+
+<p class="eyebrow">La idea</p>
+<h2>No suma tarifas: comprueba precios</h2>
+<p>Un evento no se cobra sumando la tarifa pública de cada cosa. Se cobra con un <em>precio por persona</em> cerrado y redondeado, porque así se vende y así lo entiende el cliente. Lo que hace el tarifador es el trabajo inverso: calcula lo que cuesta de verdad servir esa experiencia y te dice a partir de qué precio por persona el evento aguanta.</p>
+<p>La decisión sigue siendo comercial y sigue siendo humana. La herramienta solo te quita la posibilidad de tomarla a ciegas.</p>
+
+<ol class="flow">
+  <li><b>Compones la experiencia</b><span>Asistentes, duración, día y hora, simuladores, comida, bebida, extras. Todo se elige de una lista.</span></li>
+  <li><b>Calcula el coste real por persona</b><span>Materia prima, consumibles y personal, siempre sobre el mínimo facturable, nunca sobre el número optimista.</span></li>
+  <li><b>Te da un suelo y un recomendado</b><span>El suelo es el precio bajo el que no se debe cerrar. El recomendado es el objetivo.</span></li>
+  <li><b>Decides el precio</b><span>Eliges el número comercial. La herramienta te dice si queda aprobado, si necesita visto bueno o si está bloqueado.</span></li>
+  <li><b>Sale la propuesta escrita</b><span>Con las inclusiones redactadas, el precio, el mínimo facturable y las condiciones. Lista para enviar.</span></li>
+</ol>
+
+<p class="eyebrow">Los números</p>
+<h2>De dónde sale cada cifra</h2>
+<p>Hay dos clases de dato y conviene no confundirlas. Las <span class="fuente f-dir">confirmadas</span> son tarifas y referencias que ha fijado dirección. Las <span class="fuente f-der">derivadas</span> son costes que se calculan aplicando los objetivos de food cost de la casa a los precios de carta, y que se sustituirán por el coste real cuando el libro de escandallos tenga cerradas las fichas de los pases de evento.</p>
+
+<div class="datos">
+<table>
+  <thead><tr><th>Dato</th><th>Origen</th><th>Valor</th></tr></thead>
+  <tbody>
+    <tr><td>Simulador de golf, off-peak</td><td><span class="fuente f-dir">Dirección</span></td><td>39 €/h</td></tr>
+    <tr><td>Simulador de golf, peak</td><td><span class="fuente f-dir">Dirección</span></td><td>49 €/h</td></tr>
+    <tr><td>Add-on de simulador por persona</td><td><span class="fuente f-dir">Dirección</span></td><td>+8 € 1 h · +12 € 2 h</td></tr>
+    <tr><td>Barra de cerveza y vino, 2 h</td><td><span class="fuente f-dir">Dirección</span></td><td>5–6 consumiciones/pax</td></tr>
+    <tr><td>Objetivo de food cost en eventos</td><td><span class="fuente f-dir">Dirección</span></td><td>25 % sobre venta neta</td></tr>
+    <tr><td>Coste de un pase de cóctel</td><td><span class="fuente f-der">Derivado</span></td><td>1,09 €/pax</td></tr>
+    <tr><td>Coste de una consumición</td><td><span class="fuente f-der">Derivado</span></td><td>1,35 € · 1,85 € premium</td></tr>
+    <tr><td>Coste de los desayunos</td><td><span class="fuente f-der">Derivado</span></td><td>4,75 € · 6,00 €</td></tr>
+    <tr><td>Coste hora de personal</td><td><span class="fuente f-der">Derivado</span></td><td>16 € a 25 € según rol</td></tr>
+    <tr><td>Consumo de barra por hora</td><td><span class="fuente f-der">Derivado</span></td><td>2,5 · 2,0 · 1,5 · 1,2</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>Peak y off-peak</h3>
+<p>El simulador no cuesta lo mismo a las once de la mañana que a las diez de la noche. Off-peak es de lunes a jueves de 8:00 a 20:00, y los viernes hasta las 16:00. El resto es peak, y el fin de semana lo es completo. Si un bloque de simuladores cruza la frontera, las horas se reparten y cada tramo va a su tarifa.</p>
+
+<h3>El mínimo facturable</h3>
+<p>Es la pieza que lo cambia todo. Cuando un cliente dice "vendremos entre diez y diecisiete", el precio por persona parece el mismo en los dos casos, pero el evento no lo es: los simuladores, el personal y el montaje cuestan igual con diez que con diecisiete, así que <strong>entre menos gente, cada uno tiene que aportar más</strong>. Todo el control económico se calcula sobre el mínimo facturable, y la propuesta lo dice por escrito.</p>
+
+<p class="eyebrow">El control</p>
+<h2>Los tres semáforos</h2>
+<p>Cada opción sale marcada. <em>Aprobada</em> significa que puedes cerrarla. <em>Requiere visto bueno</em> significa que hay algo que un responsable debe mirar: un descuento por encima del diez por ciento, más gente que aforo, o un bloqueo de simuladores desproporcionado. <em>Bloqueada</em> significa que el evento pierde dinero o queda por debajo de los umbrales de la casa, y la herramienta te dice el precio mínimo al que dejaría de estarlo.</p>
+<p>Los umbrales son un margen de contribución del sesenta por ciento y un resultado operativo del doce, medidos siempre en el escenario malo.</p>
+
+<div class="caja">
+  <h3>El aviso de bloqueo</h3>
+  <p>Es el más importante y el que no da ningún otro sistema. Reservar cuatro simuladores tres horas para un grupo pequeño no aparece como gasto en ninguna cuenta, pero es dinero que se deja de ganar. El tarifador calcula lo que valdrían esas horas a tarifa pública y te dice qué porcentaje de la factura del evento representan. Por encima del cuarenta por ciento, avisa y te da la salida: cuántas personas necesitarías a ese precio, o cuántos simuladores deberías soltar.</p>
+</div>
+
+<div class="ejemplo">
+  <div class="l">
+    <span>Team building, jueves a las 18:00, 3 h</span><span></span>
+    <span>Grupo de 10 a 17, mínimo facturable</span><b>12</b>
+    <span>Coste variable por persona</span><b>12,40 €</b>
+    <span>Personal del evento</span><b>359 €</b>
+    <span>Suelo calculado</span><b>50 €</b>
+    <span>Recomendado calculado</span><b>60 €</b>
+    <span>Valor de bloqueo de 4 simuladores</span><b>508 €</b>
+    <span>Peso sobre la factura mínima</span><b>64 %</b>
+  </div>
+  <p class="cierre">A 60 € con doce personas el evento deja 201 € y un 27,9 % de resultado operativo. Con diecisiete, deja 434 € y un 42,6 %. El aviso es claro: para que el bloqueo baje del cuarenta por ciento harían falta veinte personas, y el grupo máximo es diecisiete. El evento se puede cerrar, pero sabiendo que la capacidad cedida es la parte cara del trato.</p>
+</div>
+
+<p class="eyebrow">Los límites</p>
+<h2>Qué no hace</h2>
+<div class="limites">
+  <div>No factura ni emite documentos fiscales. Los tipos de IVA que aplica son los generales, y el tratamiento definitivo lo tiene que confirmar la asesoría una vez por escrito.</div>
+  <div>No sustituye al libro de escandallos. Ahí sigue viviendo la trazabilidad hasta el precio de compra de cada materia prima; el tarifador solo usa el coste resumido.</div>
+  <div>No incluye alquiler ni estructura. Lo que dice que "deja" un evento es lo que queda después de producto y personal, antes de la casa.</div>
+  <div>No decide por ti. Da un suelo y un recomendado; el precio que sale a la calle lo firma una persona.</div>
+</div>
+
+<footer>
+  Herramienta interna de dirección y F&amp;B de Five Iron Golf Madrid. Los costes derivados se revisarán contra el libro de escandallos cuando estén cerradas las fichas técnicas de los pases de evento. Contacto de eventos: events@5iberia.com
+</footer>
+
+</div>
