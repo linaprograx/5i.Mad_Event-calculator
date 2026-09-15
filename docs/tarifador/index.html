@@ -144,7 +144,44 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
 .modal .btns{display:flex;gap:9px;margin-top:12px}
 .modal .btns button{flex:1}
 
-@media print{body{background:#fff;color:#000}#form,.actions,.switch,details,#salida,footer,.plantilla{display:none}}
+@media print{
+  @page{size:A4 landscape;margin:8mm}
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  html,body{background:var(--ground)!important;color:var(--ink)!important}
+  body{padding:0 1mm!important;font-size:10px;line-height:1.42}
+  .wrap{max-width:100%!important;width:100%}
+  /* tres columnas siempre, pase lo que pase con el ancho de papel */
+  #ofertas{grid-template-columns:repeat(3,1fr)!important}
+  /* fuera todo lo que es control de pantalla */
+  #form,.actions,.switch,details,#salida,footer,.plantilla,.pblock select,.sug button{display:none!important}
+  header.top{padding-block:0 7px;border-color:var(--line)}
+  h1{font-size:18px}
+  .brandline{margin-bottom:3px}
+  .tagline{display:none}
+  .railhead{border-top:0;padding-top:6px;margin-top:0}
+  #ofertas{gap:8px;margin-top:7px}
+  .inc{margin-top:9px;padding-top:8px;gap:3px;line-height:1.4}
+  .factura{margin-top:9px;padding-top:8px}
+  .metrics{margin-top:8px;padding-top:7px;gap:3px 11px}
+  .offer{break-inside:avoid;page-break-inside:avoid;padding:9px 11px;
+    background:var(--surface)!important;border-color:var(--line)!important}
+  .offer.reco{background:var(--raised)!important;border-color:var(--fairway-deep)!important}
+  .offer-name{color:var(--tier)!important}
+  .pblock{margin-top:6px}
+  .pblock .big{font-size:23px;color:var(--ink)!important}
+  .pblock .u{color:var(--ink-dim)!important}
+  .sug{color:var(--ink-faint)!important;margin-top:5px}
+  .factura,.metrics{color:var(--ink-faint)!important}
+  .factura b,.metrics b{color:var(--ink)!important}
+  .factura .k{color:var(--ink-dim)!important}
+  .inc{color:var(--ink-dim)!important}
+  .inc span::before{color:var(--fairway)!important}
+  .badge{border:1px solid currentColor}
+  .bloqueo{break-inside:avoid;page-break-inside:avoid;background:var(--surface)!important;
+    border-color:var(--line)!important;border-left-color:var(--brass)!important;margin-top:9px;padding:10px 12px}
+  .bloqueo p{color:var(--ink-dim)!important}
+  .bloqueo b{color:var(--ink)!important}
+}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 
