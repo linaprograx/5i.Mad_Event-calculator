@@ -205,8 +205,10 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
 <details id="conf">
   <summary>Conexión con Google Drive</summary>
   <div class="params">
-    <p>Con esto activado, el botón <strong>Guardar en Drive</strong> crea un Google Doc con la propuesta
-    en una carpeta fija de tu Drive, sin descargar nada y sin salir de esta página.</p>
+    <p>Con esto activado, el botón <strong>Guardar en Drive</strong> deja dos archivos en tu Drive de una sola
+    vez: el <strong>Google Doc</strong> editable con el texto de la propuesta y el <strong>PDF maquetado</strong>
+    con las tres opciones y la carta del menú. Cada uno va a su carpeta, sin descargar nada y sin salir de esta
+    página.</p>
     <p id="confEstado" style="color:var(--ink)"></p>
     <div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:12px">
       <button type="button" class="big ghost" id="btnUrl">Pegar la URL del conector</button>
@@ -1632,13 +1634,17 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
     fetch(url, {
       method:'POST',
       headers:{ 'Content-Type':'text/plain;charset=utf-8' },
-      body: JSON.stringify({ token:token, nombre:nombreDoc(), texto:$('texto').value })
+      body: JSON.stringify({ token:token, nombre:nombreDoc(), texto:$('texto').value, html:docPropuesta() })
     }).then(function(res){ return res.json(); }).then(function(d){
       btn.disabled = false;
       if (d && d.ok){
         est.className = 'estado ok';
-        est.innerHTML = 'Guardado en Drive: <a href="' + esc(d.url) + '" target="_blank" rel="noopener">' +
-                        esc(d.nombre) + '</a>';
+        var partes = ['Guardado en Drive: <a href="' + esc(d.url) + '" target="_blank" rel="noopener">' +
+                      esc(d.nombre) + '</a>'];
+        if (d.pdf) partes.push('<a href="' + esc(d.pdf) + '" target="_blank" rel="noopener">ver el PDF</a>');
+        else if (d.pdfError) partes.push('<span style="color:var(--warn)">el documento sí, el PDF no: ' +
+                                         esc(d.pdfError) + '</span>');
+        est.innerHTML = partes.join(' · ');
       } else {
         est.className = 'estado mal';
         est.textContent = 'El conector ha respondido con un error: ' + ((d && d.error) || 'desconocido') +
