@@ -1,0 +1,1061 @@
+{
+ "version": "2026-09-15",
+ "fuente": "Manual_Maestro_Integral_5Iron_Madrid_2026.xlsx",
+ "nota": "Costes de materia prima calculados sumando ingredientes. Precios sin IVA.",
+ "bocados": [
+  {
+   "id": "BOC-01",
+   "nombre": "Cuchara de tartar de aguacate y mango",
+   "tipo": "frio",
+   "coste": 0.384,
+   "menu": "after"
+  },
+  {
+   "id": "BOC-02",
+   "nombre": "Chupito de salmorejo con jamón",
+   "tipo": "frio",
+   "coste": 0.359,
+   "menu": "after"
+  },
+  {
+   "id": "BOC-03",
+   "nombre": "Wonton de salmón marinado",
+   "tipo": "frio",
+   "coste": 0.647,
+   "menu": "after"
+  },
+  {
+   "id": "BOC-04",
+   "nombre": "Croquetas de jamón ibérico",
+   "tipo": "caliente",
+   "coste": 0.44,
+   "menu": "after"
+  },
+  {
+   "id": "BOC-05",
+   "nombre": "Mini focaccia Margarita",
+   "tipo": "caliente",
+   "coste": 0.487,
+   "menu": "after"
+  },
+  {
+   "id": "BOC-06",
+   "nombre": "Mini taco de costilla",
+   "tipo": "caliente",
+   "coste": 0.722,
+   "menu": "after"
+  },
+  {
+   "id": "BOC-07",
+   "nombre": "Brocheta de pollo al chimichurri",
+   "tipo": "caliente",
+   "coste": 0.573,
+   "menu": "after"
+  },
+  {
+   "id": "BOC-08",
+   "nombre": "Mini brownie con nueces",
+   "tipo": "dulce",
+   "coste": 0.373,
+   "menu": "after"
+  },
+  {
+   "id": "BOC-09",
+   "nombre": "Chupito de tiramisú",
+   "tipo": "dulce",
+   "coste": 0.387,
+   "menu": "after"
+  },
+  {
+   "id": "BOC-10",
+   "nombre": "Cuchara de atún al ponzu",
+   "tipo": "frio",
+   "coste": 0.748,
+   "menu": "trend"
+  },
+  {
+   "id": "BOC-11",
+   "nombre": "Chupito de burrata y pesto",
+   "tipo": "frio",
+   "coste": 0.737,
+   "menu": "trend"
+  },
+  {
+   "id": "BOC-12",
+   "nombre": "Roll de pastrami y pecorino",
+   "tipo": "frio",
+   "coste": 0.603,
+   "menu": "trend"
+  },
+  {
+   "id": "BOC-13",
+   "nombre": "Chupito de remolacha y queso",
+   "tipo": "frio",
+   "coste": 0.345,
+   "menu": "trend"
+  },
+  {
+   "id": "BOC-14",
+   "nombre": "Croquetas de jamón ibérico",
+   "tipo": "caliente",
+   "coste": 0.44,
+   "menu": "trend"
+  },
+  {
+   "id": "BOC-15",
+   "nombre": "Mini brioche de costilla barbacoa",
+   "tipo": "caliente",
+   "coste": 0.791,
+   "menu": "trend"
+  },
+  {
+   "id": "BOC-16",
+   "nombre": "Focaccia Diavola",
+   "tipo": "caliente",
+   "coste": 0.635,
+   "menu": "trend"
+  },
+  {
+   "id": "BOC-17",
+   "nombre": "Mini taco de pollo crujiente",
+   "tipo": "caliente",
+   "coste": 0.55,
+   "menu": "trend"
+  },
+  {
+   "id": "BOC-18",
+   "nombre": "Bocado de patata trufada",
+   "tipo": "caliente",
+   "coste": 0.366,
+   "menu": "trend"
+  },
+  {
+   "id": "BOC-19",
+   "nombre": "Bocado de tarta de queso",
+   "tipo": "dulce",
+   "coste": 0.535,
+   "menu": "trend"
+  },
+  {
+   "id": "BOC-20",
+   "nombre": "Mini brownie con nueces",
+   "tipo": "dulce",
+   "coste": 0.373,
+   "menu": "trend"
+  },
+  {
+   "id": "BOC-21",
+   "nombre": "Brocheta de fruta con menta",
+   "tipo": "dulce",
+   "coste": 0.282,
+   "menu": "trend"
+  },
+  {
+   "id": "BOC-22",
+   "nombre": "Cuchara de Steak Tartar",
+   "tipo": "frio",
+   "coste": 0.98,
+   "menu": "celebracion"
+  },
+  {
+   "id": "BOC-23",
+   "nombre": "Tiradito de atún y aguacate",
+   "tipo": "frio",
+   "coste": 0.748,
+   "menu": "celebracion"
+  },
+  {
+   "id": "BOC-24",
+   "nombre": "Cono de ensaladilla y bonito",
+   "tipo": "frio",
+   "coste": 0.46,
+   "menu": "celebracion"
+  },
+  {
+   "id": "BOC-25",
+   "nombre": "Cuchara de burrata y piñones",
+   "tipo": "frio",
+   "coste": 0.737,
+   "menu": "celebracion"
+  },
+  {
+   "id": "BOC-26",
+   "nombre": "Brocheta de pastrami y encurtidos",
+   "tipo": "frio",
+   "coste": 0.603,
+   "menu": "celebracion"
+  },
+  {
+   "id": "BOC-27",
+   "nombre": "Croqueta ibérica con velo",
+   "tipo": "caliente",
+   "coste": 0.44,
+   "menu": "celebracion"
+  },
+  {
+   "id": "BOC-28",
+   "nombre": "Mini burger 5Iron",
+   "tipo": "caliente",
+   "coste": 1.014,
+   "menu": "celebracion"
+  },
+  {
+   "id": "BOC-29",
+   "nombre": "Mini taco de presa ibérica",
+   "tipo": "caliente",
+   "coste": 0.841,
+   "menu": "celebracion"
+  },
+  {
+   "id": "BOC-30",
+   "nombre": "Focaccia de guanciale y pecorino",
+   "tipo": "caliente",
+   "coste": 0.698,
+   "menu": "celebracion"
+  },
+  {
+   "id": "BOC-31",
+   "nombre": "Brocheta de solomillo al Pedro Ximénez",
+   "tipo": "caliente",
+   "coste": 0.929,
+   "menu": "celebracion"
+  },
+  {
+   "id": "BOC-32",
+   "nombre": "Mini brioche de costilla barbacoa",
+   "tipo": "caliente",
+   "coste": 0.791,
+   "menu": "celebracion"
+  },
+  {
+   "id": "BOC-33",
+   "nombre": "Chupito de mousse de chocolate y sal",
+   "tipo": "dulce",
+   "coste": 0.427,
+   "menu": "celebracion"
+  },
+  {
+   "id": "BOC-34",
+   "nombre": "Bocado de tarta de queso",
+   "tipo": "dulce",
+   "coste": 0.535,
+   "menu": "celebracion"
+  },
+  {
+   "id": "BOC-35",
+   "nombre": "Chupito de tiramisú",
+   "tipo": "dulce",
+   "coste": 0.387,
+   "menu": "celebracion"
+  },
+  {
+   "id": "BOC-36",
+   "nombre": "Brocheta de fruta con menta",
+   "tipo": "dulce",
+   "coste": 0.282,
+   "menu": "celebracion"
+  },
+  {
+   "id": "BOC-37",
+   "nombre": "Copa de Cava Brut Reserva",
+   "tipo": "aperitivo",
+   "coste": 0.9,
+   "menu": "gala"
+  },
+  {
+   "id": "BOC-38",
+   "nombre": "Cuchara de Steak Tartar trufado",
+   "tipo": "frio",
+   "coste": 0.98,
+   "menu": "gala"
+  },
+  {
+   "id": "BOC-39",
+   "nombre": "Cuchara de salmón y mango",
+   "tipo": "frio",
+   "coste": 0.647,
+   "menu": "gala"
+  },
+  {
+   "id": "BOC-40",
+   "nombre": "Mini taco de atún y aguacate",
+   "tipo": "frio",
+   "coste": 0.748,
+   "menu": "gala"
+  },
+  {
+   "id": "BOC-41",
+   "nombre": "Montadito de jamón ibérico",
+   "tipo": "frio",
+   "coste": 0.836,
+   "menu": "gala"
+  },
+  {
+   "id": "BOC-42",
+   "nombre": "Chupito de burrata y pesto",
+   "tipo": "frio",
+   "coste": 0.737,
+   "menu": "gala"
+  },
+  {
+   "id": "BOC-43",
+   "nombre": "Chupito de salmorejo con jamón",
+   "tipo": "frio",
+   "coste": 0.359,
+   "menu": "gala"
+  },
+  {
+   "id": "BOC-44",
+   "nombre": "Dúo de croquetas (jamón y queso)",
+   "tipo": "caliente",
+   "coste": 0.858,
+   "menu": "gala"
+  },
+  {
+   "id": "BOC-45",
+   "nombre": "Mini burger 5Iron",
+   "tipo": "caliente",
+   "coste": 1.014,
+   "menu": "gala"
+  },
+  {
+   "id": "BOC-46",
+   "nombre": "Brocheta de solomillo al Pedro Ximénez",
+   "tipo": "caliente",
+   "coste": 0.929,
+   "menu": "gala"
+  },
+  {
+   "id": "BOC-47",
+   "nombre": "Brocheta de presa al chimichurri",
+   "tipo": "caliente",
+   "coste": 0.829,
+   "menu": "gala"
+  },
+  {
+   "id": "BOC-48",
+   "nombre": "Mini taco de costilla",
+   "tipo": "caliente",
+   "coste": 0.722,
+   "menu": "gala"
+  },
+  {
+   "id": "BOC-49",
+   "nombre": "Mini pepito de ternera",
+   "tipo": "caliente",
+   "coste": 0.998,
+   "menu": "gala"
+  },
+  {
+   "id": "BOC-50",
+   "nombre": "Focaccia de alcachofa y guanciale",
+   "tipo": "caliente",
+   "coste": 0.698,
+   "menu": "gala"
+  },
+  {
+   "id": "BOC-51",
+   "nombre": "Chupito de mousse de chocolate y sal",
+   "tipo": "dulce",
+   "coste": 0.427,
+   "menu": "gala"
+  },
+  {
+   "id": "BOC-52",
+   "nombre": "Bocado de tarta de queso",
+   "tipo": "dulce",
+   "coste": 0.535,
+   "menu": "gala"
+  },
+  {
+   "id": "BOC-53",
+   "nombre": "Mini brownie con nueces",
+   "tipo": "dulce",
+   "coste": 0.373,
+   "menu": "gala"
+  },
+  {
+   "id": "BOC-54",
+   "nombre": "Chupito de tiramisú",
+   "tipo": "dulce",
+   "coste": 0.387,
+   "menu": "gala"
+  }
+ ],
+ "bebidas": [
+  {
+   "id": "BEB-01",
+   "categoria": "Cervezas",
+   "nombre": "Cerveza de barril (Caña)",
+   "formato": "Barril 50L (33 cl)",
+   "coste": 0.35,
+   "pvp": 3
+  },
+  {
+   "id": "BEB-02",
+   "categoria": "Cervezas",
+   "nombre": "Cerveza de barril (Doble / Pinta)",
+   "formato": "Barril 50L (50 cl)",
+   "coste": 0.52,
+   "pvp": 4.5
+  },
+  {
+   "id": "BEB-03",
+   "categoria": "Cervezas",
+   "nombre": "Tercio cerveza especial / IPA",
+   "formato": "Botellín 33 cl",
+   "coste": 0.78,
+   "pvp": 4
+  },
+  {
+   "id": "BEB-04",
+   "categoria": "Cervezas",
+   "nombre": "Cerveza 0,0% / Sin Gluten",
+   "formato": "Botellín 33 cl",
+   "coste": 0.65,
+   "pvp": 3.5
+  },
+  {
+   "id": "BEB-05",
+   "categoria": "Vinos Blancos",
+   "nombre": "Vino Blanco de la Casa (Sin D.O.)",
+   "formato": "Botella 75 cl (Copa 15 cl)",
+   "coste": 0.36,
+   "pvp": 2.8
+  },
+  {
+   "id": "BEB-06",
+   "categoria": "Vinos Blancos",
+   "nombre": "Vino Blanco D.O. Rueda Verdejo",
+   "formato": "Botella 75 cl (Copa 15 cl)",
+   "coste": 0.7,
+   "pvp": 3.8
+  },
+  {
+   "id": "BEB-07",
+   "categoria": "Vinos Blancos",
+   "nombre": "Vino Blanco D.O. Rías Baixas Albariño",
+   "formato": "Botella 75 cl (Copa 15 cl)",
+   "coste": 1.1,
+   "pvp": 4.8
+  },
+  {
+   "id": "BEB-08",
+   "categoria": "Vinos Tintos",
+   "nombre": "Vino Tinto de la Casa (Sin D.O.)",
+   "formato": "Botella 75 cl (Copa 15 cl)",
+   "coste": 0.38,
+   "pvp": 2.8
+  },
+  {
+   "id": "BEB-09",
+   "categoria": "Vinos Tintos",
+   "nombre": "Vino Tinto D.O. Ca. Rioja Crianza",
+   "formato": "Botella 75 cl (Copa 15 cl)",
+   "coste": 0.85,
+   "pvp": 4.2
+  },
+  {
+   "id": "BEB-10",
+   "categoria": "Vinos Tintos",
+   "nombre": "Vino Tinto D.O. Ribera del Duero Roble",
+   "formato": "Botella 75 cl (Copa 15 cl)",
+   "coste": 0.95,
+   "pvp": 4.5
+  },
+  {
+   "id": "BEB-11",
+   "categoria": "Vinos Tintos",
+   "nombre": "Vino Tinto D.O. Ca. Rioja Reserva",
+   "formato": "Botella 75 cl (Copa 15 cl)",
+   "coste": 1.6,
+   "pvp": 6
+  },
+  {
+   "id": "BEB-12",
+   "categoria": "Espumosos",
+   "nombre": "Cava Brut Reserva D.O. Penedès",
+   "formato": "Botella 75 cl (Copa 12 cl)",
+   "coste": 0.8,
+   "pvp": 4.5
+  },
+  {
+   "id": "BEB-13",
+   "categoria": "Espumosos",
+   "nombre": "Champagne Francés AOC (Brut)",
+   "formato": "Botella 75 cl (Copa 12 cl)",
+   "coste": 4.5,
+   "pvp": 14
+  },
+  {
+   "id": "BEB-14",
+   "categoria": "Refrescos y Aguas",
+   "nombre": "Agua mineral natural sin gas",
+   "formato": "Botella vidrio 50 cl",
+   "coste": 0.22,
+   "pvp": 2.5
+  },
+  {
+   "id": "BEB-15",
+   "categoria": "Refrescos y Aguas",
+   "nombre": "Agua mineral con gas",
+   "formato": "Botella vidrio 33 cl",
+   "coste": 0.3,
+   "pvp": 2.8
+  },
+  {
+   "id": "BEB-16",
+   "categoria": "Refrescos y Aguas",
+   "nombre": "Refresco Coca-Cola / Zero / Light",
+   "formato": "Botella vidrio 23,7 cl / Lata",
+   "coste": 0.42,
+   "pvp": 3
+  },
+  {
+   "id": "BEB-17",
+   "categoria": "Refrescos y Aguas",
+   "nombre": "Refresco Fanta / Sprite / Aquarius",
+   "formato": "Botella vidrio / Lata 33 cl",
+   "coste": 0.4,
+   "pvp": 3
+  },
+  {
+   "id": "BEB-18",
+   "categoria": "Refrescos y Aguas",
+   "nombre": "Tónica Prémium (Royal Bliss / Fever Tree)",
+   "formato": "Botella vidrio 20 cl",
+   "coste": 0.65,
+   "pvp": 3.5
+  },
+  {
+   "id": "BEB-19",
+   "categoria": "Refrescos y Aguas",
+   "nombre": "Zumo de naranja natural recién exprimido",
+   "formato": "Vaso 25 cl (3 naranjas)",
+   "coste": 0.48,
+   "pvp": 3.2
+  },
+  {
+   "id": "BEB-20",
+   "categoria": "Cafetería",
+   "nombre": "Café Espresso solo / cortado",
+   "formato": "Dosis 8 g café 100% arábica",
+   "coste": 0.12,
+   "pvp": 1.8
+  },
+  {
+   "id": "BEB-21",
+   "categoria": "Cafetería",
+   "nombre": "Café con leche / Capuchino",
+   "formato": "Dosis café + 120 ml leche fresca",
+   "coste": 0.22,
+   "pvp": 2.2
+  },
+  {
+   "id": "BEB-22",
+   "categoria": "Cafetería",
+   "nombre": "Infusiones pirámide prémium",
+   "formato": "Pirámide monodosis",
+   "coste": 0.18,
+   "pvp": 2.2
+  },
+  {
+   "id": "BEB-23",
+   "categoria": "Cafetería",
+   "nombre": "Café especial Bombón / Carajillo",
+   "formato": "Dosis café + condensada / licor",
+   "coste": 0.38,
+   "pvp": 3
+  },
+  {
+   "id": "BEB-24",
+   "categoria": "Copas y Destilados",
+   "nombre": "Chupito licor tradicional (Hierbas/Orujo)",
+   "formato": "Chupito 4 cl",
+   "coste": 0.3,
+   "pvp": 3
+  },
+  {
+   "id": "BEB-25",
+   "categoria": "Copas y Destilados",
+   "nombre": "Copa / Combinado estándar (Gin, Ron, Whisky)",
+   "formato": "Copa 5 cl + Refresco mixer",
+   "coste": 1.45,
+   "pvp": 8.5
+  },
+  {
+   "id": "BEB-26",
+   "categoria": "Copas y Destilados",
+   "nombre": "Copa / Combinado Prémium (Ginebra/Whisky)",
+   "formato": "Copa 5 cl + Mixer tónica",
+   "coste": 2.4,
+   "pvp": 12
+  },
+  {
+   "id": "BEB-27",
+   "categoria": "Packs Barra Abierta",
+   "nombre": "Barra Abierta Cerveza/Vino/Refrescos (1h)",
+   "formato": "Por persona / 1 hora",
+   "coste": 1.4,
+   "pvp": 7
+  },
+  {
+   "id": "BEB-28",
+   "categoria": "Packs Barra Abierta",
+   "nombre": "Barra Abierta Prémium con Vinos D.O. (2h)",
+   "formato": "Por persona / 2 horas",
+   "coste": 2.7,
+   "pvp": 14
+  },
+  {
+   "id": "BEB-29",
+   "categoria": "Packs Barra Abierta",
+   "nombre": "Barra Libre Copas / Combinados (2h)",
+   "formato": "Por persona / 2 horas",
+   "coste": 4.2,
+   "pvp": 18
+  }
+ ],
+ "materias_primas": [
+  {
+   "id": "MP-01",
+   "familia": "Carnes Nobles",
+   "nombre": "Solomillo de ternera rubia gallega",
+   "formato": "Pieza limpia kg",
+   "precio": 34,
+   "unitario": 0.034,
+   "merma": "5%",
+   "proveedor": "Carnicería Central Mercamadrid"
+  },
+  {
+   "id": "MP-02",
+   "familia": "Carnes Nobles",
+   "nombre": "Presa ibérica de bellota fresca",
+   "formato": "Envase vacío kg",
+   "precio": 18.5,
+   "unitario": 0.0185,
+   "merma": "4%",
+   "proveedor": "Ibéricos Salamanca / Guijuelo"
+  },
+  {
+   "id": "MP-03",
+   "familia": "Carnes Nobles",
+   "nombre": "Carne picada aguja/lomo vaca madurada",
+   "formato": "Pack atmósfera kg",
+   "precio": 12.5,
+   "unitario": 0.0125,
+   "merma": "2%",
+   "proveedor": "Madurados Sierra de Guadarrama"
+  },
+  {
+   "id": "MP-04",
+   "familia": "Carnes Nobles",
+   "nombre": "Costilla de cerdo Duroc",
+   "formato": "Costillar kg",
+   "precio": 7.5,
+   "unitario": 0.0075,
+   "merma": "12% (hueso)",
+   "proveedor": "Cárnicas Toledo"
+  },
+  {
+   "id": "MP-05",
+   "familia": "Aves",
+   "nombre": "Pechuga de pollo campero fresca",
+   "formato": "Bandeja limpia kg",
+   "precio": 9.5,
+   "unitario": 0.0095,
+   "merma": "3%",
+   "proveedor": "Avinatur Madrid"
+  },
+  {
+   "id": "MP-06",
+   "familia": "Embutidos",
+   "nombre": "Jamón ibérico de cebo de campo",
+   "formato": "Pieza 8,5 kg",
+   "precio": 42,
+   "unitario": 0.058,
+   "merma": "28% (grasa)",
+   "proveedor": "Distribución Ibérica Madrid"
+  },
+  {
+   "id": "MP-07",
+   "familia": "Embutidos",
+   "nombre": "Pastrami artesanal de ternera curado",
+   "formato": "Pieza cocida kg",
+   "precio": 17.5,
+   "unitario": 0.0175,
+   "merma": "2%",
+   "proveedor": "Ahumados y Curados Artesanos"
+  },
+  {
+   "id": "MP-08",
+   "familia": "Embutidos",
+   "nombre": "Guanciale curado al pepe nero",
+   "formato": "Pieza entera kg",
+   "precio": 18.5,
+   "unitario": 0.0185,
+   "merma": "4%",
+   "proveedor": "Importaciones Italianas Horeca"
+  },
+  {
+   "id": "MP-09",
+   "familia": "Embutidos",
+   "nombre": "Panceta de cerdo adobada (Soria)",
+   "formato": "Tira precocinada kg",
+   "precio": 8.5,
+   "unitario": 0.0085,
+   "merma": "5%",
+   "proveedor": "Embutidos Soria"
+  },
+  {
+   "id": "MP-10",
+   "familia": "Embutidos",
+   "nombre": "Spianata Calabrese (salami picante)",
+   "formato": "Pieza 2 kg",
+   "precio": 16,
+   "unitario": 0.016,
+   "merma": "2%",
+   "proveedor": "Importaciones Italianas Horeca"
+  },
+  {
+   "id": "MP-11",
+   "familia": "Embutidos",
+   "nombre": "Prosciutto di Parma DOP 18 meses",
+   "formato": "Pieza deshuesada kg",
+   "precio": 29,
+   "unitario": 0.029,
+   "merma": "3%",
+   "proveedor": "Gourmet Italia Madrid"
+  },
+  {
+   "id": "MP-12",
+   "familia": "Embutidos",
+   "nombre": "Bacon ahumado loncheado",
+   "formato": "Pack 1 kg",
+   "precio": 12.5,
+   "unitario": 0.0125,
+   "merma": "3%",
+   "proveedor": "Cárnicas Madrid"
+  },
+  {
+   "id": "MP-13",
+   "familia": "Pescados",
+   "nombre": "Lomo de salmón noruego Superior",
+   "formato": "Lomo limpio kg",
+   "precio": 21,
+   "unitario": 0.021,
+   "merma": "4%",
+   "proveedor": "Pescaderías Coruñesas"
+  },
+  {
+   "id": "MP-14",
+   "familia": "Pescados",
+   "nombre": "Lomo de atún rojo (Yellowfin/Balfegó)",
+   "formato": "Lomo sin piel kg",
+   "precio": 26,
+   "unitario": 0.026,
+   "merma": "5%",
+   "proveedor": "Balfegó / Pescados Madrid"
+  },
+  {
+   "id": "MP-15",
+   "familia": "Pescados",
+   "nombre": "Bonito del norte en aceite de oliva",
+   "formato": "Lata 1 kg peso neto",
+   "precio": 16.5,
+   "unitario": 0.0165,
+   "merma": "0%",
+   "proveedor": "Conservera Cantábrico"
+  },
+  {
+   "id": "MP-16",
+   "familia": "Lácteos",
+   "nombre": "Burrata fresca pugliese artesana 125g",
+   "formato": "Caja 8 uds (125g/ud)",
+   "precio": 2.2,
+   "unitario": 2.2,
+   "merma": "0%",
+   "proveedor": "Caseificio di Puglia Horeca"
+  },
+  {
+   "id": "MP-17",
+   "familia": "Lácteos",
+   "nombre": "Mozzarella fior di latte en dados",
+   "formato": "Bolsa 2,5 kg",
+   "precio": 8.5,
+   "unitario": 0.0085,
+   "merma": "1%",
+   "proveedor": "Lácteos Italianos"
+  },
+  {
+   "id": "MP-18",
+   "familia": "Lácteos",
+   "nombre": "Parmigiano Reggiano DOP 24 meses",
+   "formato": "Cuña 1 kg",
+   "precio": 24,
+   "unitario": 0.024,
+   "merma": "2%",
+   "proveedor": "Zanetti / Parma Gourmet"
+  },
+  {
+   "id": "MP-19",
+   "familia": "Lácteos",
+   "nombre": "Pecorino Romano DOP curado",
+   "formato": "Cuña 1 kg",
+   "precio": 22,
+   "unitario": 0.022,
+   "merma": "2%",
+   "proveedor": "Caseificio Romano"
+  },
+  {
+   "id": "MP-20",
+   "familia": "Lácteos",
+   "nombre": "Queso Idiazábal ahumado DOP",
+   "formato": "Pieza 1,2 kg",
+   "precio": 19.5,
+   "unitario": 0.0195,
+   "merma": "3%",
+   "proveedor": "Queserías del Norte"
+  },
+  {
+   "id": "MP-21",
+   "familia": "Lácteos",
+   "nombre": "Queso cheddar madurado en lonchas",
+   "formato": "Pack 1 kg",
+   "precio": 12,
+   "unitario": 0.012,
+   "merma": "0%",
+   "proveedor": "Lácteos Kerrygold"
+  },
+  {
+   "id": "MP-22",
+   "familia": "Lácteos",
+   "nombre": "Queso mascarpone italiano 100%",
+   "formato": "Tina 2 kg",
+   "precio": 8.5,
+   "unitario": 0.0085,
+   "merma": "1%",
+   "proveedor": "Galbani Profesional"
+  },
+  {
+   "id": "MP-23",
+   "familia": "Huevos",
+   "nombre": "Huevos camperos Grado M/L",
+   "formato": "Caja 360 uds",
+   "precio": 0.28,
+   "unitario": 0.28,
+   "merma": "0%",
+   "proveedor": "Granjas Madrileñas D.O."
+  },
+  {
+   "id": "MP-24",
+   "familia": "Verduras",
+   "nombre": "Patata agria especial freír/asar",
+   "formato": "Saco 25 kg",
+   "precio": 1.4,
+   "unitario": 0.0014,
+   "merma": "8%",
+   "proveedor": "Frutas y Verduras Mercamadrid"
+  },
+  {
+   "id": "MP-25",
+   "familia": "Verduras",
+   "nombre": "Aguacate Hass fresco listo consumo",
+   "formato": "Caja 4 kg",
+   "precio": 12,
+   "unitario": 0.012,
+   "merma": "18%",
+   "proveedor": "Aguacates Axarquía / Málaga"
+  },
+  {
+   "id": "MP-26",
+   "familia": "Verduras",
+   "nombre": "Tomate pera de rama maduro",
+   "formato": "Caja 6 kg",
+   "precio": 2,
+   "unitario": 0.002,
+   "merma": "5%",
+   "proveedor": "Huerta de Aranjuez"
+  },
+  {
+   "id": "MP-27",
+   "familia": "Verduras",
+   "nombre": "Tomate cherry pera rama",
+   "formato": "Caja 3 kg",
+   "precio": 5.5,
+   "unitario": 0.0055,
+   "merma": "2%",
+   "proveedor": "Huerta del Sureste"
+  },
+  {
+   "id": "MP-28",
+   "familia": "Verduras",
+   "nombre": "Remolacha dulce asada al vapor",
+   "formato": "Pack vacío 1 kg",
+   "precio": 3,
+   "unitario": 0.003,
+   "merma": "0%",
+   "proveedor": "Hortalizas Navarra"
+  },
+  {
+   "id": "MP-29",
+   "familia": "Verduras",
+   "nombre": "Corazones alcachofa confitados",
+   "formato": "Lata 2,5 kg",
+   "precio": 13,
+   "unitario": 0.013,
+   "merma": "0%",
+   "proveedor": "Conservas Tudela"
+  },
+  {
+   "id": "MP-30",
+   "familia": "Verduras",
+   "nombre": "Cogollos de lechuga romana",
+   "formato": "Caja 24 uds",
+   "precio": 0.35,
+   "unitario": 0.0035,
+   "merma": "6%",
+   "proveedor": "Huerta Murciana"
+  },
+  {
+   "id": "MP-31",
+   "familia": "Verduras",
+   "nombre": "Piparras de Ibarra encurtidas",
+   "formato": "Tarro 1 kg",
+   "precio": 11,
+   "unitario": 0.011,
+   "merma": "0%",
+   "proveedor": "Encurtidos Zubia"
+  },
+  {
+   "id": "MP-32",
+   "familia": "Frutas",
+   "nombre": "Mango maduro variedad Kent",
+   "formato": "Caja 4 kg",
+   "precio": 6.5,
+   "unitario": 0.0065,
+   "merma": "20%",
+   "proveedor": "Frutas Tropicales Import"
+  },
+  {
+   "id": "MP-33",
+   "familia": "Frutas",
+   "nombre": "Surtido fruta fresca temporada",
+   "formato": "Mix diario kg",
+   "precio": 3.5,
+   "unitario": 0.0035,
+   "merma": "12%",
+   "proveedor": "Frutas Selectas Madrid"
+  },
+  {
+   "id": "MP-34",
+   "familia": "Panadería",
+   "nombre": "Base focaccia romana alta hidratación 250g",
+   "formato": "Caja 30 uds",
+   "precio": 0.95,
+   "unitario": 0.95,
+   "merma": "0%",
+   "proveedor": "Panadería Romana Artesana"
+  },
+  {
+   "id": "MP-35",
+   "familia": "Panadería",
+   "nombre": "Pan brioche hamburguesa glaseado sésamo",
+   "formato": "Caja 48 uds",
+   "precio": 0.55,
+   "unitario": 0.55,
+   "merma": "0%",
+   "proveedor": "Brioche Gourmet Madrid"
+  },
+  {
+   "id": "MP-36",
+   "familia": "Panadería",
+   "nombre": "Panecillo mini brioche artesano 50g",
+   "formato": "Caja 60 uds",
+   "precio": 0.48,
+   "unitario": 0.48,
+   "merma": "0%",
+   "proveedor": "Brioche Gourmet Madrid"
+  },
+  {
+   "id": "MP-37",
+   "familia": "Panadería",
+   "nombre": "Pan de cristal rústico 18cm precocido",
+   "formato": "Caja 40 uds",
+   "precio": 0.65,
+   "unitario": 0.65,
+   "merma": "0%",
+   "proveedor": "Guzmán Gastronomía"
+  },
+  {
+   "id": "MP-38",
+   "familia": "Panadería",
+   "nombre": "Pan de centeno artesano rebanada",
+   "formato": "Hogaza 1,5 kg",
+   "precio": 4,
+   "unitario": 0.4,
+   "merma": "2%",
+   "proveedor": "Obrador Masa Madre Madrid"
+  },
+  {
+   "id": "MP-39",
+   "familia": "Panadería",
+   "nombre": "Tortillas maíz nixtamalizado 12cm",
+   "formato": "Paquete 50 uds",
+   "precio": 0.22,
+   "unitario": 0.22,
+   "merma": "0%",
+   "proveedor": "Tortillería Mexicana Madrid"
+  },
+  {
+   "id": "MP-40",
+   "familia": "Secos",
+   "nombre": "Garbanzo lechoso ecológico cocido",
+   "formato": "Tarro 2,5 kg",
+   "precio": 2.5,
+   "unitario": 0.0025,
+   "merma": "0%",
+   "proveedor": "Legumbres de la Armuña"
+  },
+  {
+   "id": "MP-41",
+   "familia": "Secos",
+   "nombre": "Piñones nacionales ibéricos",
+   "formato": "Bolsa 1 kg",
+   "precio": 45,
+   "unitario": 0.045,
+   "merma": "0%",
+   "proveedor": "Frutos Secos del Duero"
+  },
+  {
+   "id": "MP-42",
+   "familia": "Aceites",
+   "nombre": "AOVE Picual cosecha temprana",
+   "formato": "Garrafa 5L",
+   "precio": 8.5,
+   "unitario": 0.0085,
+   "merma": "0%",
+   "proveedor": "Almazara Jaén / Córdoba"
+  },
+  {
+   "id": "MP-43",
+   "familia": "Aceites",
+   "nombre": "Aceite aromatizado con trufa blanca",
+   "formato": "Botella 500 ml",
+   "precio": 22.5,
+   "unitario": 0.045,
+   "merma": "0%",
+   "proveedor": "Tartufo Bianco Import"
+  },
+  {
+   "id": "MP-44",
+   "familia": "Chocolates",
+   "nombre": "Chocolate negro 60%-70% belga",
+   "formato": "Saco 5 kg",
+   "precio": 6.5,
+   "unitario": 0.0065,
+   "merma": "0%",
+   "proveedor": "Callebaut Profesional"
+  }
+ ]
+}

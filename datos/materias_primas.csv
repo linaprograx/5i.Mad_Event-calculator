@@ -1,0 +1,45 @@
+ID,Familia,Materia prima,Formato,Precio (€),Coste unitario (€),Merma,Proveedor
+MP-01,Carnes Nobles,Solomillo de ternera rubia gallega,Pieza limpia kg,"34,00","0,0340",5%,Carnicería Central Mercamadrid
+MP-02,Carnes Nobles,Presa ibérica de bellota fresca,Envase vacío kg,"18,50","0,0185",4%,Ibéricos Salamanca / Guijuelo
+MP-03,Carnes Nobles,Carne picada aguja/lomo vaca madurada,Pack atmósfera kg,"12,50","0,0125",2%,Madurados Sierra de Guadarrama
+MP-04,Carnes Nobles,Costilla de cerdo Duroc,Costillar kg,"7,50","0,0075",12% (hueso),Cárnicas Toledo
+MP-05,Aves,Pechuga de pollo campero fresca,Bandeja limpia kg,"9,50","0,0095",3%,Avinatur Madrid
+MP-06,Embutidos,Jamón ibérico de cebo de campo,"Pieza 8,5 kg","42,00","0,0580",28% (grasa),Distribución Ibérica Madrid
+MP-07,Embutidos,Pastrami artesanal de ternera curado,Pieza cocida kg,"17,50","0,0175",2%,Ahumados y Curados Artesanos
+MP-08,Embutidos,Guanciale curado al pepe nero,Pieza entera kg,"18,50","0,0185",4%,Importaciones Italianas Horeca
+MP-09,Embutidos,Panceta de cerdo adobada (Soria),Tira precocinada kg,"8,50","0,0085",5%,Embutidos Soria
+MP-10,Embutidos,Spianata Calabrese (salami picante),Pieza 2 kg,"16,00","0,0160",2%,Importaciones Italianas Horeca
+MP-11,Embutidos,Prosciutto di Parma DOP 18 meses,Pieza deshuesada kg,"29,00","0,0290",3%,Gourmet Italia Madrid
+MP-12,Embutidos,Bacon ahumado loncheado,Pack 1 kg,"12,50","0,0125",3%,Cárnicas Madrid
+MP-13,Pescados,Lomo de salmón noruego Superior,Lomo limpio kg,"21,00","0,0210",4%,Pescaderías Coruñesas
+MP-14,Pescados,Lomo de atún rojo (Yellowfin/Balfegó),Lomo sin piel kg,"26,00","0,0260",5%,Balfegó / Pescados Madrid
+MP-15,Pescados,Bonito del norte en aceite de oliva,Lata 1 kg peso neto,"16,50","0,0165",0%,Conservera Cantábrico
+MP-16,Lácteos,Burrata fresca pugliese artesana 125g,Caja 8 uds (125g/ud),"2,20","2,2000",0%,Caseificio di Puglia Horeca
+MP-17,Lácteos,Mozzarella fior di latte en dados,"Bolsa 2,5 kg","8,50","0,0085",1%,Lácteos Italianos
+MP-18,Lácteos,Parmigiano Reggiano DOP 24 meses,Cuña 1 kg,"24,00","0,0240",2%,Zanetti / Parma Gourmet
+MP-19,Lácteos,Pecorino Romano DOP curado,Cuña 1 kg,"22,00","0,0220",2%,Caseificio Romano
+MP-20,Lácteos,Queso Idiazábal ahumado DOP,"Pieza 1,2 kg","19,50","0,0195",3%,Queserías del Norte
+MP-21,Lácteos,Queso cheddar madurado en lonchas,Pack 1 kg,"12,00","0,0120",0%,Lácteos Kerrygold
+MP-22,Lácteos,Queso mascarpone italiano 100%,Tina 2 kg,"8,50","0,0085",1%,Galbani Profesional
+MP-23,Huevos,Huevos camperos Grado M/L,Caja 360 uds,"0,28","0,2800",0%,Granjas Madrileñas D.O.
+MP-24,Verduras,Patata agria especial freír/asar,Saco 25 kg,"1,40","0,0014",8%,Frutas y Verduras Mercamadrid
+MP-25,Verduras,Aguacate Hass fresco listo consumo,Caja 4 kg,"12,00","0,0120",18%,Aguacates Axarquía / Málaga
+MP-26,Verduras,Tomate pera de rama maduro,Caja 6 kg,"2,00","0,0020",5%,Huerta de Aranjuez
+MP-27,Verduras,Tomate cherry pera rama,Caja 3 kg,"5,50","0,0055",2%,Huerta del Sureste
+MP-28,Verduras,Remolacha dulce asada al vapor,Pack vacío 1 kg,"3,00","0,0030",0%,Hortalizas Navarra
+MP-29,Verduras,Corazones alcachofa confitados,"Lata 2,5 kg","13,00","0,0130",0%,Conservas Tudela
+MP-30,Verduras,Cogollos de lechuga romana,Caja 24 uds,"0,35","0,0035",6%,Huerta Murciana
+MP-31,Verduras,Piparras de Ibarra encurtidas,Tarro 1 kg,"11,00","0,0110",0%,Encurtidos Zubia
+MP-32,Frutas,Mango maduro variedad Kent,Caja 4 kg,"6,50","0,0065",20%,Frutas Tropicales Import
+MP-33,Frutas,Surtido fruta fresca temporada,Mix diario kg,"3,50","0,0035",12%,Frutas Selectas Madrid
+MP-34,Panadería,Base focaccia romana alta hidratación 250g,Caja 30 uds,"0,95","0,9500",0%,Panadería Romana Artesana
+MP-35,Panadería,Pan brioche hamburguesa glaseado sésamo,Caja 48 uds,"0,55","0,5500",0%,Brioche Gourmet Madrid
+MP-36,Panadería,Panecillo mini brioche artesano 50g,Caja 60 uds,"0,48","0,4800",0%,Brioche Gourmet Madrid
+MP-37,Panadería,Pan de cristal rústico 18cm precocido,Caja 40 uds,"0,65","0,6500",0%,Guzmán Gastronomía
+MP-38,Panadería,Pan de centeno artesano rebanada,"Hogaza 1,5 kg","4,00","0,4000",2%,Obrador Masa Madre Madrid
+MP-39,Panadería,Tortillas maíz nixtamalizado 12cm,Paquete 50 uds,"0,22","0,2200",0%,Tortillería Mexicana Madrid
+MP-40,Secos,Garbanzo lechoso ecológico cocido,"Tarro 2,5 kg","2,50","0,0025",0%,Legumbres de la Armuña
+MP-41,Secos,Piñones nacionales ibéricos,Bolsa 1 kg,"45,00","0,0450",0%,Frutos Secos del Duero
+MP-42,Aceites,AOVE Picual cosecha temprana,Garrafa 5L,"8,50","0,0085",0%,Almazara Jaén / Córdoba
+MP-43,Aceites,Aceite aromatizado con trufa blanca,Botella 500 ml,"22,50","0,0450",0%,Tartufo Bianco Import
+MP-44,Chocolates,Chocolate negro 60%-70% belga,Saco 5 kg,"6,50","0,0065",0%,Callebaut Profesional

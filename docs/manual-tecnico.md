@@ -274,3 +274,77 @@ Antes de tocar nada, guarda una copia del archivo. Siempre.
     queda después de producto y personal, antes de la casa.
   - El add-on de simuladores para duraciones distintas de 1 h y 2 h es una
     extrapolación de esos dos datos, no un precio confirmado por dirección.
+
+
+---
+
+## ANEXO · INTEGRACIÓN DEL MANUAL MAESTRO INTEGRAL 2026
+Septiembre de 2026. Lo que cambió respecto a lo descrito arriba.
+
+### Catálogo de bocados
+El tarifador lleva dentro los 54 bocados del Manual Maestro de Ismael, cada uno con
+su coste de materia prima real (`var BOCADOS` en el HTML). Rango: 0,282 € la brocheta
+de fruta con menta, 1,014 € la mini burger 5Iron.
+
+Los cuatro menús cerrados (`var MENUS`):
+
+| Menú                    | Bocados | Coste MP | PVP neto | Food cost |
+|-------------------------|---------|----------|----------|-----------|
+| After-work & Networking | 9       | 4,372 €  | 22,73 €  | 19,2 %    |
+| Trend & Bistró Madrid   | 12      | 6,405 €  | 29,09 €  | 22,0 %    |
+| Celebración Corporativa | 15      | 9,872 €  | 36,36 €  | 27,2 %    |
+| Gala & Grand Selection  | 18      | 12,977 € | 45,45 €  | 28,6 %    |
+
+La escalera de food cost es creciente: el menú barato deja más margen en porcentaje
+y el caro más margen en euros. Está así a propósito, pero conviene que dirección lo
+confirme como política.
+
+`costeComida(v)` suma el coste real de los bocados del menú elegido; ya no se usa
+`costePase` salvo para compatibilidad.
+
+### Menú a medida
+Con `comida = 'medida'` aparece un selector de bocados uno a uno agrupado por tipo.
+`balance(v)` avisa si el menú se descompensa: menos de seis bocados, más de veinte,
+menos de un tercio de calientes, menos de un cuarto de fríos, ningún dulce o más de
+cuatro. El PVP sugerido es `coste / 0.25`.
+
+Los bocados elegidos salen por su nombre en el texto de la propuesta y en el PDF.
+
+### Suplemento por franja horaria
+`suplementoFranja(v)` suma sobre el precio elegido: `LJd 0 €`, `LJn 5 €`, `FSd 8 €`,
+`FSn 12 €` por persona. La noche empieza a las 20:00, los viernes a las 16:00.
+Se desactiva evento a evento con el campo `suplFranja`.
+
+**Estas cuatro cifras son una propuesta, no una decisión validada.** Están en
+`T.franja` y se cambian en una línea.
+
+### Barra abierta
+`T.barraHora = [0, 11, 19]` — básica 11 €/h, prémium 19 €/h, por persona.
+Cifras de dirección.
+
+**Conflicto abierto:** el Manual Maestro tarifa esos mismos packs a 7 €/h
+(BEB-27/28/29 en `datos/catalogo_bebidas.csv`). Hay que dejar una sola cifra.
+
+### Costes de bebida actualizados
+`T.costeCons = [0, 0.38, 1.45]` — antes eran 1,35 y 1,85 estimados. Ahora salen de
+los escandallos reales del Manual Maestro.
+
+### Precio de catálogo
+`precioCatalogo(v)` suma las tarifas publicadas de los componentes elegidos y
+aparece como tercera referencia en cada tarjeta, junto al suelo y al recomendado.
+Es un techo, no un precio de venta.
+
+### PDF
+La carta del menú ya no va en la página de cada opción: tiene página propia, y dos
+opciones que compartan menú comparten página. El documento pasa de 6 a 7–9 páginas
+según cuántos menús distintos haya. La numeración de folios se calcula sola.
+
+### Datos en crudo
+`datos/catalogo.json` — los 54 bocados, 29 bebidas y 44 materias primas extraídos
+del Manual Maestro.
+`datos/*.csv` — los mismos datos en el formato que se subió a Drive.
+
+**Advertencia sobre el Excel de origen:** el Manual Maestro tiene las fórmulas rotas.
+Muchas celdas referencian libros externos (`'[8]'`, `'[9]'`, `'[10]'`) que no existen.
+Los valores de `datos/` son los números ya calculados y congelados en el libro, que
+sí son correctos. El que no es fiable es el Excel mientras no se reparen esos enlaces.

@@ -1,0 +1,5 @@
+REGISTRO DE PROPUESTAS EMITIDAS · 5i MAD
+Una fila por propuesta enviada. Rellena las cuatro primeras columnas al enviar y la de cierre cuando haya respuesta.
+
+Fecha envío,Cliente / referencia,Tipo de evento,Fecha del evento,Día,Franja,Pax mín,Pax máx,Mínimo facturable,Duración (h),Opción enviada,€/pax sin IVA,€/pax con IVA,Factura estimada (€),Menú,Barra,Simuladores,Horas sim.,Suplemento franja (€),Descuento (%),Estado,Fecha cierre,€ facturado real,Pax real,Notas
+2026-09-15,EJEMPLO · borrar esta fila,Team Building Social,2026-09-24,Jueves,Entre semana noche,10,17,12,3,Recomendada,60,66,792,After-work & Networking,Barra abierta 3 h básica,4,3,5,0,Enviada,,,,Fila de ejemplo para ver el formato

@@ -2,3 +2,8 @@
 .vercel
 node_modules
 *.zip
+
+# Archivos con claves o identificadores propios: nunca al repositorio
+*CONFIGURADO*
+*_local.*
+.env

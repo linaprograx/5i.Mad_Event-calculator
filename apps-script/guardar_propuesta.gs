@@ -113,3 +113,11 @@ function PROBAR_CARPETA() {
   Logger.log('Carpeta encontrada: ' + c.getName());
   SpreadsheetApp.getUi; // sin uso, evita avisos del editor
 }
+
+/* ============================================================
+ * AVISO: este archivo es la PLANTILLA y vive en un repositorio
+ * publico. No escribas aqui el ID de la carpeta ni la clave.
+ * La copia configurada se guarda fuera del repositorio y el
+ * .gitignore ya bloquea cualquier archivo con "CONFIGURADO" en
+ * el nombre.
+ * ============================================================ */
