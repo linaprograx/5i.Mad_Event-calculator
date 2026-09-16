@@ -1,49 +1,41 @@
 /**
  * ============================================================
  * 5i · CONECTOR DE PROPUESTAS A DRIVE
- * Recibe una propuesta desde el tarifador y deja dos archivos
- * en tu Drive de una sola vez:
- *   · el Google Doc editable con el texto      -> carpeta DOCS
- *   · el PDF maquetado con las tres opciones   -> carpeta PDF
+ * Recibe una propuesta desde el tarifador y deja dos archivos:
+ *   · Google Doc con el texto  -> carpeta de documentos
+ *   · PDF de ese mismo Doc     -> carpeta de PDF
+ *
+ * El PDF se genera exportando el propio documento. No se
+ * convierte HTML: el conversor de HTML de Google no entiende
+ * maquetacion moderna y devolveria un PDF roto.
  * ------------------------------------------------------------
- * INSTALACION (una sola vez, cinco minutos)
+ * INSTALACION
  *
- * 1. En Drive, crea las DOS carpetas: una para los documentos y
- *    otra dentro para los PDF. Abre cada una y copia su ID de la
- *    URL. El ID es el trozo largo despues de /folders/ :
- *      drive.google.com/drive/folders/1AbCdEfGhIjK...
- *                                     ^^^^^^^^^^^^^^ esto
- *    IMPORTANTE: crea el script con LA MISMA CUENTA de Google
- *    que es duena de esas carpetas, o no las encontrara.
+ * 1. Crea en Drive las dos carpetas y copia el ID de cada una
+ *    de su URL (el trozo largo despues de /folders/).
+ *    Crea el script CON LA MISMA CUENTA dueña de las carpetas.
  *
- * 2. Ve a script.google.com > Nuevo proyecto.
- *    Borra todo y pega este archivo.
+ * 2. script.google.com > Nuevo proyecto. Borra todo y pega
+ *    este archivo. Rellena las tres constantes de abajo.
  *
- * 3. Rellena las tres constantes de abajo. La CLAVE inventatela:
- *    una frase larga sin espacios. Es la que tendras que pegar
- *    tambien en el tarifador.
+ * 3. Ejecuta PROBAR_TODO y autoriza. En la pantalla "Google no
+ *    ha verificado esta aplicacion": Configuracion avanzada >
+ *    Ir a ... (no seguro) > Permitir.
+ *    El registro tiene que poner TODO CORRECTO.
  *
- * 4. Ejecuta PROBAR_CARPETAS y autoriza cuando lo pida. En el
- *    registro deben salir los nombres de las dos carpetas.
+ * 4. Implementar > Nueva implementacion > Aplicacion web,
+ *    Ejecutar como: Yo, Acceso: Cualquier persona.
+ *    Copia la URL que termina en /exec.
  *
- * 5. Implementar > Nueva implementacion.
- *      Tipo: Aplicacion web
- *      Ejecutar como: Yo
- *      Quien tiene acceso: Cualquier persona
- *    Implementar. Copia la URL que termina en /exec.
+ * 5. Pega esa URL y la clave en el tarifador, en
+ *    "Conexion con Google Drive".
  *
- * 6. En el tarifador, abre "Conexion con Google Drive" y pega
- *    la URL y la clave. Listo.
+ * Si cambias este codigo, republica: Implementar > Gestionar
+ * implementaciones > lapiz > Version: Nueva version.
+ * Si no, Google sigue ejecutando el codigo viejo.
  *
- * SOBRE LA SEGURIDAD: la implementacion es publica porque el
- * navegador tiene que poder llamarla sin iniciar sesion, pero
- * solo hace una cosa (crear los archivos en esas carpetas) y
- * exige la clave. Si alguna vez sospechas que la URL se ha
- * filtrado, cambia la CLAVE aqui y en el tarifador, o crea una
- * implementacion nueva y descarta la anterior.
- *
- * NUNCA subas a GitHub este archivo con los IDs y la clave
- * rellenados. Este repositorio es publico.
+ * NUNCA subas este archivo con los IDs y la clave rellenados.
+ * Este repositorio es publico.
  * ============================================================
  */
 
@@ -51,72 +43,137 @@ var CARPETA_DOCS = 'PEGA_AQUI_EL_ID_DE_LA_CARPETA_DE_DOCUMENTOS';
 var CARPETA_PDF  = 'PEGA_AQUI_EL_ID_DE_LA_CARPETA_DE_PDF';
 var CLAVE        = 'PEGA_AQUI_UNA_CLAVE_LARGA_INVENTADA';
 
+var VERDE  = '#2F6B43';
+var TINTA  = '#12211A';
+var GRIS   = '#5C6E64';
+
+
+/* ============ lo que llama el tarifador ============ */
 
 function doPost(e) {
   try {
     if (!e || !e.postData || !e.postData.contents) return json({ ok:false, error:'sin datos' });
 
     var d = JSON.parse(e.postData.contents);
-    if (d.token !== CLAVE) return json({ ok:false, error:'clave incorrecta' });
+    if (String(d.token) !== CLAVE) return json({ ok:false, error:'clave incorrecta' });
 
     var texto = String(d.texto || '').trim();
     if (!texto) return json({ ok:false, error:'propuesta vacia' });
 
-    var nombre = String(d.nombre || 'Propuesta 5i').substring(0, 180);
-
-    /* ---------- 1. el Google Doc con el texto ---------- */
-    var doc = DocumentApp.create(nombre);
-    var body = doc.getBody();
-    body.setMarginTop(56).setMarginBottom(56).setMarginLeft(56).setMarginRight(56);
-
-    texto.split('\n').forEach(function (linea, i) {
-      var p = body.appendParagraph(linea);
-      var limpia = linea.trim();
-      var esTitulo = limpia.length > 2 && limpia === limpia.toUpperCase() &&
-                     /[A-ZÁÉÍÓÚÑ]/.test(limpia) && limpia.indexOf('·') === -1;
-      if (i === 0) {
-        p.setHeading(DocumentApp.ParagraphHeading.TITLE);
-      } else if (esTitulo) {
-        p.setHeading(DocumentApp.ParagraphHeading.HEADING2);
-      }
-    });
-
-    if (body.getNumChildren() > 1) {
-      var primero = body.getChild(0);
-      if (primero.getType() === DocumentApp.ElementType.PARAGRAPH &&
-          primero.asParagraph().getText() === '') {
-        body.removeChild(primero);
-      }
-    }
-    doc.saveAndClose();
-
-    var archivo = DriveApp.getFileById(doc.getId());
-    DriveApp.getFolderById(CARPETA_DOCS).addFile(archivo);
-    try { DriveApp.getRootFolder().removeFile(archivo); } catch (err) {}
-
-    var salida = { ok:true, url:doc.getUrl(), nombre:nombre };
-
-    /* ---------- 2. el PDF maquetado ---------- */
-    /* Si el PDF falla no se pierde el documento: se devuelve el
-       error del PDF aparte y el Doc sigue guardado. */
-    var html = String(d.html || '').trim();
-    if (html) {
-      try {
-        var pdf = Utilities.newBlob(html, 'text/html', nombre + '.html')
-                           .getAs('application/pdf')
-                           .setName(nombre + '.pdf');
-        var fpdf = DriveApp.getFolderById(CARPETA_PDF).createFile(pdf);
-        salida.pdf = fpdf.getUrl();
-      } catch (errPdf) {
-        salida.pdfError = String(errPdf);
-      }
-    }
-
-    return json(salida);
+    var r = guardar(String(d.nombre || 'Propuesta 5i').substring(0, 180), texto);
+    return json(r);
 
   } catch (err) {
     return json({ ok:false, error:String(err) });
   }
+}
+
+/* Crea el Doc, lo mete en su carpeta y guarda su PDF en la otra.
+   El PDF sale del propio documento, que es la via fiable: lo
+   genera Google con su exportador de Docs, no un conversor de
+   HTML. */
+function guardar(nombre, texto) {
+  var doc  = DocumentApp.create(nombre);
+  var body = doc.getBody();
+  body.setMarginTop(56).setMarginBottom(56).setMarginLeft(56).setMarginRight(56);
+
+  var lineas = texto.split('\n');
+  var primera = true;
+
+  /* devuelve la siguiente linea con contenido, para saber si la
+     actual es el encabezado de una lista (Bocados frios, Dulces...) */
+  function siguiente(desde) {
+    for (var k = desde + 1; k < lineas.length; k++) {
+      var t = lineas[k].trim();
+      if (t !== '') return t;
+    }
+    return '';
+  }
+
+  for (var i = 0; i < lineas.length; i++) {
+    var linea = lineas[i];
+    var limpia = linea.trim();
+
+    if (limpia === '') { body.appendParagraph(''); continue; }
+
+    /* vinetas: las lineas que empiezan por · */
+    if (limpia.indexOf('· ') === 0) {
+      var li = body.appendListItem(limpia.substring(2));
+      li.setGlyphType(DocumentApp.GlyphType.BULLET);
+      li.setAttributes(estilo(11, TINTA, false));
+      continue;
+    }
+
+    var p = body.appendParagraph(limpia);
+
+    if (primera) {
+      p.setHeading(DocumentApp.ParagraphHeading.TITLE);
+      p.setAttributes(estilo(22, VERDE, true));
+      primera = false;
+      continue;
+    }
+
+    /* todo en mayusculas = seccion o subtitulo */
+    var mayus = limpia.length > 2 && limpia === limpia.toUpperCase() &&
+                /[A-ZÁÉÍÓÚÑ]/.test(limpia);
+
+    /* encabezado de lista: corto, sin punto final y seguido de vinetas */
+    var abreLista = !mayus && limpia.length < 42 &&
+                    limpia.charAt(limpia.length - 1) !== '.' &&
+                    siguiente(i).indexOf('· ') === 0;
+
+    if (mayus && limpia.indexOf('·') > -1) {
+      /* PROPUESTA · RECOMENDADA, justo debajo del titulo */
+      p.setHeading(DocumentApp.ParagraphHeading.HEADING3);
+      p.setAttributes(estilo(13, GRIS, true));
+    } else if (mayus) {
+      p.setHeading(DocumentApp.ParagraphHeading.HEADING2);
+      p.setAttributes(estilo(13, VERDE, true));
+    } else if (abreLista) {
+      p.setHeading(DocumentApp.ParagraphHeading.HEADING4);
+      p.setAttributes(estilo(11, VERDE, true));
+    } else if (limpia.indexOf('€ por persona') > -1 || limpia.indexOf('Precio final') === 0) {
+      p.setAttributes(estilo(12, TINTA, true));
+    } else if (limpia.indexOf('events@') === 0) {
+      p.setAttributes(estilo(10, GRIS, false));
+    } else {
+      p.setAttributes(estilo(11, TINTA, false));
+    }
+  }
+
+  /* quitar el parrafo vacio que Google mete al crear el documento */
+  if (body.getNumChildren() > 1) {
+    var c0 = body.getChild(0);
+    if (c0.getType() === DocumentApp.ElementType.PARAGRAPH &&
+        c0.asParagraph().getText() === '') {
+      body.removeChild(c0);
+    }
+  }
+
+  doc.saveAndClose();
+
+  var archivo = DriveApp.getFileById(doc.getId());
+  archivo.moveTo(DriveApp.getFolderById(CARPETA_DOCS));
+
+  var salida = { ok:true, url:doc.getUrl(), nombre:nombre };
+
+  try {
+    var pdf = archivo.getAs('application/pdf').setName(nombre + '.pdf');
+    salida.pdf = DriveApp.getFolderById(CARPETA_PDF).createFile(pdf).getUrl();
+  } catch (errPdf) {
+    salida.pdfError = String(errPdf);
+  }
+
+  return salida;
+}
+
+function estilo(tam, color, negrita) {
+  var a = {};
+  a[DocumentApp.Attribute.FONT_SIZE]       = tam;
+  a[DocumentApp.Attribute.FOREGROUND_COLOR] = color;
+  a[DocumentApp.Attribute.BOLD]            = !!negrita;
+  a[DocumentApp.Attribute.FONT_FAMILY]     = 'Verdana';
+  return a;
 }
 
 function doGet() {
@@ -130,25 +187,66 @@ function json(obj) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
-/** Ejecuta esto PRIMERO, antes de implementar.
- *  Debe escribir el nombre de las DOS carpetas en el registro. */
-function PROBAR_CARPETAS() {
-  var docs = DriveApp.getFolderById(CARPETA_DOCS);
-  var pdfs = DriveApp.getFolderById(CARPETA_PDF);
-  Logger.log('Carpeta de documentos: ' + docs.getName() + '  ->  ' + docs.getUrl());
-  Logger.log('Carpeta de PDF:        ' + pdfs.getName() + '  ->  ' + pdfs.getUrl());
-}
 
-/** Prueba completa sin pasar por el navegador: deja un documento
- *  y un PDF de ejemplo en sus carpetas. Borralos despues a mano. */
-function PROBAR_GUARDADO() {
-  var r = doPost({ postData: { contents: JSON.stringify({
-    token: CLAVE,
-    nombre: 'PRUEBA · borrar',
-    texto: 'FIVE IRON GOLF MADRID\n\nPROPUESTA DE PRUEBA\n\nSi ves este documento en la carpeta, el conector funciona.',
-    html: '<!doctype html><html><head><meta charset="utf-8"></head><body>' +
-          '<h1>Five Iron Golf Madrid</h1><p>PDF de prueba. Si lo ves en la carpeta ' +
-          'de PDF, la conversion a PDF funciona.</p></body></html>'
-  }) } });
-  Logger.log(r.getContent());
+/* ============ la unica prueba que necesitas ============ */
+/**
+ * Comprueba las dos carpetas y hace un guardado real de prueba.
+ * Si termina con TODO CORRECTO, el conector funciona y ya puedes
+ * publicarlo. Borra a mano los dos archivos de prueba despues.
+ */
+function PROBAR_TODO() {
+  var fallos = [];
+
+  var nDocs = '', nPdf = '';
+  try {
+    var cd = DriveApp.getFolderById(CARPETA_DOCS);
+    nDocs = cd.getName();
+    Logger.log('1/3  Carpeta de documentos OK: ' + nDocs);
+  } catch (e) {
+    fallos.push('No encuentro la carpeta de DOCUMENTOS (' + CARPETA_DOCS + '). ' +
+                'Casi seguro: has creado el script con otra cuenta de Google. ' +
+                'Detalle: ' + e);
+  }
+
+  try {
+    var cp = DriveApp.getFolderById(CARPETA_PDF);
+    nPdf = cp.getName();
+    Logger.log('2/3  Carpeta de PDF OK: ' + nPdf);
+  } catch (e) {
+    fallos.push('No encuentro la carpeta de PDF (' + CARPETA_PDF + '). ' +
+                'Misma causa probable que la anterior. Detalle: ' + e);
+  }
+
+  if (fallos.length) {
+    Logger.log('');
+    Logger.log('ERROR. No sigas hasta arreglar esto:');
+    fallos.forEach(function (f, i) { Logger.log('  ' + (i + 1) + '. ' + f); });
+    return;
+  }
+
+  try {
+    var r = guardar('PRUEBA 5i · borrar', [
+      'FIVE IRON GOLF MADRID',
+      '',
+      'PROPUESTA DE PRUEBA',
+      '60 € por persona',
+      '',
+      'INCLUYE',
+      '· Si ves este documento, el conector funciona',
+      '· Y si ves tambien el PDF, la exportacion funciona',
+      '',
+      'events@5iberia.com'
+    ].join('\n'));
+
+    Logger.log('3/3  Guardado de prueba OK');
+    Logger.log('');
+    Logger.log('TODO CORRECTO');
+    Logger.log('  Documento: ' + r.url);
+    Logger.log('  PDF:       ' + (r.pdf || 'NO se ha creado -> ' + r.pdfError));
+    Logger.log('');
+    Logger.log('Ya puedes publicar: Implementar > Nueva implementacion.');
+    Logger.log('Borra a mano los dos archivos de prueba cuando quieras.');
+  } catch (e) {
+    Logger.log('ERROR al guardar la prueba: ' + e);
+  }
 }

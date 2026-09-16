@@ -242,10 +242,12 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
 <details id="conf">
   <summary>Conexión con Google Drive</summary>
   <div class="params">
-    <p>Con esto activado, el botón <strong>Guardar en Drive</strong> deja dos archivos en tu Drive de una sola
-    vez: el <strong>Google Doc</strong> editable con el texto de la propuesta y el <strong>PDF maquetado</strong>
-    con las tres opciones y la carta del menú. Cada uno va a su carpeta, sin descargar nada y sin salir de esta
-    página.</p>
+    <p>Con esto activado, el botón <strong>Guardar en Drive</strong> deja dos archivos de una sola vez: el
+    <strong>Google Doc</strong> editable con la propuesta y el <strong>PDF de ese mismo documento</strong>, cada
+    uno en su carpeta, sin descargar nada y sin salir de esta página. Es la copia de archivo.</p>
+    <p>El PDF maquetado de nueve páginas que se le manda al cliente es otra cosa: se saca con el botón
+    <strong>Propuesta en PDF</strong> y se guarda desde el diálogo de impresión. Ese no pasa por Drive porque
+    Google no sabe convertir su maquetación.</p>
     <p id="confEstado" style="color:var(--ink)"></p>
     <div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:12px">
       <button type="button" class="big ghost" id="btnUrl">Pegar la URL del conector</button>
@@ -1671,7 +1673,7 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
     fetch(url, {
       method:'POST',
       headers:{ 'Content-Type':'text/plain;charset=utf-8' },
-      body: JSON.stringify({ token:token, nombre:nombreDoc(), texto:$('texto').value, html:docPropuesta() })
+      body: JSON.stringify({ token:token, nombre:nombreDoc(), texto:$('texto').value })
     }).then(function(res){ return res.json(); }).then(function(d){
       btn.disabled = false;
       if (d && d.ok){
