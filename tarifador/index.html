@@ -468,6 +468,9 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
     iva:'10', dto:'0', suplFranja:'auto'
   };
   var PRECIOS = ['55','60','75'];
+  /* copia intacta del estado de fabrica: las plantillas parten siempre de aqui,
+     para que ningun campo que la plantilla no declare se arrastre de la anterior */
+  var S_FABRICA = JSON.parse(JSON.stringify(S));
 
   /* ============ definición de campos ============ */
   function opts(id){
@@ -1220,6 +1223,10 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
     var i = parseInt($('tpl').value,10);
     if (i < 0) return;
     var p = PLANTILLAS[i];
+    /* partir de cero: si no, campos como simcobro o suplFranja se quedan
+       pegados de la plantilla anterior y el precio sale mal */
+    var base = JSON.parse(JSON.stringify(S_FABRICA));
+    Object.keys(base).forEach(function(k){ S[k] = base[k]; });
     Object.keys(p.c).forEach(function(k){ S[k] = p.c[k]; });
     S.fechaISO = '';
     PRECIOS = p.p.slice();
