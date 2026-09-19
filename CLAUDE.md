@@ -185,7 +185,8 @@ márcalo como pendiente de validar. Un número inventado en esta herramienta sal
 en una propuesta a un cliente.
 
 **Tres documentos impresos distintos, no los confundas:**
-- *Propuesta en PDF* — para el cliente, fondo claro, portada verde. **Solo la
+- *Propuesta en PDF* — para el cliente, **negro de marca con acentos lima** y el
+  logo en cada página (desde el 19-09-2026; antes era clara). **Solo la
   opción elegida** (botón «Presentar esta opción» en cada tarjeta, o el selector
   `#cual`): portada, la opción, su carta si lleva comida, y condiciones. 3 o 4
   páginas; cada sección tiene que ocupar exactamente una.
@@ -224,8 +225,19 @@ Grotesca pesada muy apretada en titulares. Monoespaciada en mayúsculas con
 tracking ancho para etiquetas. Secciones numeradas `01` `02`. Filas de tabla con
 barra de color a la izquierda.
 
-El tarifador sigue con su paleta verde propia por continuidad; los documentos de
-presentación usan la de marca.
+**Aplicada desde el 19-09-2026** al tarifador (pantalla y panel impreso), al
+documento «Cómo funciona» y al PDF para el cliente. La hoja de cocina se queda
+en blanco para imprimir. `index.html` todavía no.
+
+- Tipografías: **IBM Plex Mono** (confirmada en el PDF del protocolo) para
+  etiquetas y cifras; **Inter Tight** para titulares y texto. El PDF no expone
+  el nombre de su grotesca: Inter Tight es la aproximación más cercana.
+- Colores extra del `.docx` del protocolo: superficie `#121514`, casi negro `#050606`.
+- Niveles: Esencial `#2D9DD3`, Recomendada lima, Premium `#FFD237`.
+- Logo: PNG blanco del `.docx`, reducido a 240 px e incrustado en base64 en cada
+  HTML (así la página sigue siendo un solo archivo y el PDF lo hereda).
+- En el tarifador las variables CSS conservan los nombres de la paleta verde
+  (`--fairway` = lima, `--brass` = oro, `--slate` = azul).
 
 ---
 
