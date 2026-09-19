@@ -29,6 +29,8 @@ h1{font-family:var(--display);font-weight:800;font-size:clamp(25px,4vw,38px);let
 .plantilla{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin-top:18px;
   background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}
 .plantilla .f{flex:1 1 340px}
+.plantilla .tplbtns{display:flex;gap:9px;flex-wrap:wrap}
+.plantilla .estado{flex-basis:100%;margin:0;min-height:0}
 
 #form{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:6px 32px;margin-top:20px}
 .grp{min-width:0;margin:0 0 18px}
@@ -210,10 +212,15 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
 
 <div class="plantilla">
   <div class="f">
-    <label for="tpl">Empezar desde una propuesta ya hecha</label>
-    <select id="tpl"><option value="-1">Configuración libre</option></select>
-    <span class="hint">Carga los datos de una propuesta real del catálogo. Luego ajustas lo que cambie.</span>
+    <label for="tpl">Propuestas ya hechas</label>
+    <select id="tpl"><option value="-1">Elige una propuesta…</option></select>
+    <span class="hint">Se carga todo igual que estaba: asistentes, horas, simuladores, comida, barra y precios. Luego ajustas lo que cambie.</span>
   </div>
+  <div class="tplbtns">
+    <button type="button" class="big ghost" id="btnNueva">Nueva propuesta</button>
+    <button type="button" class="big primary" id="btnGuardarProp">Guardar propuesta</button>
+  </div>
+  <p class="estado" id="tplEstado"></p>
 </div>
 
 <div id="form"></div>
@@ -488,11 +495,20 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
   /* copia intacta del estado de fabrica: las plantillas parten siempre de aqui,
      para que ningun campo que la plantilla no declare se arrastre de la anterior */
   var S_FABRICA = JSON.parse(JSON.stringify(S));
+  /* punto de partida de "Nueva propuesta": nada elegido */
+  var S_VACIO = {
+    cliente:'', paxmin:'0', paxmax:'0', bays:'0', baysh:'0', excl:'0', simcobro:'0',
+    f1:false, dardos:false, tour:false, coord:false, equipos:false, lounge:false, av:false,
+    musica:'0', dec:false, comida:'0', bocados:[], wcoffee:false, wcoctel:false, modal:'0', bcant:'0'
+  };
+  /* propuestas guardadas por el equipo en la hoja de Google (via el conector) */
+  var GUARDADAS = [];
 
   /* ============ definición de campos ============ */
   function opts(id){
     switch(id){
       case 'cliente': return [
+        {v:'', t:'Elige el tipo de evento'},
         {v:'Team Building Social', t:'Team Building Social'},
         {v:'Team Building Full Experience', t:'Team Building Full Experience'},
         {v:'Corporate Lunch & Play', t:'Corporate Lunch & Play'},
@@ -673,12 +689,13 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
   }
 
   /* ============ modal de valor propio ============ */
-  function pedirValor(titulo, tipo, cb){
+  function pedirValor(titulo, tipo, cb, inicial){
     var host = $('modalHost');
     host.innerHTML =
       '<div class="overlay" id="ov"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="mt">' +
       '<h4 id="mt">' + esc(titulo) + '</h4>' +
-      '<p>' + (tipo === 'texto' ? 'Escribe el valor. Se guardará en este navegador para las próximas veces.'
+      '<p>' + (tipo === 'nombre' ? 'Así la verá todo el equipo en «Propuestas ya hechas». Si ya existe una con ese nombre, te preguntaré antes de sustituirla.'
+             : tipo === 'texto' ? 'Escribe el valor. Se guardará en este navegador para las próximas veces.'
              : tipo === 'hora' ? 'Escribe la hora en formato 24 h, por ejemplo 21:30.'
              : tipo === 'entero' ? 'Escribe un número entero.'
              : 'Escribe el número. Puedes usar decimales con coma, por ejemplo 70,80.') + '</p>' +
@@ -688,7 +705,9 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
       '<button type="button" class="big ghost" id="mno">Cancelar</button></div>' +
       '</div></div>';
     var inp = $('mi'), err = $('me');
+    if (inicial) inp.value = inicial;
     inp.focus();
+    if (inicial) inp.select();
     function cerrar(){ host.innerHTML = ''; }
     function aceptar(){
       var raw = inp.value.trim();
@@ -1080,7 +1099,17 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
       return;
     }
     $('btnGen').disabled = false;
-    R = [0,1,2].map(function(n){ return evaluar(variante(b, n), parseFloat(PRECIOS[n]) || 0); });
+    R = [0,1,2].map(function(n){
+      var v = variante(b, n);
+      if (PRECIOS[n] === 'auto'){
+        /* propuesta nueva: el precio sigue al minimo hasta que se elija otro */
+        var r0 = evaluar(v, 0);
+        var r = evaluar(v, Math.max(0, techo5(r0.pMin - r0.pAdd - r0.pSup)));
+        r.auto = true;
+        return r;
+      }
+      return evaluar(v, parseFloat(PRECIOS[n]) || 0);
+    });
 
     $('railpax').textContent = (b.paxmin === b.paxmax ? b.paxmin + ' personas' : b.paxmin + '–' + b.paxmax + ' personas') +
       ' · ' + hh(b.horas) + ' · ' +
@@ -1093,7 +1122,7 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
                 : r.aprobacion && r.estado === 'warn' ? '<span class="badge b-warn">Requiere aprobación</span>'
                 : r.estado === 'warn' ? '<span class="badge b-warn">Visto bueno</span>'
                 : '<span class="badge b-bad">Bloqueada</span>';
-      var elegida = !$('salida').classList.contains('hidden') && parseInt($('cual').value,10) === i;
+      var elegida = parseInt($('cual').value,10) === i;
       html += '<article class="offer' + (i===1?' reco':'') + (elegida?' elegida':'') + '" style="--tier:' + TIER[i] + '">';
       html += '<div class="offer-top"><span class="offer-name">' + NOMBRES[i] + '</span>' + (cliente ? '' : badge) + '</div>';
       html += '<div class="pblock"><span class="big">' + eur0.format(r.precio) + '</span>' +
@@ -1101,7 +1130,8 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
               (r.pAdd > 0 || r.pSup > 0 ? '<br>' + eur0.format(r.precioBase) + ' base' +
                 (r.pAdd > 0 ? ' + ' + eur0.format(r.pAdd) + ' de simuladores' : '') +
                 (r.pSup > 0 ? ' + ' + eur0.format(r.pSup) + ' de franja' : '') : '') + '</span>' +
-              selHTML('precio' + i, PRECIOS[i], 'precio') +
+              selHTML('precio' + i, r.auto ? String(r.precioBase) : PRECIOS[i], 'precio') +
+              (r.auto ? '<span class="hint" style="margin-top:5px;display:block">Sigue al precio mínimo hasta que elijas otro.</span>' : '') +
               (r.pAdd > 0 || r.pSup > 0 ? '<span class="hint" style="margin-top:5px;display:block">El desplegable fija el precio base.</span>' : '') +
               '</div>';
       html += '<div class="factura"><span class="k">Con IVA por persona</span><b>' +
@@ -1290,26 +1320,71 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
       f1:true, dardos:true, tour:true, coord:true, equipos:true, lounge:false, av:false, musica:'1', dec:false,
       comida:'celebracion', bocados:[], wcoffee:false, wcoctel:false, suplFranja:'auto', modal:'2', btipo:'1', bcant:'3' } }
   ];
-  PLANTILLAS.forEach(function(p, i){
-    var op = document.createElement('option');
-    op.value = String(i); op.textContent = p.n;
-    $('tpl').appendChild(op);
-  });
-  $('tpl').addEventListener('change', function(){
-    var i = parseInt($('tpl').value,10);
-    if (i < 0) return;
-    var p = PLANTILLAS[i];
-    /* partir de cero: si no, campos como simcobro o suplFranja se quedan
-       pegados de la plantilla anterior y el precio sale mal */
+  /* carga una propuesta completa. Parte siempre de S_FABRICA: si no, campos
+     como simcobro o suplFranja se quedan pegados de la anterior y el precio sale mal */
+  function cargarEstado(c, precios, cual){
     var base = JSON.parse(JSON.stringify(S_FABRICA));
     Object.keys(base).forEach(function(k){ S[k] = base[k]; });
-    Object.keys(p.c).forEach(function(k){ S[k] = p.c[k]; });
-    S.fechaISO = '';
-    PRECIOS = p.p.slice();
+    Object.keys(c).forEach(function(k){
+      if (base.hasOwnProperty(k)) S[k] = JSON.parse(JSON.stringify(c[k]));
+    });
+    /* la fecha es de cada evento, nunca se hereda */
+    S.fechaISO = ''; S.fechaTexto = '';
+    PRECIOS = precios.slice();
     /* la opcion elegida y el texto abierto tampoco se arrastran */
-    $('cual').value = '1';
+    $('cual').value = String(cual === 0 || cual === 2 ? cual : 1);
     $('salida').classList.add('hidden');
     render();
+  }
+  function buscarGuardada(nombre){
+    var n = String(nombre).trim().toLowerCase();
+    return GUARDADAS.filter(function(g){ return String(g.nombre).trim().toLowerCase() === n; })[0];
+  }
+  function pintarTpl(){
+    var sel = $('tpl'), actual = sel.value;
+    sel.innerHTML = '<option value="-1">Elige una propuesta…</option>';
+    var g1 = document.createElement('optgroup');
+    g1.label = 'De fábrica · propuestas reales del catálogo';
+    PLANTILLAS.forEach(function(p, i){
+      var op = document.createElement('option');
+      op.value = String(i); op.textContent = p.n;
+      g1.appendChild(op);
+    });
+    sel.appendChild(g1);
+    if (GUARDADAS.length){
+      var g2 = document.createElement('optgroup');
+      g2.label = 'Guardadas por el equipo';
+      GUARDADAS.slice().sort(function(a, b){ return String(a.nombre).localeCompare(String(b.nombre), 'es'); })
+        .forEach(function(g){
+          var op = document.createElement('option');
+          op.value = 'g:' + g.nombre;
+          op.textContent = g.nombre + (g.resumen && g.resumen.aprobacion ? ' · requiere aprobación' : '');
+          g2.appendChild(op);
+        });
+      sel.appendChild(g2);
+    }
+    sel.value = actual;
+    if (sel.value !== actual) sel.value = '-1';
+  }
+  $('tpl').addEventListener('change', function(){
+    var v = $('tpl').value;
+    if (v === '-1') return;
+    if (v.indexOf('g:') === 0){
+      var g = buscarGuardada(v.slice(2));
+      if (!g) return;
+      cargarEstado(g.c, g.p, g.cual);
+      estadoTpl('', 'Cargada «' + g.nombre + '»' + (g.guardada ? ', guardada el ' + g.guardada.slice(0, 10).split('-').reverse().join('/') : '') + '.');
+      return;
+    }
+    var p = PLANTILLAS[parseInt(v,10)];
+    cargarEstado(p.c, p.p, 1);
+    estadoTpl('', '');
+  });
+  $('btnNueva').addEventListener('click', function(){
+    $('tpl').value = '-1';
+    cargarEstado(S_VACIO, ['auto','auto','auto'], 1);
+    estadoTpl('', 'Propuesta nueva, sin nada elegido. Los precios siguen al precio mínimo hasta que elijas otros.');
+    window.scrollTo({ top: $('form').offsetTop - 12, behavior:'smooth' });
   });
 
   /* ============ eventos ============ */
@@ -1342,7 +1417,7 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
           render('c_' + campoId);
         });
         /* dejar el selector en su valor anterior mientras el modal está abierto */
-        el.value = campoId.indexOf('precio') === 0 ? PRECIOS[parseInt(campoId.slice(6),10)] : S[campoId];
+        el.value = campoId.indexOf('precio') === 0 ? String(R[parseInt(campoId.slice(6),10)].precioBase) : S[campoId];
         return;
       }
       aplicar(campoId, val);
@@ -1675,11 +1750,11 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
         $('confEstado').textContent = 'Esa no parece la URL de un conector de Apps Script.';
         return;
       }
-      setCfg('url', v); pintarConf();
+      setCfg('url', v); pintarConf(); cargarGuardadas();
     });
   });
   $('btnTok').addEventListener('click', function(){
-    pedirValor('Clave del conector', 'texto', function(v){ setCfg('token', v); pintarConf(); });
+    pedirValor('Clave del conector', 'texto', function(v){ setCfg('token', v); pintarConf(); cargarGuardadas(); });
   });
   $('btnOlvidar').addEventListener('click', function(){
     setCfg('url',''); setCfg('token',''); pintarConf();
@@ -1740,6 +1815,102 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
         'esté publicada con acceso "cualquier persona" y que la URL termine en /exec.';
     });
   });
+
+  /* ============ propuestas guardadas por el equipo ============ */
+  function estadoTpl(clase, txt){
+    $('tplEstado').className = 'estado' + (clase ? ' ' + clase : '');
+    $('tplEstado').textContent = txt;
+  }
+  function conector(datos){
+    var url = cfg('url'), token = cfg('token');
+    if (!url || !token) return Promise.reject(new Error('sin conexion'));
+    datos.token = token;
+    return fetch(url, {
+      method:'POST',
+      headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+      body: JSON.stringify(datos)
+    }).then(function(res){ return res.json(); }).then(function(d){
+      if (!d || !d.ok) throw new Error((d && d.error) || 'respuesta desconocida');
+      return d;
+    });
+  }
+  function cargarGuardadas(){
+    return conector({ accion:'listar_propuestas' }).then(function(d){
+      GUARDADAS = d.propuestas || [];
+      try { localStorage.setItem('5i.propuestas.cache', JSON.stringify(GUARDADAS)); } catch(e){}
+      pintarTpl();
+    }).catch(function(e){
+      if (e.message === 'sin conexion'){
+        estadoTpl('', 'Para ver y guardar las propuestas del equipo, configura la conexión con Google Drive, al final de la página.');
+      } else {
+        estadoTpl('mal', 'No he podido cargar las propuestas guardadas (' + e.message + '). ' +
+          (GUARDADAS.length ? 'Se muestran las últimas conocidas en este navegador.' : ''));
+      }
+    });
+  }
+  function textoComida(v){
+    if (MENUS[v.comida]) return MENUS[v.comida].n;
+    var o = opts('comida').filter(function(x){ return x.v === v.comida; })[0];
+    return v.comida === 'medida' ? 'Menú a medida · ' + bocadosDe(v).length + ' bocados' : (o ? o.t : '');
+  }
+  function textoBarra(v){
+    if (v.modal === 1 && v.bcant > 0) return n1(v.bcant) + ' consumiciones de ' + T.nombresBarra[v.btipo];
+    if (v.modal === 2 && v.bcant > 0) return 'Barra abierta ' + hh(v.bcant) + ' de ' + T.nombresBarra[v.btipo];
+    return 'Sin bebida';
+  }
+  /* todo lo necesario para restaurarla igual, menos la fecha */
+  function propuestaActual(nombre){
+    var c = JSON.parse(JSON.stringify(S));
+    delete c.fechaISO; delete c.fechaTexto; delete c.paxfac;
+    var i = parseInt($('cual').value,10), r = R[i], v = r.v;
+    return {
+      version:1, nombre:nombre, c:c, cual:i,
+      p: R.map(function(x){ return String(x.precioBase); }),
+      aprobaciones: R.map(function(x){ return x.aprobacion; }),
+      resumen: {
+        tipo:S.cliente, paxmin:v.paxmin, paxmax:v.paxmax, horas:v.horas,
+        comida:textoComida(v), barra:textoBarra(v), simuladores:v.bays, horasSim:v.baysh,
+        opcion:NOMBRES[i], precio:r.precio, minimoFacturable:r.F || '', aprobacion:r.aprobacion
+      }
+    };
+  }
+  $('btnGuardarProp').addEventListener('click', function(){
+    if (!R.length){
+      estadoTpl('mal', 'Todavía no hay evento que guardar: elige asistentes, duración y al menos un simulador, comida o bebida.');
+      return;
+    }
+    if (!cfg('url') || !cfg('token')){
+      estadoTpl('mal', 'Falta configurar la conexión con Google Drive, al final de la página. Sin ella la propuesta no la vería nadie más.');
+      $('conf').open = true;
+      return;
+    }
+    var sel = $('tpl').value;
+    var b = brief();
+    var sugerido = sel.indexOf('g:') === 0 ? sel.slice(2)
+      : (S.cliente || 'Propuesta') + ' · ' + (b.paxmin === b.paxmax ? b.paxmin : b.paxmin + '–' + b.paxmax) + ' pax';
+    pedirValor('Nombre de la propuesta', 'nombre', function(nombre){
+      if (buscarGuardada(nombre) && !window.confirm('Ya hay una propuesta guardada con el nombre «' + nombre + '». ¿Sustituirla?')) return;
+      var btn = $('btnGuardarProp');
+      btn.disabled = true;
+      estadoTpl('', 'Guardando…');
+      conector({ accion:'guardar_propuesta', propuesta:propuestaActual(nombre) }).then(function(d){
+        return cargarGuardadas().then(function(){
+          btn.disabled = false;
+          $('tpl').value = 'g:' + d.nombre;
+          estadoTpl('ok', (d.sustituida ? 'Sustituida' : 'Guardada') + ' «' + d.nombre + '». Ya la ve todo el equipo en «Propuestas ya hechas».');
+        });
+      }).catch(function(e){
+        btn.disabled = false;
+        estadoTpl('mal', e.message === 'sin conexion' ? 'Falta configurar la conexión con Google Drive.'
+          : 'No se ha guardado: ' + e.message + '. Revisa la conexión y que el conector esté republicado con la versión nueva.');
+      });
+    }, sugerido);
+  });
+
+  /* ultimas propuestas conocidas en este navegador, mientras llega la lista */
+  try { GUARDADAS = JSON.parse(localStorage.getItem('5i.propuestas.cache') || '[]') || []; } catch(e){ GUARDADAS = []; }
+  pintarTpl();
+  cargarGuardadas();
 
   render();
 })();

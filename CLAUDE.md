@@ -58,6 +58,10 @@ Producción: `https://5i-web.vercel.app/tarifador/`
   MENUS{}          los 4 menús cerrados
   T{}              casi todos los parámetros de negocio (ver §3, hay excepciones)
   S{}              estado del formulario · S_FABRICA es su copia intacta
+                   S_VACIO: lo que pone «Nueva propuesta»
+  PLANTILLAS[]     8 propuestas de fábrica (reales del catálogo)
+  GUARDADAS[]      propuestas guardadas por el equipo, leídas de la hoja de Google
+  cargarEstado()   carga una propuesta completa, siempre partiendo de S_FABRICA
   opts(id)         opciones de cada desplegable
   renderForm()     pinta el formulario desde S
   brief()          convierte S en el objeto de cálculo
@@ -66,6 +70,7 @@ Producción: `https://5i-web.vercel.app/tarifador/`
   evaluar(v,p)     precio mínimo, mínimo facturable, catálogo, semáforo
   inclusiones(v)   las líneas de "qué incluye"
   generarTexto()   propuesta en texto plano
+  propuestaActual() lo que se guarda: estado sin fecha, precios, opción elegida
   docPropuesta()   propuesta maquetada de la opción elegida, para imprimir a PDF
 ```
 
@@ -213,8 +218,23 @@ presentación usan la de marca.
 ## 7. Conector de Drive
 
 `apps-script/guardar_propuesta.gs` es un Apps Script publicado como aplicación
-web. Recibe la propuesta en texto, crea un Google Doc y guarda **el PDF de ese
-mismo Doc** en otra carpeta.
+web. Hace dos cosas, siempre con la clave:
+
+- **Guardar en Drive**: recibe la propuesta en texto, crea un Google Doc y guarda
+  **el PDF de ese mismo Doc** en otra carpeta.
+- **Propuestas ya hechas** (`accion: listar_propuestas / guardar_propuesta`):
+  una fila por propuesta en la pestaña «Propuestas guardadas» de la hoja cuyo
+  ID va en `HOJA`. Columnas legibles + una última columna «Estado (no tocar)»
+  con el JSON que restaura la propuesta. Mismo nombre = sustituir (la app
+  pregunta antes). Borrar una propuesta = borrar su fila en la hoja.
+
+Sin conector configurado en el navegador, la app no puede guardar ni ver las
+propuestas del equipo; solo las 8 de fábrica. Cada navegador guarda una copia
+de la última lista (`5i.propuestas.cache`) por si el conector no responde.
+
+Para probarlo sin tocar el Apps Script real: ejecutar el `.gs` en Node con
+`vm` y `SpreadsheetApp` simulado, y desviar `script.google.com` con
+`context.route` de Playwright.
 
 **No conviertas el HTML de la propuesta a PDF en Apps Script.** Se intentó con
 `Utilities.newBlob(html).getAs('application/pdf')` y el conversor de Google
@@ -234,7 +254,9 @@ implementaciones → lápiz → Versión: Nueva versión. Guardar no basta.
    escandallo y alérgenos. Es el paso que convierte esto de calculadora en
    sistema. **Los datos están a medias** (ver §9): `datos/catalogo.json` tiene
    bocado, tipo, coste y menú, pero no receta con gramos ni alérgenos.
-3. Registro de propuestas emitidas: la hoja existe en Drive y está vacía.
+3. Registro de propuestas emitidas: la hoja existe en Drive y está vacía. Las
+   «Propuestas guardadas» (§7) ya dejan una fila por propuesta; falta decidir
+   si el registro de envíos y cierres es la misma hoja o otra.
 4. Traspaso de GitHub, Vercel y Drive a cuentas corporativas de 5iberia.
 
 ---

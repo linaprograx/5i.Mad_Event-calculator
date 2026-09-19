@@ -4,6 +4,9 @@
  * Recibe una propuesta desde el tarifador y deja dos archivos:
  *   · Google Doc con el texto  -> carpeta de documentos
  *   · PDF de ese mismo Doc     -> carpeta de PDF
+ * Y guarda las "propuestas ya hechas" que comparte el equipo:
+ *   · una fila por propuesta en la pestaña "Propuestas guardadas"
+ *     de una hoja de calculo de Google
  *
  * El PDF se genera exportando el propio documento. No se
  * convierte HTML: el conversor de HTML de Google no entiende
@@ -13,10 +16,13 @@
  *
  * 1. Crea en Drive las dos carpetas y copia el ID de cada una
  *    de su URL (el trozo largo despues de /folders/).
- *    Crea el script CON LA MISMA CUENTA dueña de las carpetas.
+ *    Crea tambien (o reutiliza) una hoja de calculo y copia su ID
+ *    (el trozo largo entre /d/ y /edit). La pestaña "Propuestas
+ *    guardadas" se crea sola la primera vez.
+ *    Crea el script CON LA MISMA CUENTA dueña de carpetas y hoja.
  *
  * 2. script.google.com > Nuevo proyecto. Borra todo y pega
- *    este archivo. Rellena las tres constantes de abajo.
+ *    este archivo. Rellena las cuatro constantes de abajo.
  *
  * 3. Ejecuta PROBAR_TODO y autoriza. En la pantalla "Google no
  *    ha verificado esta aplicacion": Configuracion avanzada >
@@ -42,6 +48,12 @@
 var CARPETA_DOCS = 'PEGA_AQUI_EL_ID_DE_LA_CARPETA_DE_DOCUMENTOS';
 var CARPETA_PDF  = 'PEGA_AQUI_EL_ID_DE_LA_CARPETA_DE_PDF';
 var CLAVE        = 'PEGA_AQUI_UNA_CLAVE_LARGA_INVENTADA';
+var HOJA         = 'PEGA_AQUI_EL_ID_DE_LA_HOJA_DE_CALCULO';
+
+var PESTANA  = 'Propuestas guardadas';
+var COLUMNAS = ['Guardada', 'Nombre', 'Tipo de evento', 'Pax mín', 'Pax máx', 'Duración (h)',
+                'Comida', 'Barra', 'Simuladores', 'Horas sim.', 'Opción elegida',
+                '€/pax sin IVA', 'Mínimo facturable', 'Requiere aprobación', 'Estado (no tocar)'];
 
 var VERDE  = '#2F6B43';
 var TINTA  = '#12211A';
@@ -56,6 +68,9 @@ function doPost(e) {
 
     var d = JSON.parse(e.postData.contents);
     if (String(d.token) !== CLAVE) return json({ ok:false, error:'clave incorrecta' });
+
+    if (d.accion === 'listar_propuestas') return json(listarPropuestas());
+    if (d.accion === 'guardar_propuesta') return json(guardarPropuesta(d.propuesta));
 
     var texto = String(d.texto || '').trim();
     if (!texto) return json({ ok:false, error:'propuesta vacia' });
@@ -167,6 +182,67 @@ function guardar(nombre, texto) {
   return salida;
 }
 
+/* ============ propuestas ya hechas, compartidas por el equipo ============ */
+
+function pestana() {
+  var libro = SpreadsheetApp.openById(HOJA);
+  var h = libro.getSheetByName(PESTANA);
+  if (!h) {
+    h = libro.insertSheet(PESTANA);
+    h.getRange(1, 1, 1, COLUMNAS.length).setValues([COLUMNAS]).setFontWeight('bold');
+    h.setFrozenRows(1);
+  }
+  return h;
+}
+
+function listarPropuestas() {
+  var h = pestana();
+  var n = h.getLastRow() - 1;
+  if (n < 1) return { ok:true, propuestas:[] };
+  var filas = h.getRange(2, 1, n, COLUMNAS.length).getValues();
+  var out = [];
+  filas.forEach(function (f) {
+    var estado = f[COLUMNAS.length - 1];
+    if (!estado) return;
+    try { out.push(JSON.parse(estado)); } catch (err) { /* fila editada a mano: se ignora */ }
+  });
+  return { ok:true, propuestas:out };
+}
+
+/* guarda o sustituye (mismo nombre, sin distinguir mayusculas) */
+function guardarPropuesta(p) {
+  if (!p || !p.nombre || !p.c) return { ok:false, error:'propuesta incompleta' };
+  var nombre = String(p.nombre).trim().substring(0, 120);
+  if (!nombre) return { ok:false, error:'falta el nombre' };
+  p.nombre = nombre;
+  p.guardada = new Date().toISOString();
+  var r = p.resumen || {};
+  var fila = [new Date(), nombre, r.tipo || '', r.paxmin || '', r.paxmax || '', r.horas || '',
+              r.comida || '', r.barra || '', r.simuladores || '', r.horasSim || '', r.opcion || '',
+              r.precio || '', r.minimoFacturable || '', r.aprobacion ? 'SÍ' : 'no',
+              JSON.stringify(p)];
+
+  var lock = LockService.getScriptLock();
+  lock.waitLock(20000);
+  try {
+    var h = pestana();
+    var n = h.getLastRow() - 1;
+    var destino = h.getLastRow() + 1, sustituida = false;
+    if (n > 0) {
+      var nombres = h.getRange(2, 2, n, 1).getValues();
+      for (var i = 0; i < nombres.length; i++) {
+        if (String(nombres[i][0]).trim().toLowerCase() === nombre.toLowerCase()) {
+          destino = i + 2; sustituida = true; break;
+        }
+      }
+    }
+    h.getRange(destino, 1, 1, fila.length).setValues([fila]);
+    return { ok:true, nombre:nombre, sustituida:sustituida };
+  } finally {
+    lock.releaseLock();
+  }
+}
+
 function estilo(tam, color, negrita) {
   var a = {};
   a[DocumentApp.Attribute.FONT_SIZE]       = tam;
@@ -215,6 +291,14 @@ function PROBAR_TODO() {
   } catch (e) {
     fallos.push('No encuentro la carpeta de PDF (' + CARPETA_PDF + '). ' +
                 'Misma causa probable que la anterior. Detalle: ' + e);
+  }
+
+  try {
+    var h = pestana();
+    Logger.log('     Hoja de propuestas OK: ' + h.getParent().getName() + ' > ' + PESTANA);
+  } catch (e) {
+    fallos.push('No puedo abrir la HOJA de propuestas (' + HOJA + '). ' +
+                'Revisa el ID y que la hoja sea de esta misma cuenta. Detalle: ' + e);
   }
 
   if (fallos.length) {
