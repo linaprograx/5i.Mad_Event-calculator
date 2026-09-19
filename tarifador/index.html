@@ -1306,6 +1306,9 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
     Object.keys(p.c).forEach(function(k){ S[k] = p.c[k]; });
     S.fechaISO = '';
     PRECIOS = p.p.slice();
+    /* la opcion elegida y el texto abierto tampoco se arrastran */
+    $('cual').value = '1';
+    $('salida').classList.add('hidden');
     render();
   });
 
