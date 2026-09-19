@@ -43,6 +43,8 @@ h1{font-family:var(--display);font-weight:800;font-size:clamp(25px,4vw,38px);let
 .f .hint{font-size:11px;color:var(--ink-faint);line-height:1.35}
 select{font-family:var(--body);font-size:14px;font-weight:500;background:var(--field);color:var(--field-ink);
   border:1px solid var(--field);border-radius:var(--r);padding:9px 10px;width:100%;min-width:0}
+#form input[type=text]{font-family:var(--body);font-size:14px;font-weight:500;background:var(--field);color:var(--field-ink);
+  border:1px solid var(--field);border-radius:var(--r);padding:9px 10px;width:100%;min-width:0}
 select:focus-visible,.switch:focus-within,button:focus-visible,summary:focus-visible,input:focus-visible{outline:2px solid var(--fairway);outline-offset:2px}
 select.alerta{border-color:var(--bad);box-shadow:0 0 0 1px var(--bad)}
 .pactado{border-left:2px solid var(--fairway-deep);padding-left:12px}
@@ -527,18 +529,6 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
   /* ============ definición de campos ============ */
   function opts(id){
     switch(id){
-      case 'cliente': return [
-        {v:'', t:'Elige el tipo de evento'},
-        {v:'Team Building Social', t:'Team Building Social'},
-        {v:'Team Building Full Experience', t:'Team Building Full Experience'},
-        {v:'Corporate Lunch & Play', t:'Corporate Lunch & Play'},
-        {v:'Five Iron Afterwork', t:'Five Iron Afterwork'},
-        {v:'Business Breakfast & Networking', t:'Business Breakfast & Networking'},
-        {v:'Corporate Night', t:'Corporate Night'},
-        {v:'Cumpleaños', t:'Cumpleaños'},
-        {v:'Despedida', t:'Despedida'},
-        {v:'Evento de agencia', t:'Evento de agencia'}
-      ];
       case 'fechaISO': return listaFechas();
       case 'fechaTexto': return [
         {v:'', t:'Sin fecha definida'},
@@ -583,7 +573,7 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
     return [];
   }
   /* campos que admiten valor propio y de qué tipo */
-  var LIBRES = { cliente:'texto', fechaTexto:'texto', inicio:'hora', paxmin:'entero', paxmax:'entero',
+  var LIBRES = { fechaTexto:'texto', inicio:'hora', paxmin:'entero', paxmax:'entero',
                  paxfac:'entero', horas:'decimal', bays:'entero', baysh:'decimal', pases:'entero',
                  bcant:'decimal', dto:'decimal', precio:'decimal' };
 
@@ -636,7 +626,10 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
       '<p class="note">El rango de asistentes es lo que más mueve el resultado. El mínimo facturable no se elige: ' +
       'lo calcula la herramienta en cada opción para que el resultado operativo no baje del ' + Math.round(T.RO_OBJ * 100) + ' %.</p>' +
       '<div class="rows pactado">' +
-      campo('cliente', 'Cliente o referencia', '', true) +
+      '<div class="f wide"><label for="c_cliente">Nombre del cliente o referencia</label>' +
+        '<input type="text" id="c_cliente" data-texto="cliente" autocomplete="off" maxlength="80" ' +
+        'placeholder="Empresa o referencia del evento" value="' + esc(S.cliente) + '">' +
+        '<span class="hint">Sale en la propuesta. Las propuestas ya hechas se cargan arriba.</span></div>' +
       campo('fechaISO', 'Fecha', diaAuto ? 'El día de la semana se deduce de la fecha.' : 'Elige una fecha o deja sin definir.', true) +
       (S.fechaISO ? '' : campo('fechaTexto', 'Texto de fecha para la propuesta', '', true)) +
       campo('paxmin', 'Asistentes mín.') +
@@ -1440,6 +1433,12 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
       if (el.checked && k < 0) S.bocados.push(bid);
       if (!el.checked && k > -1) S.bocados.splice(k, 1);
       render('b_' + bid);
+      return;
+    }
+    if (el.hasAttribute && el.hasAttribute('data-texto')){
+      S[el.getAttribute('data-texto')] = el.value.trim();
+      /* solo resultados: redibujar el formulario le quitaria el foco al campo siguiente */
+      renderResultados();
       return;
     }
     if (el.hasAttribute && el.hasAttribute('data-chk')){

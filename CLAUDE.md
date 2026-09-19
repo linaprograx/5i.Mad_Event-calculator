@@ -58,6 +58,7 @@ Producción: `https://5i-web.vercel.app/tarifador/`
   MENUS{}          los 4 menús cerrados
   T{}              casi todos los parámetros de negocio (ver §3, hay excepciones)
   S{}              estado del formulario · S_FABRICA es su copia intacta
+                   S.cliente es texto libre; las propuestas se cargan solo desde #tpl
                    S_VACIO: lo que pone «Nueva propuesta»
   PLANTILLAS[]     8 propuestas de fábrica (reales del catálogo)
   GUARDADAS[]      propuestas guardadas por el equipo, leídas de la hoja de Google
