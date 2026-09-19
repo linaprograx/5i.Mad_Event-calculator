@@ -78,6 +78,7 @@ select.alerta{border-color:var(--bad);box-shadow:0 0 0 1px var(--bad)}
   border-radius:var(--r);padding:15px 17px;display:flex;flex-direction:column}
 .offer.reco{background:var(--raised);border-color:var(--fairway-deep)}
 .offer-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.lleva{margin:6px 0 0;font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;color:var(--ink-dim)}
 .offer-name{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--tier,var(--ink-dim));font-weight:600}
 .badge{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:3px 7px;border-radius:2px;white-space:nowrap}
 .b-ok{background:rgba(95,201,127,.14);color:var(--fairway)}
@@ -311,6 +312,8 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
     <p>Por persona: <code>2,5</code> consumiciones la primera hora, <code>2,0</code> la segunda, <code>1,5</code> la tercera, <code>1,2</code> a partir de ahí. Tres horas son 6 consumiciones. Sirve para el coste, no para el precio.</p>
     <h4>Personal</h4>
     <p>Coste empresa por hora: sala <code>18 €</code>, barra <code>18 €</code>, cocina <code>20 €</code>, anfitrión <code>16 €</code>, técnico <code>25 €</code>, seguridad <code>22 €</code>, limpieza <code>16 €</code>. Horas del evento más <code>1,5 h</code> de montaje y desmontaje. Un camarero cada 25 personas, barra cada 40, cocina cada 40, anfitrión desde 40, técnico con cuatro simuladores o más, seguridad desde 80. DJ contratado <code>300 €</code>, decoración <code>180 €</code>.</p>
+    <h4>Las tres opciones</h4>
+    <p>Son fijas y solo cambia lo que se come y se bebe. <b>Esencial</b>: paquete Bronce y barra básica. <b>Recomendada</b>: paquete Plata y barra básica. <b>Premium</b>: paquete Oro, barra premium con destilados y cóctel de bienvenida. Asistentes, horas, simuladores y extras son los mismos en las tres. Con desayuno, Esencial lleva el Breakfast Experience y Premium el Five Iron Breakfast. Si el formato no deja diferenciarlas (sin comida, por ejemplo), la tarjeta lo avisa. En una propuesta nueva, cada opción sale al menos 5 € por encima de la anterior.</p>
     <h4>Precio mínimo y mínimo facturable</h4>
     <p>El precio mínimo por persona es el que deja un resultado operativo del <code>25 %</code> con cualquier grupo dentro del rango de asistentes, redondeado al alza al múltiplo de 5 €. Se puede ofrecer por debajo, pero la opción sale como <b>requiere aprobación de dirección</b>.</p>
     <p>El mínimo facturable no se elige. Nunca baja del número mínimo de asistentes; si el precio queda por debajo del mínimo, sube hasta el número de personas con el que el resultado vuelve al <code>25 %</code>. Por debajo del <code>12 %</code> de resultado o del <code>60 %</code> de margen de contribución, la opción sale bloqueada.</p>
@@ -556,9 +559,7 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
       case 'musica': return [{v:'0',t:'Ambiente del local'},{v:'1',t:'DJ contratado'}];
       case 'comida': return [
         {v:'0',t:'Sin comida'},
-        {v:'after',t:'Paquete Bronce · After-work & Networking · 9 bocados'},
-        {v:'trend',t:'Paquete Plata · Trend & Bistró Madrid · 12 bocados'},
-        {v:'celebracion',t:'Paquete Oro · Celebración Corporativa · 15 bocados'},
+        {v:'paquetes',t:'Paquetes de cóctel · Bronce, Plata y Oro según la opción'},
         {v:'b1',t:'Breakfast Experience'},
         {v:'b2',t:'Five Iron Breakfast · coffee station completa'},
         {v:'medida',t:'Menú a medida · excepción, elegir bocados uno a uno'}
@@ -670,8 +671,8 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
       '</div></section>';
 
     h += '<section class="grp"><h3>Comida</h3>' +
-      '<p class="note">Tres paquetes cerrados del Manual Maestro, con el coste real de cada bocado. ' +
-      'Esencial baja un paquete y Premium sube uno. El menú a medida es la excepción.</p><div class="rows">' +
+      '<p class="note">Con paquetes de cóctel, cada opción lleva el suyo: Esencial el Bronce, Recomendada el Plata ' +
+      'y Premium el Oro. El menú a medida es la excepción.</p><div class="rows">' +
       campo('comida', 'Formato', '', true) +
       detalleComida() +
       '<div class="f wide"><div class="checkcol">' +
@@ -681,12 +682,14 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
 
     var consEst = S.modal === '2' ? consumoEstimado(parseFloat(S.bcant || 0)) : 0;
     h += '<section class="grp"><h3>Bebida</h3>' +
-      '<p class="note">El precio de la barra va dentro del precio por persona. Aquí definimos qué se sirve, para estimar el coste.</p><div class="rows">' +
+      '<p class="note">El precio de la barra va dentro del precio por persona. Carta básica (cerveza, vino, refrescos y agua) ' +
+      'en Esencial y Recomendada; premium con destilados en Premium.</p><div class="rows">' +
       campo('modal', 'Modalidad', '', true) +
-      (S.modal !== '0' ? campo('btipo', 'Carta', '', true) : '') +
+
       (S.modal !== '0' ? campo('bcant', S.modal === '1' ? 'Consumiciones por persona' : 'Horas de barra',
         S.modal === '2' ? 'Consumo estimado: ' + n1(consEst) + ' consumiciones por persona.'
-                        : 'Coste estimado: ' + eur2.format(T.costeCons[parseInt(S.btipo,10)]) + ' por consumición.', true) : '') +
+                        : 'Coste estimado: ' + eur2.format(T.costeCons[1]) + ' por consumición básica y ' +
+                          eur2.format(T.costeCons[2]) + ' la premium.', true) : '') +
       '</div></section>';
 
     var vf = { suplFranja:S.suplFranja, inicio:S.inicio, dia:diaAuto || S.dia };
@@ -847,6 +850,13 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
   /* ficha del formato de comida elegido, bajo el desplegable */
   function detalleComida(){
     var v = brief();
+    if (S.comida === 'paquetes'){
+      return '<div class="menudet">' + PAQUETES.map(function(k, i){
+        var w = { comida:k, bocados:[] };
+        return '<b>' + esc(MENUS[k].n) + '</b> · ' + NOMBRES[i] + ' · ' + MENUS[k].b + ' bocados · coste ' +
+          eur2.format(costeComida(w)) + ' · PVP ' + eur0.format(pvpComida(w)) + ' · food cost ' + pct(costeComida(w) / pvpComida(w));
+      }).join('<br>') + '<div class="lista">Los nombres van uno a uno en la propuesta y en el PDF.</div></div>';
+    }
     if (MENUS[S.comida]){
       var m = MENUS[S.comida], gs = gastroGrupos(v);
       var txt = gs.map(function(g){ return g.t.toLowerCase() + ' (' + g.items.length + ')'; }).join(' · ');
@@ -915,31 +925,32 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
     };
   }
 
+  /* las tres opciones, fijas (decision de Lian, 19-09-2026):
+     Esencial = Paquete Bronce + barra basica
+     Recomendada = Paquete Plata + barra basica
+     Premium = Paquete Oro + barra premium + coctel de bienvenida
+     Todo lo demas (asistentes, horas, simuladores, extras) igual en las tres.
+     Con desayuno: Esencial Breakfast Experience, Premium Five Iron Breakfast. */
   function variante(b, nivel){
     var v = JSON.parse(JSON.stringify(b));
-    var ESCALA = PAQUETES;
-    function mueve(c, paso){
-      var i = ESCALA.indexOf(c);
-      if (i < 0) return c;
-      return ESCALA[Math.max(0, Math.min(ESCALA.length - 1, i + paso))];
+    if (v.comida === 'paquetes') v.comida = PAQUETES[nivel];
+    else if (v.comida === 'b1' || v.comida === 'b2'){
+      if (nivel === 0) v.comida = 'b1';
+      if (nivel === 2) v.comida = 'b2';
     }
-    if (nivel === 0){
-      v.comida = mueve(v.comida, -1);
-      if (v.comida === 'b2') v.comida = 'b1';
-      if (v.btipo > 1) v.btipo = 1;
-      if (v.modal === 2 && v.bcant > 2) v.bcant = 2;
-      v.dec = false; v.musica = 0;
-    } else if (nivel === 2){
-      v.comida = mueve(v.comida, 1);
-      if (v.comida === 'b1') v.comida = 'b2';
-      else if (v.comida === '0'){ v.comida = 'after'; }
-      if (v.modal === 1){ v.modal = 2; v.bcant = Math.max(2, b.horas); }
-      else if (v.modal === 2){ v.bcant = b.bcant + 1; }
-      if (v.modal > 0) v.btipo = 2;
-      v.wcoctel = true;
-      if (b.paxmin >= 40){ v.musica = 1; v.dec = true; }
-    }
+    if (v.modal > 0) v.btipo = nivel === 2 ? 2 : 1;
+    if (nivel === 2) v.wcoctel = true;
     return v;
+  }
+  /* lo que distingue a cada opcion, en una linea */
+  function resumenOpcion(v){
+    var c = MENUS[v.comida] ? MENUS[v.comida].n.split(' · ')[0]
+          : v.comida === 'b1' ? 'Breakfast Experience' : v.comida === 'b2' ? 'Five Iron Breakfast'
+          : v.comida === 'medida' ? 'Menú a medida' : 'Sin comida';
+    var partes = [c];
+    if (v.modal > 0 && v.bcant > 0) partes.push(v.btipo === 2 ? 'barra premium' : 'barra básica');
+    if (v.wcoctel) partes.push('cóctel de bienvenida');
+    return partes.join(' · ');
   }
 
   function costes(v, pax){
@@ -1116,16 +1127,23 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
       return;
     }
     $('btnGen').disabled = false;
-    R = [0,1,2].map(function(n){
+    R = [];
+    [0,1,2].forEach(function(n){
       var v = variante(b, n);
       if (PRECIOS[n] === 'auto'){
-        /* propuesta nueva: el precio sigue al minimo hasta que se elija otro */
+        /* propuesta nueva: el precio sigue al minimo hasta que se elija otro, y cada
+           opcion distinta de la anterior sale al menos un escalon de 5 EUR por encima,
+           para que dos opciones diferentes no tengan el mismo precio */
         var r0 = evaluar(v, 0);
-        var r = evaluar(v, Math.max(0, techo5(r0.pMin - r0.pAdd - r0.pSup)));
+        var base = Math.max(0, techo5(r0.pMin - r0.pAdd - r0.pSup));
+        var prev = R[n - 1];
+        if (prev && JSON.stringify(prev.v) !== JSON.stringify(v)) base = Math.max(base, prev.precioBase + 5);
+        var r = evaluar(v, base);
         r.auto = true;
-        return r;
+        R.push(r);
+        return;
       }
-      return evaluar(v, parseFloat(PRECIOS[n]) || 0);
+      R.push(evaluar(v, parseFloat(PRECIOS[n]) || 0));
     });
 
     $('railpax').textContent = (b.paxmin === b.paxmax ? b.paxmin + ' personas' : b.paxmin + '–' + b.paxmax + ' personas') +
@@ -1142,6 +1160,10 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
       var elegida = parseInt($('cual').value,10) === i;
       html += '<article class="offer' + (i===1?' reco':'') + (elegida?' elegida':'') + '" style="--tier:' + TIER[i] + '">';
       html += '<div class="offer-top"><span class="offer-name">' + NOMBRES[i] + '</span>' + (cliente ? '' : badge) + '</div>';
+      html += '<p class="lleva">' + esc(resumenOpcion(r.v)) + '</p>';
+      if (i !== 1 && JSON.stringify(r.v) === JSON.stringify(R[1].v))
+        html += '<p class="reason">Igual que la Recomendada: con este formato de comida y bebida no hay nada que ' +
+                (i === 0 ? 'quitar' : 'añadir') + '.</p>';
       html += '<div class="pblock"><span class="big">' + eur0.format(r.precio) + '</span>' +
               '<span class="u">por persona · sin IVA' +
               (r.pAdd > 0 || r.pSup > 0 ? '<br>' + eur0.format(r.precioBase) + ' base' +
@@ -1311,7 +1333,7 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
     { n:'Team Building Full Experience · 10–17 pax', p:['65','75','90'], c:{ cliente:'Team Building Full Experience',
       paxmin:'10', paxmax:'17', paxfac:'12', horas:'3', dia:'LJ', inicio:'18:00', bays:'4', baysh:'3', excl:'0',
       f1:true, dardos:true, tour:true, coord:true, equipos:true, lounge:false, av:false, musica:'0', dec:false,
-      comida:'after', bocados:[], wcoffee:false, wcoctel:false, suplFranja:'auto', modal:'2', btipo:'1', bcant:'3' } },
+      comida:'paquetes', bocados:[], wcoffee:false, wcoctel:false, suplFranja:'auto', modal:'2', btipo:'1', bcant:'3' } },
     { n:'Breakfast Experience + 2 h de simuladores · 35–50 pax', p:['17','19','24'], c:{ cliente:'Business Breakfast & Networking',
       paxmin:'35', paxmax:'50', paxfac:'35', horas:'3', dia:'LJ', inicio:'09:30', bays:'2', baysh:'2', excl:'0', simcobro:'1',
       f1:false, dardos:false, tour:true, coord:true, equipos:false, lounge:true, av:true, musica:'0', dec:false,
@@ -1323,19 +1345,19 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
     { n:'Corporate Lunch & Play · 50 pax', p:['48','54','64'], c:{ cliente:'Corporate Lunch & Play',
       paxmin:'50', paxmax:'50', paxfac:'45', horas:'4', dia:'LJ', inicio:'11:00', bays:'2', baysh:'3', excl:'1',
       f1:false, dardos:false, tour:true, coord:true, equipos:false, lounge:false, av:false, musica:'0', dec:false,
-      comida:'trend', bocados:[], wcoffee:false, wcoctel:false, suplFranja:'auto', modal:'1', btipo:'1', bcant:'3' } },
+      comida:'paquetes', bocados:[], wcoffee:false, wcoctel:false, suplFranja:'auto', modal:'1', btipo:'1', bcant:'3' } },
     { n:'Five Iron Afterwork · 100 pax', p:['62','71','85'], c:{ cliente:'Five Iron Afterwork',
       paxmin:'100', paxmax:'100', paxfac:'85', horas:'5', dia:'LJ', inicio:'16:00', bays:'4', baysh:'4', excl:'2',
       f1:false, dardos:false, tour:true, coord:true, equipos:false, lounge:false, av:false, musica:'1', dec:false,
-      comida:'trend', bocados:[], wcoffee:false, wcoctel:false, suplFranja:'auto', modal:'2', btipo:'1', bcant:'2' } },
+      comida:'paquetes', bocados:[], wcoffee:false, wcoctel:false, suplFranja:'auto', modal:'2', btipo:'1', bcant:'2' } },
     { n:'Team Building Experience · 30 pax', p:['58','66','79'], c:{ cliente:'Team Building Social',
       paxmin:'30', paxmax:'30', paxfac:'25', horas:'4', dia:'LJ', inicio:'18:00', bays:'4', baysh:'3', excl:'0',
       f1:true, dardos:true, tour:true, coord:true, equipos:true, lounge:false, av:false, musica:'1', dec:false,
-      comida:'celebracion', bocados:[], wcoffee:false, wcoctel:false, suplFranja:'auto', modal:'1', btipo:'1', bcant:'4' } },
+      comida:'paquetes', bocados:[], wcoffee:false, wcoctel:false, suplFranja:'auto', modal:'1', btipo:'1', bcant:'4' } },
     { n:'Five Iron Corporate Night · 80 pax', p:['76','86','104'], c:{ cliente:'Corporate Night',
       paxmin:'80', paxmax:'80', paxfac:'70', horas:'5', dia:'V', inicio:'19:00', bays:'6', baysh:'4', excl:'2',
       f1:true, dardos:true, tour:true, coord:true, equipos:true, lounge:false, av:false, musica:'1', dec:false,
-      comida:'celebracion', bocados:[], wcoffee:false, wcoctel:false, suplFranja:'auto', modal:'2', btipo:'1', bcant:'3' } }
+      comida:'paquetes', bocados:[], wcoffee:false, wcoctel:false, suplFranja:'auto', modal:'2', btipo:'1', bcant:'3' } }
   ];
   /* carga una propuesta completa. Parte siempre de S_FABRICA: si no, campos
      como simcobro o suplFranja se quedan pegados de la anterior y el precio sale mal */
@@ -1345,6 +1367,8 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
     Object.keys(c).forEach(function(k){
       if (base.hasOwnProperty(k)) S[k] = JSON.parse(JSON.stringify(c[k]));
     });
+    /* guardadas antes de los paquetes fijos: un paquete concreto pasa a "paquetes" */
+    if (PAQUETES.indexOf(S.comida) > -1 || S.comida === 'gala') S.comida = 'paquetes';
     /* la fecha es de cada evento, nunca se hereda */
     S.fechaISO = ''; S.fechaTexto = '';
     PRECIOS = precios.slice();

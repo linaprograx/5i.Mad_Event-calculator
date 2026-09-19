@@ -65,7 +65,8 @@ Producción: `https://5i-web.vercel.app/tarifador/`
   opts(id)         opciones de cada desplegable
   renderForm()     pinta el formulario desde S
   brief()          convierte S en el objeto de cálculo
-  variante(b,n)    deriva Esencial (0) y Premium (2) de la Recomendada (1)
+  variante(b,n)    opciones fijas: Esencial Bronce+básica, Recomendada Plata+básica,
+                   Premium Oro+premium+cóctel (decisión de Lian, 19-09-2026)
   costes(v,pax)    coste por persona + personal
   evaluar(v,p)     precio mínimo, mínimo facturable, catálogo, semáforo
   inclusiones(v)   las líneas de "qué incluye"
@@ -94,7 +95,14 @@ dos cifras que no se eligen a mano** (decisión de Lian):
   Corporate Night de 80 personas salía con 16 de mínimo facturable.
 - **Catálogo** — suma de tarifas publicadas. Es un techo, no un precio.
 
-`RO_MIN` (12 %) y `MC_MIN` (60 %) siguen marcando «Bloqueada». El antiguo
+`RO_MIN` (12 %) y `MC_MIN` (60 %) siguen marcando «Bloqueada».
+
+**Las tres opciones son fijas** y solo cambian comida y bebida: Esencial =
+paquete Bronce + barra básica; Recomendada = Plata + básica; Premium = Oro +
+barra premium + cóctel de bienvenida. En el formulario la comida es un único
+valor `paquetes`; las propuestas guardadas con un paquete concreto se
+convierten al cargarlas. Con precio automático (propuesta nueva), cada opción
+distinta de la anterior sale al menos 5 € por encima. El antiguo
 «suelo» y «recomendado» ya no existen; el campo `paxfac` del estado y de las
 plantillas se ignora.
 
