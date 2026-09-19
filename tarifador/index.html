@@ -127,6 +127,7 @@ details[open] summary::before{content:"– "}
 #salida{margin-top:22px;border:1px solid var(--fairway-deep);border-radius:var(--r);background:var(--surface);padding:16px}
 #salida h3{font-family:var(--display);font-size:16px;margin:0 0 4px;font-weight:700}
 #salida p.sub{margin:0 0 12px;color:var(--ink-dim);font-size:12px}
+#salida .cocina{margin-top:22px;padding-top:18px;border-top:1px solid var(--line)}
 textarea{width:100%;min-height:360px;background:var(--ground);color:var(--ink);border:1px solid var(--line);border-radius:var(--r);
   font-family:var(--mono);font-size:12px;line-height:1.6;padding:13px;resize:vertical}
 .copied{color:var(--fairway);font-size:12px;margin-left:10px}
@@ -257,6 +258,20 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
   <strong>Gráficos de fondo</strong> en "Más ajustes", o la portada saldrá en blanco.</p>
   <p class="estado" id="estadoDrive"></p>
   <p class="hint" id="avisoPreview" style="margin-top:2px"></p>
+
+  <div class="cocina">
+    <h3>Hoja de producción de cocina</h3>
+    <p class="sub">De la opción elegida. Uso interno: unidades de cada bocado, coste de materia prima y alérgenos.</p>
+    <div class="rows" style="max-width:600px">
+      <div class="f"><label for="cocPax">Personas a producir</label><select id="cocPax"></select>
+        <span class="hint">Por defecto, el máximo de asistentes. Cámbialo cuando se confirme el número final.</span></div>
+      <div class="f"><label for="cocMargen">Unidades de más</label><select id="cocMargen">
+        <option value="0">Sin margen</option><option value="5">+5 %</option><option value="10">+10 %</option><option value="15">+15 %</option></select>
+        <span class="hint">Opcional. Se redondea al alza por bocado.</span></div>
+    </div>
+    <button type="button" class="big ghost" id="btnCocina" style="margin-top:12px">Hoja de cocina</button>
+    <p class="estado" id="estadoCocina"></p>
+  </div>
 </section>
 
 <details id="conf">
@@ -503,6 +518,8 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
   };
   /* propuestas guardadas por el equipo en la hoja de Google (via el conector) */
   var GUARDADAS = [];
+  /* personas a producir en la hoja de cocina: 'auto' = maximo de asistentes */
+  var COCINA_PAX = 'auto';
 
   /* ============ definición de campos ============ */
   function opts(id){
@@ -1214,7 +1231,7 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
       });
     });
 
-    if (!$('salida').classList.contains('hidden')) generarTexto();
+    if (!$('salida').classList.contains('hidden')){ generarTexto(); pintarCocina(); }
   }
 
   function render(foco){
@@ -1331,6 +1348,7 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
     /* la fecha es de cada evento, nunca se hereda */
     S.fechaISO = ''; S.fechaTexto = '';
     PRECIOS = precios.slice();
+    COCINA_PAX = 'auto';
     /* la opcion elegida y el texto abierto tampoco se arrastran */
     $('cual').value = String(cual === 0 || cual === 2 ? cual : 1);
     $('salida').classList.add('hidden');
@@ -1720,6 +1738,155 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
     }
     w.document.open();
     w.document.write(docPropuesta());
+    w.document.close();
+    w.focus();
+    setTimeout(function(){ try { w.print(); } catch(e){} }, 900);
+  });
+
+  /* ============ hoja de produccion de cocina ============ */
+  function paxCocina(){
+    var r = R[parseInt($('cual').value,10)];
+    return COCINA_PAX === 'auto' ? (r.v.paxmax || r.v.paxmin) : parseInt(COCINA_PAX,10) || 0;
+  }
+  function pintarCocina(){
+    if (!R.length) return;
+    var pax = paxCocina(), sel = $('cocPax');
+    var lista = listaPax().filter(function(o){ return o.v !== '0'; });
+    if (!lista.some(function(o){ return o.v === String(pax); })) lista.unshift({ v:String(pax), t:String(pax) });
+    sel.innerHTML = lista.map(function(o){
+      return '<option value="' + o.v + '"' + (o.v === String(pax) ? ' selected' : '') + '>' + o.t + '</option>';
+    }).join('');
+  }
+  $('cocPax').addEventListener('change', function(){ COCINA_PAX = $('cocPax').value; });
+
+  function docCocina(){
+    var i = parseInt($('cual').value,10), r = R[i], v = r.v;
+    var pax = paxCocina();
+    var margen = (parseFloat($('cocMargen').value) || 0) / 100;
+    var uds = Math.ceil(pax * (1 + margen) - 1e-9);
+    var COLOR = { f:'#2D9DD3', c:'#FF912D', d:'#AD59D0', a:'#FFD237', o:'#82878A' };
+    function hIni(x, dur){
+      var p = String(x).split(':');
+      var t = (parseInt(p[0],10) || 0) * 60 + (parseInt(p[1],10) || 0) + dur * 60;
+      t = ((t % 1440) + 1440) % 1440;
+      return String(Math.floor(t/60)).padStart(2,'0') + ':' + String(Math.round(t%60)).padStart(2,'0');
+    }
+
+    /* bloques: cocina (frio, caliente, dulce), barra y otros servicios sin ficha */
+    var L = bocadosDe(v), bloques = [], total = 0, totalUds = 0;
+    ['f','c','d'].forEach(function(t){
+      var it = L.filter(function(b){ return b.t === t; }).map(function(b){
+        return { id:b.i, n:b.n, u:uds, cu:b.c, ct:b.c * uds, al:null };
+      });
+      if (it.length) bloques.push({ t:TIPOS[t], color:COLOR[t], items:it, cocina:true });
+    });
+    var barra = L.filter(function(b){ return b.t === 'a'; }).map(function(b){
+      return { id:b.i, n:b.n, u:uds, cu:b.c, ct:b.c * uds, al:null };
+    });
+    if (v.wcoctel) barra.push({ id:'', n:'Cóctel de bienvenida', u:uds, cu:T.costeWCoctel, ct:T.costeWCoctel * uds, al:null, sinFicha:true });
+    var otros = [];
+    if (v.wcoffee) otros.push({ id:'', n:'Welcome Coffee', u:uds, cu:T.costeWCoffee, ct:T.costeWCoffee * uds, al:null, sinFicha:true });
+    if (v.comida === 'b1') otros.push({ id:'', n:'Breakfast Experience', u:uds, cu:T.costeB1, ct:T.costeB1 * uds, al:null, sinFicha:true, estimado:true });
+    if (v.comida === 'b2') otros.push({ id:'', n:'Five Iron Breakfast', u:uds, cu:T.costeB2, ct:T.costeB2 * uds, al:null, sinFicha:true, estimado:true });
+    if (barra.length) bloques.push({ t:'Para barra', color:COLOR.a, items:barra });
+    if (otros.length) bloques.push({ t:'Otros servicios', color:COLOR.o, items:otros });
+    if (!bloques.length) return null;
+    bloques.forEach(function(g){ g.items.forEach(function(x){ total += x.ct; totalUds += x.u; }); });
+    var udsBocados = bloques.filter(function(g){ return g.cocina; })
+      .reduce(function(s, g){ return s + g.items.length * uds; }, 0);
+    var hayEstimado = otros.some(function(x){ return x.estimado; });
+    var haySinFicha = bloques.some(function(g){ return g.items.some(function(x){ return x.sinFicha; }); });
+
+    var css =
+      '@page{size:A4;margin:12mm}'+
+      '*{box-sizing:border-box}'+
+      'body{margin:0;font-family:"IBM Plex Sans",Helvetica,Arial,sans-serif;font-size:9.5pt;line-height:1.4;color:#111;background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}'+
+      '.marca{font-family:"IBM Plex Mono",monospace;font-size:7.5pt;letter-spacing:.2em;text-transform:uppercase;color:#555;margin:0}'+
+      'h1{font-family:Archivo,Helvetica,Arial,sans-serif;font-weight:800;font-size:18pt;letter-spacing:-.02em;margin:1mm 0 3mm;line-height:1}'+
+      '.datos{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5mm 6mm;border-top:1.5pt solid #111;border-bottom:.5pt solid #bbb;padding:2.5mm 0;margin-bottom:3mm}'+
+      '.datos div span{display:block;font-family:"IBM Plex Mono",monospace;font-size:6.5pt;letter-spacing:.14em;text-transform:uppercase;color:#666}'+
+      '.datos div b{font-size:10.5pt}'+
+      '.datos .grande b{font-family:Archivo,sans-serif;font-size:14pt;font-weight:800}'+
+      'table{width:100%;border-collapse:collapse;margin-bottom:4mm}tr{break-inside:avoid;page-break-inside:avoid}.tot,.aviso{break-inside:avoid}'+
+      'th{font-family:"IBM Plex Mono",monospace;font-size:6.5pt;letter-spacing:.12em;text-transform:uppercase;color:#666;font-weight:500;text-align:left;padding:1.5mm 2mm;border-bottom:.5pt solid #999}'+
+      'th.n,td.n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}'+
+      'td{padding:1.1mm 2mm;border-bottom:.4pt solid #ddd;vertical-align:top;line-height:1.3}'+
+      'tr.cab td{font-family:"IBM Plex Mono",monospace;font-size:7.5pt;letter-spacing:.14em;text-transform:uppercase;font-weight:600;padding-top:2.2mm;border-bottom:1pt solid var(--c)}'+
+      'tr.it td:first-child{border-left:2.5pt solid var(--c)}'+
+      'td.uds{font-family:Archivo,sans-serif;font-weight:800;font-size:10.5pt}'+
+      'td.id{font-family:"IBM Plex Mono",monospace;font-size:7.5pt;color:#777}'+
+      'td.al{font-family:"IBM Plex Mono",monospace;font-size:7pt;font-weight:600;color:#B3261E}'+
+      'td.ok{width:9mm}td.ok span{display:inline-block;width:3.5mm;height:3.5mm;border:.8pt solid #333}'+
+      '.nota{font-size:7pt;color:#666}'+
+      '.tot{display:grid;grid-template-columns:1fr auto;gap:1mm 8mm;max-width:95mm;margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:9pt;border-top:1.5pt solid #111;padding-top:2.5mm}'+
+      '.tot b{text-align:right}'+
+      '.aviso{margin-top:4mm;border:1pt solid #B3261E;padding:2.5mm 4mm;font-size:8.5pt;color:#111}'+
+      '.aviso b{color:#B3261E}'+
+      '.pie{margin-top:4mm;font-size:7pt;color:#777;font-family:"IBM Plex Mono",monospace}';
+
+    var b = brief();
+    var h = '<!doctype html><html lang="es"><head><meta charset="utf-8">' +
+      '<title>Hoja de cocina · ' + esc(b.cliente || 'Evento') + ' · 5i MAD</title>' +
+      '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@800&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;600&display=swap">' +
+      '<style>' + css + '</style></head><body>' +
+      '<p class="marca">Five Iron Golf · Madrid · uso interno</p>' +
+      '<h1>Hoja de producción de cocina</h1>' +
+      '<div class="datos">' +
+        '<div><span>Evento</span><b>' + esc(b.cliente || '—') + '</b></div>' +
+        '<div><span>Fecha</span><b>' + esc(b.fecha || 'Sin fecha') + '</b></div>' +
+        '<div><span>Horario</span><b>' + b.inicio + ' – ' + hIni(b.inicio, b.horas) + '</b></div>' +
+        '<div><span>Opción</span><b>' + NOMBRES[i] + '</b></div>' +
+        '<div class="grande"><span>Personas a producir</span><b>' + pax + '</b></div>' +
+        '<div class="grande"><span>Unidades por bocado</span><b>' + uds + '</b></div>' +
+        '<div><span>Margen</span><b>' + (margen > 0 ? '+' + Math.round(margen * 100) + ' %' : 'Sin margen') + '</b></div>' +
+        '<div><span>Menú</span><b>' + esc(textoComida(v)) + '</b></div>' +
+      '</div>' +
+      '<table><thead><tr><th>Producto</th><th>Ref.</th><th class="n">Uds.</th><th class="n">Coste ud.</th>' +
+      '<th class="n">Coste total</th><th>Alérgenos</th><th>Hecho</th></tr></thead><tbody>';
+    bloques.forEach(function(g){
+      h += '<tr class="cab" style="--c:' + g.color + '"><td colspan="7">' + esc(g.t) + '</td></tr>';
+      g.items.forEach(function(x){
+        h += '<tr class="it" style="--c:' + g.color + '"><td>' + esc(x.n) +
+          (x.sinFicha ? '<br><span class="nota">Sin ficha técnica' + (x.estimado ? ' · coste estimado, pendiente de validar' : '') + '</span>' : '') +
+          '</td><td class="id">' + esc(x.id) + '</td><td class="n uds">' + x.u + '</td>' +
+          '<td class="n">' + eur2.format(x.cu) + '</td><td class="n">' + eur2.format(x.ct) + '</td>' +
+          '<td class="al">PENDIENTE</td><td class="ok"><span></span></td></tr>';
+      });
+    });
+    h += '</tbody></table>' +
+      '<div class="tot">' +
+        (udsBocados ? '<span>Bocados a producir</span><b>' + udsBocados + '</b>' : '') +
+        '<span>Coste de materia prima</span><b>' + eur2.format(total) + '</b>' +
+        '<span>Por persona producida</span><b>' + eur2.format(pax > 0 ? total / pax : 0) + '</b>' +
+      '</div>' +
+      '<div class="aviso"><b>Alérgenos pendientes.</b> Ningún bocado tiene todavía sus alérgenos registrados. ' +
+        'No se informa al cliente de ningún alérgeno a partir de esta hoja hasta que cocina los confirme.</div>' +
+      '<p class="pie">Unidades: una por persona y bocado' + (margen > 0 ? ', con el margen redondeado al alza' : '') + '. ' +
+        'Costes de materia prima del Manual Maestro Integral 2026' +
+        (haySinFicha ? '; las líneas sin ficha técnica usan el coste por persona del tarifador' : '') +
+        (hayEstimado ? ', y el de los desayunos es una estimación pendiente de validar' : '') + '.</p>' +
+      '</body></html>';
+    return h;
+  }
+
+  $('btnCocina').addEventListener('click', function(){
+    if (!R.length) return;
+    var est = $('estadoCocina');
+    var doc = docCocina();
+    if (!doc){
+      est.className = 'estado mal';
+      est.textContent = 'La opción elegida no lleva comida ni bebida de bienvenida: no hay nada que producir.';
+      return;
+    }
+    var w = window.open('', '_blank');
+    if (!w){
+      est.className = 'estado mal';
+      est.textContent = 'El navegador ha bloqueado la pestaña nueva. Permite las ventanas emergentes de este sitio y vuelve a pulsar.';
+      return;
+    }
+    est.className = 'estado'; est.textContent = '';
+    w.document.open();
+    w.document.write(doc);
     w.document.close();
     w.focus();
     setTimeout(function(){ try { w.print(); } catch(e){} }, 900);

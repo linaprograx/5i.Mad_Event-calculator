@@ -72,6 +72,7 @@ Producción: `https://5i-web.vercel.app/tarifador/`
   generarTexto()   propuesta en texto plano
   propuestaActual() lo que se guarda: estado sin fecha, precios, opción elegida
   docPropuesta()   propuesta maquetada de la opción elegida, para imprimir a PDF
+  docCocina()      hoja de producción de cocina de la opción elegida
 ```
 
 ---
@@ -174,7 +175,7 @@ declara se arrastraban. `S_FABRICA` lo resuelve; no lo quites.
 márcalo como pendiente de validar. Un número inventado en esta herramienta sale
 en una propuesta a un cliente.
 
-**Dos PDF distintos, no los confundas:**
+**Tres documentos impresos distintos, no los confundas:**
 - *Propuesta en PDF* — para el cliente, fondo claro, portada verde. **Solo la
   opción elegida** (botón «Presentar esta opción» en cada tarjeta, o el selector
   `#cual`): portada, la opción, su carta si lleva comida, y condiciones. 3 o 4
@@ -183,6 +184,10 @@ en una propuesta a un cliente.
   apaisado, una página. Nunca lo pongas en blanco: fue un fallo explícito.
   Hasta el 19-09-2026 la Corporate Night salía en dos páginas; cualquier línea
   nueva en las tarjetas puede volver a partirlo. Compruébalo con las 8 plantillas.
+- *Hoja de cocina* — interna, A4 vertical, **fondo blanco** (va a cocina), una
+  página con cualquier paquete. Unidades = personas a producir × (1 + margen),
+  redondeado al alza. Alérgenos siempre «PENDIENTE» hasta que existan datos;
+  nunca escribir «sin alérgenos». La copa de cava y el cóctel van a «Para barra».
 
 **Idioma.** Todo de cara al usuario en español de España. Los comentarios del
 código, en español y sin tildes (Apps Script se atraganta con algunas).
@@ -250,10 +255,10 @@ implementaciones → lápiz → Versión: Nueva versión. Guardar no basta.
 ## 8. Lo que falta
 
 1. ~~Recalibrar `RO_OBJ`~~ Decidido: 25 %, ahora fija el precio mínimo (§3).
-2. Hoja de producción de cocina: unidades de cada bocado para N personas, con
-   escandallo y alérgenos. Es el paso que convierte esto de calculadora en
-   sistema. **Los datos están a medias** (ver §9): `datos/catalogo.json` tiene
-   bocado, tipo, coste y menú, pero no receta con gramos ni alérgenos.
+2. Hoja de producción de cocina: **hecha a nivel de bocado** (unidades y coste
+   de materia prima). Falta, cuando Ismael tenga los datos (ver §9): alérgenos
+   por bocado (campo nuevo en `BOCADOS` y en `catalogo.json` a la vez) y fichas
+   con gramos de los bocados de evento, para sacar la lista de compra.
 3. Registro de propuestas emitidas: la hoja existe en Drive y está vacía. Las
    «Propuestas guardadas» (§7) ya dejan una fila por propuesta; falta decidir
    si el registro de envíos y cierres es la misma hoja o otra.
