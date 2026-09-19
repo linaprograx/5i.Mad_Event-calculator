@@ -190,7 +190,7 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
   <div>
     <p class="brandline">Five Iron Golf · Madrid</p>
     <h1>Tarifador de eventos</h1>
-    <p class="tagline">Todo se elige de una lista. Compón la experiencia, mira el suelo, decide el precio por persona.</p>
+    <p class="tagline">Todo se elige de una lista. Compón la experiencia, mira el precio mínimo, decide el precio por persona.</p>
   </div>
   <label class="switch" for="modo"><input type="checkbox" id="modo"> Modo cliente</label>
 </header>
@@ -264,20 +264,21 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
   <summary>Cómo calcula y con qué números</summary>
   <div class="params">
     <h4>Qué hace y qué no</h4>
-    <p>No suma tarifa pública línea a línea: eso daba precios que no vendéis. Calcula el <b>coste real por persona</b> al mínimo facturable, le aplica los umbrales de margen y te da un suelo y un precio recomendado. El precio final lo pones tú, como en vuestras propuestas de 60 €, 75 € o 86,40 €.</p>
+    <p>No suma tarifa pública línea a línea: eso daba precios que no vendéis. Calcula el <b>coste real por persona</b> y te da el precio mínimo y el mínimo facturable, que no se eligen a mano. El precio final lo pones tú, como en vuestras propuestas de 60 €, 75 € o 86,40 €.</p>
     <h4>De dónde salen los menús</h4>
     <p>Los tres paquetes de cocina y sus bocados vienen del <b>Manual Maestro Integral 2026</b> de Ismael. Cada bocado lleva su coste de materia prima real, sumado ingrediente a ingrediente: <code>0,28 €</code> el más barato (brocheta de fruta con menta), <code>1,01 €</code> el más caro (mini burger 5Iron). El coste del menú es la suma de sus bocados, no una estimación.</p>
     <p><b>Bronce</b>: After-work &amp; Networking, 9 bocados, <code>4,37 €</code> de coste y <code>22,73 €</code> de PVP neto. <b>Plata</b>: Trend &amp; Bistró, 12 bocados, <code>6,41 €</code> y <code>29,09 €</code>. <b>Oro</b>: Celebración Corporativa, 15 bocados, <code>9,87 €</code> y <code>36,36 €</code>. El menú Gala del Manual Maestro (18 bocados) queda fuera de venta. Como excepción, con <b>Menú a medida</b> eliges los bocados uno a uno y la herramienta suma el coste real, propone el PVP al <code>25 %</code> de food cost y avisa si el menú se descompensa entre frío, caliente y dulce.</p>
     <h4>Resto de costes de materia prima</h4>
     <p>Welcome Coffee <code>1,80 €</code>. Cóctel de bienvenida <code>1,85 €</code>. Breakfast Experience <code>4,75 €</code>. Five Iron Breakfast <code>6,00 €</code>. Consumición de cerveza, vino o refresco <code>0,38 €</code>; premium con destilados <code>1,45 €</code>. Consumibles <code>0,65 €</code> por persona. Los de bebida también salen de los escandallos del Manual Maestro.</p>
     <h4>Precio de catálogo</h4>
-    <p>Junto al suelo y al recomendado aparece el <b>precio de catálogo</b>: lo que costaría esta misma experiencia sumando las tarifas publicadas de cada componente. Barra abierta básica <code>11 €/h</code>, premium <code>19 €/h</code>. Sirve de techo de referencia, no de precio de venta: casi siempre queda por encima de lo que se cierra, y esa diferencia es el descuento implícito del paquete.</p>
+    <p>Junto al precio mínimo aparece el <b>precio de catálogo</b>: lo que costaría esta misma experiencia sumando las tarifas publicadas de cada componente. Barra abierta básica <code>11 €/h</code>, premium <code>19 €/h</code>. Sirve de techo de referencia, no de precio de venta: casi siempre queda por encima de lo que se cierra, y esa diferencia es el descuento implícito del paquete.</p>
     <h4>Consumo estimado de barra abierta</h4>
     <p>Por persona: <code>2,5</code> consumiciones la primera hora, <code>2,0</code> la segunda, <code>1,5</code> la tercera, <code>1,2</code> a partir de ahí. Tres horas son 6 consumiciones. Sirve para el coste, no para el precio.</p>
     <h4>Personal</h4>
     <p>Coste empresa por hora: sala <code>18 €</code>, barra <code>18 €</code>, cocina <code>20 €</code>, anfitrión <code>16 €</code>, técnico <code>25 €</code>, seguridad <code>22 €</code>, limpieza <code>16 €</code>. Horas del evento más <code>1,5 h</code> de montaje y desmontaje. Un camarero cada 25 personas, barra cada 40, cocina cada 40, anfitrión desde 40, técnico con cuatro simuladores o más, seguridad desde 80. DJ contratado <code>300 €</code>, decoración <code>180 €</code>.</p>
-    <h4>Suelo y recomendado</h4>
-    <p>El suelo deja un resultado operativo del <code>12 %</code> al mínimo facturable. El recomendado apunta al <code>25 %</code>. Los dos se redondean al alza al múltiplo de 5 €.</p>
+    <h4>Precio mínimo y mínimo facturable</h4>
+    <p>El precio mínimo por persona es el que deja un resultado operativo del <code>25 %</code> con cualquier grupo dentro del rango de asistentes, redondeado al alza al múltiplo de 5 €. Se puede ofrecer por debajo, pero la opción sale como <b>requiere aprobación de dirección</b>.</p>
+    <p>El mínimo facturable no se elige. Nunca baja del número mínimo de asistentes; si el precio queda por debajo del mínimo, sube hasta el número de personas con el que el resultado vuelve al <code>25 %</code>. Por debajo del <code>12 %</code> de resultado o del <code>60 %</code> de margen de contribución, la opción sale bloqueada.</p>
     <h4>Valor de bloqueo</h4>
     <p>Lo que ganaríais vendiendo esos simuladores al público durante esas horas, a <code>39 €/h</code> off-peak o <code>49 €/h</code> peak. No se resta del margen, pero si se come una parte grande de la factura el evento no compensa. El umbral de aviso está en el <code>40 %</code>.</p>
     <h4>Franjas</h4>
@@ -585,14 +586,14 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
     var h = '';
 
     h += '<section class="grp"><h3>El evento</h3>' +
-      '<p class="note">El rango de asistentes es lo que más mueve el resultado. El mínimo facturable es tu red de seguridad.</p>' +
+      '<p class="note">El rango de asistentes es lo que más mueve el resultado. El mínimo facturable no se elige: ' +
+      'lo calcula la herramienta en cada opción para que el resultado operativo no baje del ' + Math.round(T.RO_OBJ * 100) + ' %.</p>' +
       '<div class="rows pactado">' +
       campo('cliente', 'Cliente o referencia', '', true) +
       campo('fechaISO', 'Fecha', diaAuto ? 'El día de la semana se deduce de la fecha.' : 'Elige una fecha o deja sin definir.', true) +
       (S.fechaISO ? '' : campo('fechaTexto', 'Texto de fecha para la propuesta', '', true)) +
       campo('paxmin', 'Asistentes mín.') +
       campo('paxmax', 'Asistentes máx.') +
-      campo('paxfac', 'Mínimo facturable', 'Todo el control económico usa este número.') +
       campo('horas', 'Duración') +
       (diaAuto ? '' : campo('dia', 'Día')) +
       campo('inicio', 'Hora de inicio', diaAuto ? 'Con la fecha elegida, el día es ' +
@@ -887,7 +888,7 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
       else if (v.modal === 2){ v.bcant = b.bcant + 1; }
       if (v.modal > 0) v.btipo = 2;
       v.wcoctel = true;
-      if (b.paxfac >= 40){ v.musica = 1; v.dec = true; }
+      if (b.paxmin >= 40){ v.musica = 1; v.dec = true; }
     }
     return v;
   }
@@ -921,14 +922,52 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
     return { valor: v.bays * (rep.off * T.golfOff + rep.peak * T.golfPeak), off:rep.off, peak:rep.peak };
   }
 
+  /* resultado operativo de un escenario con M personas facturadas */
+  function roEn(v, pnet, M){
+    var cc = costes(v, M);
+    var neto = pnet * M;
+    if (neto <= 0) return -1;
+    var total = cc.cpp * M + neto * (1 + v.iva) * T.comision + cc.personal + cc.fijos;
+    return (neto - total) / neto;
+  }
+  /* precio por persona (con extras, antes de descuento) que da el RO pedido con M personas */
+  function precioNecesario(v, M, ro, dto){
+    var cc = costes(v, M);
+    var den = 1 - ro - T.comision * (1 + v.iva);
+    if (den <= 0 || dto >= 1) return Infinity;
+    return ((cc.cpp + (cc.personal + cc.fijos) / M) / den) / (1 - dto);
+  }
+  /* precio minimo: el que cumple el RO pedido con cualquier grupo del rango de asistentes */
+  function precioMinimo(v, lo, hi, ro, dto){
+    var mx = 0;
+    for (var M = lo; M <= hi; M++) mx = Math.max(mx, precioNecesario(v, M, ro, dto));
+    return techo5(mx);
+  }
+  /* menor N con el que, al precio dado, el RO objetivo se cumple desde N hasta
+     el maximo de asistentes. 0 si ni con el grupo maximo se cumple */
+  function minimoFacturable(v, pnet, hi){
+    var tol = 1e-9;
+    if (roEn(v, pnet, hi) < T.RO_OBJ - tol) return 0;
+    var N = hi;
+    while (N > 1 && roEn(v, pnet, N - 1) >= T.RO_OBJ - tol) N--;
+    return N;
+  }
+
   function evaluar(v, precioBase){
-    var pf = Math.max(1, v.paxfac || v.paxmin || 1);
-    var px = Math.max(pf, v.paxmax || pf);
+    var pmin = Math.max(1, v.paxmin || 1);
+    var px = Math.max(pmin, v.paxmax || pmin);
     var dto = Math.max(0, Math.min(40, v.dto)) / 100;
     var pAdd = (v.simcobro === '1' && v.bays > 0) ? addonPax(v.baysh) : 0;
     var pSup = suplementoFranja(v);
     var precio = precioBase + pAdd + pSup;
     var pnet = precio * (1 - dto);
+
+    var pMin = precioMinimo(v, pmin, px, T.RO_OBJ, dto);
+    /* decision de Lian: nunca por debajo del minimo de asistentes. El RO no cuenta
+       lo que se deja de vender al bloquear simuladores o cerrar el local */
+    var F = precio > 0 ? minimoFacturable(v, pnet, px) : 0;
+    if (F > 0) F = Math.max(pmin, F);
+    var pf = F > 0 ? F : pmin;
     var c = costes(v, pf), cMax = costes(v, px);
 
     function escenario(pax, cc){
@@ -941,34 +980,34 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
                ro: neto > 0 ? (neto - total) / neto : 0, deja: neto - total };
     }
     var min = escenario(pf, c), max = escenario(px, cMax);
-
-    function suelo(ro){
-      var fijo = (c.personal + c.fijos) / pf;
-      var den = 1 - ro - T.comision * (1 + v.iva);
-      if (den <= 0) return 0;
-      return ((c.cpp + fijo) / den) / (1 - dto);
-    }
-    var sSuelo = techo5(suelo(T.RO_MIN)), sReco = techo5(suelo(T.RO_OBJ));
     var bl = bloqueo(v);
     var peso = min.conIva > 0 ? bl.valor / min.conIva : 0;
 
-    var estado = 'ok', motivos = [];
+    var estado = 'ok', motivos = [], aprobacion = false;
+    var objetivo = Math.round(T.RO_OBJ * 100) + ' %';
     if (precio <= 0){ estado='bad'; motivos.push('Falta el precio por persona.'); }
     else {
-      if (min.mc < T.MC_MIN){ estado='bad'; motivos.push('Margen de contribución ' + pct(min.mc) + ' al mínimo facturable, por debajo del 60 %.'); }
-      if (min.ro < T.RO_MIN){ estado='bad'; motivos.push('Resultado operativo ' + pct(min.ro) + ' al mínimo facturable, por debajo del 12 %.'); }
-      if (estado === 'bad') motivos.push('No bajes de ' + eur0.format(sSuelo) + ' por persona.');
+      if (min.mc < T.MC_MIN){ estado='bad'; motivos.push('Margen de contribución ' + pct(min.mc) + ' al mínimo facturable, por debajo del ' + Math.round(T.MC_MIN * 100) + ' %.'); }
+      if (min.ro < T.RO_MIN){ estado='bad'; motivos.push('Resultado operativo ' + pct(min.ro) + ' al mínimo facturable, por debajo del ' + Math.round(T.RO_MIN * 100) + ' %.'); }
+      if (precio < pMin){
+        aprobacion = true;
+        if (estado === 'ok') estado = 'warn';
+        motivos.push('Por debajo del precio mínimo de ' + eur0.format(pMin) + ': requiere aprobación de dirección.' +
+          (F > pmin ? ' A este precio el resultado solo llega al ' + objetivo + ' facturando al menos ' + F + ' personas.' :
+           F === 0 ? ' A este precio no llega al ' + objetivo + ' ni con ' + px + ' personas.' : ''));
+      }
     }
     if (estado === 'ok' && v.dto > T.DTO_MAX){ estado='warn'; motivos.push('Descuento del ' + v.dto + ' %: aprobación de dirección.'); }
     if (estado === 'ok' && peso > T.BLOQUEO_MAX){
       estado='warn'; motivos.push('El bloqueo de simuladores vale ' + eur0.format(bl.valor) + ', el ' + pct(peso) + ' de la factura mínima.');
     }
-    if (estado === 'ok' && px > T.AFORO){ estado='warn'; motivos.push('Por encima del aforo de 120 personas.'); }
+    if (estado === 'ok' && px > T.AFORO){ estado='warn'; motivos.push('Por encima del aforo de ' + T.AFORO + ' personas.'); }
     if (estado === 'ok' && v.bays > 0 && px > v.bays * T.PAX_BAY + 6){
       estado='warn'; motivos.push('Con ' + v.bays + ' simuladores van cómodas ' + (v.bays*T.PAX_BAY) + ' personas y pueden venir ' + px + '.');
     }
     return { v:v, precio:precio, precioBase:precioBase, pAdd:pAdd, pSup:pSup, min:min, max:max, c:c,
-             sSuelo:sSuelo, sReco:sReco, sCat:Math.round(precioCatalogo(v)), bl:bl, peso:peso,
+             pf:pf, px:px, F:F, pMin:pMin, aprobacion:aprobacion,
+             sCat:Math.round(precioCatalogo(v)), bl:bl, peso:peso,
              estado:estado, motivos:motivos, dto:dto };
   }
 
@@ -1007,7 +1046,7 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
   var R = [];
 
   function hayEvento(b){
-    if (b.paxfac < 1 && b.paxmin < 1) return false;
+    if (b.paxmin < 1) return false;
     if (b.horas <= 0) return false;
     return (b.bays > 0 && b.baysh > 0) || b.comida !== '0' || (b.modal > 0 && b.bcant > 0) || b.wcoffee || b.wcoctel;
   }
@@ -1021,7 +1060,7 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
       $('aviso').innerHTML = '';
       $('ofertas').innerHTML = '<div class="vacio"><strong>Todavía no hay evento que valorar</strong>' +
         (b.horas <= 0 ? 'Elige cuánto dura el evento.' :
-         (b.paxfac < 1 && b.paxmin < 1) ? 'Elige cuántos asistentes vienen.' :
+         b.paxmin < 1 ? 'Elige cuántos asistentes vienen.' :
          'Añade al menos un simulador, comida o bebida.') + '</div>';
       $('btnGen').disabled = true;
       $('salida').classList.add('hidden');
@@ -1030,14 +1069,15 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
     $('btnGen').disabled = false;
     R = [0,1,2].map(function(n){ return evaluar(variante(b, n), parseFloat(PRECIOS[n]) || 0); });
 
-    var pf = Math.max(1, b.paxfac || b.paxmin), px = Math.max(pf, b.paxmax || pf);
     $('railpax').textContent = (b.paxmin === b.paxmax ? b.paxmin + ' personas' : b.paxmin + '–' + b.paxmax + ' personas') +
-      ' · mínimo facturable ' + pf + ' · ' + hh(b.horas) + ' · ' +
+      ' · ' + hh(b.horas) + ' · ' +
       ({LJ:'lunes a jueves', V:'viernes', SD:'fin de semana'})[b.dia] + ' desde las ' + b.inicio;
 
     var html = '';
     R.forEach(function(r, i){
+      var pf = r.pf, px = r.px;
       var badge = r.estado === 'ok' ? '<span class="badge b-ok">Aprobada</span>'
+                : r.aprobacion && r.estado === 'warn' ? '<span class="badge b-warn">Requiere aprobación</span>'
                 : r.estado === 'warn' ? '<span class="badge b-warn">Visto bueno</span>'
                 : '<span class="badge b-bad">Bloqueada</span>';
       html += '<article class="offer' + (i===1?' reco':'') + '" style="--tier:' + TIER[i] + '">';
@@ -1060,11 +1100,12 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
       }
       html += '</div>';
       if (!cliente){
-        html += '<p class="sug">Suelo ' + eur0.format(r.sSuelo) + ' · recomendado ' + eur0.format(r.sReco) +
+        html += '<p class="sug">Precio mínimo ' + eur0.format(r.pMin) +
                 (r.sCat > 0 ? ' · catálogo ' + eur0.format(r.sCat) : '') +
                 (r.pAdd > 0 || r.pSup > 0 ? ' (totales, extras incluidos)' : '') +
+                '<br>Mínimo facturable <b>' + (r.F > 0 ? r.F + ' personas' : 'no alcanzable') + '</b>' +
                 ' &nbsp;<button type="button" data-usa="' + i + '" data-v="' +
-                Math.max(0, techo5(r.sReco - r.pAdd - r.pSup)) + '">usar recomendado</button>' +
+                Math.max(0, techo5(r.pMin - r.pAdd - r.pSup)) + '">usar mínimo</button>' +
                 (r.sCat > 0 ? ' <button type="button" data-usa="' + i + '" data-v="' +
                   Math.max(0, techo5(r.sCat - r.pAdd - r.pSup)) + '">usar catálogo</button>' : '') +
                 '</p>';
@@ -1085,8 +1126,17 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
       html += '</article>';
     });
     $('ofertas').innerHTML = html;
+    R.forEach(function(r, i){
+      var sel = $('c_precio' + i);
+      if (!sel) return;
+      var minBase = r.pMin - r.pAdd - r.pSup;
+      Array.prototype.forEach.call(sel.options, function(o){
+        var n = parseFloat(o.value);
+        if (!isNaN(n) && n < minBase - 1e-9) o.textContent += ' · requiere aprobación';
+      });
+    });
 
-    var rr = R[1], bl = rr.bl;
+    var rr = R[1], bl = rr.bl, pf = rr.pf;
     if (!cliente && bl.valor > 0){
       var nec = Math.ceil(bl.valor / (T.BLOQUEO_MAX * rr.precio * (1 + rr.v.iva)));
       var txt = 'Bloqueas <b>' + rr.v.bays + ' simulador' + (rr.v.bays>1?'es':'') + '</b> durante ' + hh(rr.v.baysh) +
@@ -1123,7 +1173,7 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
   function generarTexto(){
     if (!R.length) return;
     var i = parseInt($('cual').value,10), r = R[i], v = r.v, o = [];
-    var pf = Math.max(1, v.paxfac || v.paxmin);
+    var pf = r.pf;
     o.push('FIVE IRON GOLF MADRID');
     o.push('');
     o.push('PROPUESTA · ' + NOMBRES[i].toUpperCase());
@@ -1281,11 +1331,6 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
     S[campoId] = val;
     if (campoId === 'paxmin' && parseInt(S.paxmax,10) < parseInt(val,10)) S.paxmax = val;
     if (campoId === 'paxmax' && parseInt(S.paxmin,10) > parseInt(val,10)) S.paxmin = val;
-    if (campoId === 'paxmin' || campoId === 'paxmax'){
-      var mn = parseInt(S.paxmin,10) || 0;
-      if ((parseInt(S.paxfac,10) || 0) > (parseInt(S.paxmax,10) || 0)) S.paxfac = S.paxmax;
-      if ((parseInt(S.paxfac,10) || 0) < 1) S.paxfac = String(mn);
-    }
     if (campoId === 'modal'){
       if (val === '1' && parseFloat(S.bcant) > 10) S.bcant = '3';
       if (val === '2' && parseFloat(S.bcant) > 8) S.bcant = '3';
@@ -1366,7 +1411,7 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
 
   function docPropuesta(){
     var b = brief();
-    var pf = Math.max(1, b.paxfac || b.paxmin);
+    var pf = R[1].pf;
     var grupo = b.paxmin === b.paxmax ? b.paxmin + ' personas' : b.paxmin + ' a ' + b.paxmax + ' personas';
     var TIERP = ['#5E7385', '#2F6B43', '#A8793B'];
     var ROT = ['La opción contenida', 'Nuestra recomendación', 'La experiencia completa'];
@@ -1507,7 +1552,7 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
 
     /* ---- una página por opción ---- */
     R.forEach(function(r, i){
-      var v = r.v;
+      var v = r.v, pf = r.pf;
       h += '<section class="hoja op" style="--t:' + TIERP[i] + '">' +
         '<div class="cab"><div class="izq"><div class="n">Opción ' + (i+1) + ' de 3</div>' +
         '<h2>' + NOMBRES[i] + '</h2></div>' +

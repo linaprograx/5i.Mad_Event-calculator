@@ -91,8 +91,8 @@ footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:v
 <ol class="flow">
   <li><b>Compones la experiencia</b><span>Asistentes, duración, día y hora, simuladores, bebida, extras. Todo se elige de una lista.</span></li>
   <li><b>Montas el menú</b><span>Uno de los tres paquetes de cocina, Bronce, Plata u Oro, igual que se elige la barra. Solo como excepción, a medida eligiendo bocados uno a uno. Cada bocado lleva su coste real.</span></li>
-  <li><b>Calcula el coste real por persona</b><span>Materia prima, consumibles y personal, siempre sobre el mínimo facturable, nunca sobre el número optimista.</span></li>
-  <li><b>Te da tres referencias</b><span>Suelo, el precio bajo el que no se debe cerrar. Recomendado, el objetivo. Y catálogo, lo que costaría sumando tarifas publicadas: el techo.</span></li>
+  <li><b>Calcula el coste real por persona</b><span>Materia prima, consumibles y personal, siempre sobre el grupo más pequeño que se puede facturar, nunca sobre el número optimista.</span></li>
+  <li><b>Fija el precio mínimo y el mínimo facturable</b><span>El precio mínimo por persona es el que deja un 25 % de resultado operativo. El mínimo facturable lo calcula la herramienta, no se elige. Y como referencia, el catálogo: lo que costaría sumando tarifas publicadas, el techo.</span></li>
   <li><b>Decides el precio</b><span>Eliges el número comercial. La herramienta te dice si queda aprobado, si necesita visto bueno o si está bloqueado.</span></li>
   <li><b>Sale la propuesta escrita</b><span>Con las inclusiones, la carta bocado a bocado, el precio, el mínimo facturable y las condiciones. En texto y en PDF maquetado.</span></li>
 </ol>
@@ -152,17 +152,19 @@ footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:v
 <p>El mismo evento no vale lo mismo un martes por la mañana que un sábado por la noche, porque la noche del fin de semana es lo que más fácil se vende <em>sin necesidad de evento</em>. Encima del precio elegido se suma 0 € entre semana de día, 5 € entre semana de noche, 8 € el fin de semana de día y 12 € el fin de semana de noche, por persona. La noche empieza a las 20:00 y los viernes a las 16:00.</p>
 <p>Estas cuatro cifras son <strong>una propuesta de partida, no una decisión tomada</strong>. Dirección las valida o las cambia, y se puede desactivar evento a evento cuando haya una razón comercial.</p>
 
-<h3>El mínimo facturable</h3>
-<p>Es la pieza que lo cambia todo. Cuando un cliente dice "vendremos entre diez y diecisiete", el precio por persona parece el mismo en los dos casos, pero el evento no lo es: los simuladores, el personal y el montaje cuestan igual con diez que con diecisiete, así que <strong>entre menos gente, cada uno tiene que aportar más</strong>. Todo el control económico se calcula sobre el mínimo facturable, y la propuesta lo dice por escrito.</p>
+<h3>Precio mínimo y mínimo facturable</h3>
+<p>Es la pieza que lo cambia todo. Cuando un cliente dice "vendremos entre diez y diecisiete", el precio por persona parece el mismo en los dos casos, pero el evento no lo es: los simuladores, el personal y el montaje cuestan igual con diez que con diecisiete, así que <strong>entre menos gente, cada uno tiene que aportar más</strong>.</p>
+<p>Por eso ninguna de las dos cifras se elige a mano. El <strong>precio mínimo</strong> por persona es el que deja un 25 % de resultado operativo con cualquier grupo dentro del rango. El <strong>mínimo facturable</strong> nunca baja del número mínimo de asistentes; si el precio queda por debajo del mínimo, sube hasta el número de personas con el que el evento vuelve al 25 %. La propuesta lo dice por escrito.</p>
+<p>Se puede ofrecer por debajo del precio mínimo, pero la opción sale marcada <em>Requiere aprobación de dirección</em>.</p>
 
 <p class="eyebrow">El control</p>
 <h2>Los tres semáforos</h2>
-<p>Cada opción sale marcada. <em>Aprobada</em> significa que puedes cerrarla. <em>Requiere visto bueno</em> significa que hay algo que un responsable debe mirar: un descuento por encima del diez por ciento, más gente que aforo, o un bloqueo de simuladores desproporcionado. <em>Bloqueada</em> significa que el evento pierde dinero o queda por debajo de los umbrales de la casa, y la herramienta te dice el precio mínimo al que dejaría de estarlo.</p>
-<p>Los umbrales son un margen de contribución del sesenta por ciento y un resultado operativo del doce, medidos siempre en el escenario malo.</p>
+<p>Cada opción sale marcada. <em>Aprobada</em> significa que puedes cerrarla. <em>Requiere aprobación</em> significa que el precio está por debajo del mínimo y lo tiene que firmar dirección. <em>Visto bueno</em> significa que hay algo que un responsable debe mirar: un descuento por encima del diez por ciento, más gente que aforo, o un bloqueo de simuladores desproporcionado. <em>Bloqueada</em> significa que el evento pierde dinero o queda por debajo de los umbrales de la casa, y la herramienta te dice el precio mínimo.</p>
+<p>Los umbrales de bloqueo son un margen de contribución del sesenta por ciento y un resultado operativo del doce, medidos siempre en el escenario malo: el mínimo facturable.</p>
 
 <div class="caja">
   <h3>El precio de catálogo</h3>
-  <p>Junto al suelo y al recomendado aparece una tercera cifra: lo que costaría esa misma experiencia sumando las tarifas publicadas de cada componente. Es un <strong>techo de referencia, no un precio de venta</strong>. Casi siempre queda muy por encima de lo que se cierra, y esa diferencia es el descuento implícito del paquete. Conviene mirarlo antes de sentarse a negociar: si el catálogo dice 106 € y vas a cerrar a 75 €, estás regalando 31 € por persona y es mejor saberlo que descubrirlo.</p>
+  <p>Junto al precio mínimo aparece otra cifra: lo que costaría esa misma experiencia sumando las tarifas publicadas de cada componente. Es un <strong>techo de referencia, no un precio de venta</strong>. Casi siempre queda muy por encima de lo que se cierra, y esa diferencia es el descuento implícito del paquete. Conviene mirarlo antes de sentarse a negociar: si el catálogo dice 106 € y vas a cerrar a 75 €, estás regalando 31 € por persona y es mejor saberlo que descubrirlo.</p>
 </div>
 
 <div class="caja">
@@ -173,17 +175,17 @@ footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:v
 <div class="ejemplo">
   <div class="l">
     <span>Team Building Social, jueves a las 18:00, 3 h</span><span></span>
-    <span>Grupo de 10 a 17, mínimo facturable</span><b>12</b>
-    <span>Menú Trend &amp; Bistró, 12 bocados</span><b>6,41 €</b>
+    <span>Grupo de 10 a 17 personas</span><b></b>
+    <span>Paquete Plata · Trend &amp; Bistró, 12 bocados</span><b>6,41 €</b>
     <span>Coste variable por persona</span><b>12,99 €</b>
     <span>Personal del evento</span><b>359 €</b>
-    <span>Suelo calculado</span><b>50 €</b>
-    <span>Recomendado calculado</span><b>60 €</b>
+    <span>Precio mínimo calculado</span><b>70 €</b>
+    <span>Mínimo facturable a 70 €</span><b>10</b>
     <span>Precio de catálogo</span><b>70 €</b>
     <span>Valor de bloqueo de 4 simuladores</span><b>508 €</b>
-    <span>Peso sobre la factura mínima</span><b>64 %</b>
+    <span>Peso sobre la factura mínima</span><b>66 %</b>
   </div>
-  <p class="cierre">A 60 € con doce personas el evento deja 194 € y un 27,0 % de resultado operativo, con un margen de contribución del 76,8 %. Con diecisiete, deja 425 €. El aviso de bloqueo es claro: para que baje del cuarenta por ciento harían falta veinte personas, y el grupo máximo es diecisiete. El evento se puede cerrar, pero sabiendo que la capacidad cedida es la parte cara del trato.</p>
+  <p class="cierre">A 70 € con diez personas el evento deja 200 € y un 28,6 % de resultado operativo, con un margen de contribución del 79,9 %. Con diecisiete, deja 592 €. Si se ofrece a 60 €, la opción sale como <em>requiere aprobación</em> y el mínimo facturable sube a doce personas, que es lo que hace falta para volver al 25 %. El aviso de bloqueo es claro: a 70 €, para que baje del cuarenta por ciento harían falta diecisiete personas, justo el grupo máximo. El evento se puede cerrar, pero sabiendo que la capacidad cedida es la parte cara del trato.</p>
 </div>
 
 <div class="conflicto">
@@ -198,7 +200,7 @@ footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:v
   <div>No sustituye al Manual Maestro. Ahí sigue viviendo la trazabilidad hasta el precio de compra de cada materia prima y la merma de cada una; el tarifador lleva dentro una copia del coste ya calculado, no lee el libro en vivo.</div>
   <div>El PDF maquetado de nueve páginas no se puede archivar solo en Drive. Google no sabe convertir esa maquetación, así que a Drive va el documento y su PDF como copia de archivo, y el bonito se guarda desde el diálogo de impresión.</div>
   <div>No incluye alquiler ni estructura. Lo que dice que "deja" un evento es lo que queda después de producto y personal, antes de la casa.</div>
-  <div>No decide por ti. Da un suelo y un recomendado; el precio que sale a la calle lo firma una persona.</div>
+  <div>No decide por ti. Da un precio mínimo; el precio que sale a la calle lo firma una persona, y si baja del mínimo, lo firma dirección.</div>
 </div>
 
 <footer>

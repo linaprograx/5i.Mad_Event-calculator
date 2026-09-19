@@ -63,7 +63,7 @@ Producción: `https://5i-web.vercel.app/tarifador/`
   brief()          convierte S en el objeto de cálculo
   variante(b,n)    deriva Esencial (0) y Premium (2) de la Recomendada (1)
   costes(v,pax)    coste por persona + personal
-  evaluar(v,p)     suelo, recomendado, catálogo, semáforo
+  evaluar(v,p)     precio mínimo, mínimo facturable, catálogo, semáforo
   inclusiones(v)   las líneas de "qué incluye"
   generarTexto()   propuesta en texto plano
   docPropuesta()   propuesta maquetada en HTML para imprimir a PDF
@@ -74,14 +74,23 @@ Producción: `https://5i-web.vercel.app/tarifador/`
 ## 3. El modelo de precio
 
 **No suma tarifa pública línea a línea.** Se probó y daba precios que no se
-venden. Calcula el coste real por persona **al mínimo facturable** (nunca al
-grupo máximo), le aplica los umbrales de margen y devuelve tres referencias:
+venden. Calcula el coste real por persona y, desde septiembre de 2026, **fija
+dos cifras que no se eligen a mano** (decisión de Lian):
 
-- **Suelo** — resultado operativo del 12 % (`RO_MIN`). No bajar de ahí.
-- **Recomendado** — resultado operativo del 25 % (`RO_OBJ`). El objetivo.
+- **Precio mínimo por persona** — el que da un resultado operativo del 25 %
+  (`RO_OBJ`) con cualquier grupo entre el mínimo y el máximo de asistentes,
+  redondeado al alza a 5 €. Se puede ofrecer por debajo, pero la opción sale
+  «Requiere aprobación de dirección».
+- **Mínimo facturable** — el menor número de personas con el que, al precio
+  elegido, el RO se mantiene en el 25 % hasta el grupo máximo, **y nunca por
+  debajo del mínimo de asistentes**. Ese tope lo pidió Lian: el RO no cuenta lo
+  que se deja de vender al bloquear simuladores o cerrar el local, y sin él una
+  Corporate Night de 80 personas salía con 16 de mínimo facturable.
 - **Catálogo** — suma de tarifas publicadas. Es un techo, no un precio.
 
-Los dos primeros se redondean al alza al múltiplo de 5 €.
+`RO_MIN` (12 %) y `MC_MIN` (60 %) siguen marcando «Bloqueada». El antiguo
+«suelo» y «recomendado» ya no existen; el campo `paxfac` del estado y de las
+plantillas se ignora.
 
 La mayoría de los parámetros viven en el objeto `T`, y la regla es que **cambiar
 un precio sea cambiar una línea de `T`, nunca tocar una fórmula.** Hoy hay
@@ -107,17 +116,16 @@ excepciones metidas en funciones, que habrá que ir subiendo a `T`:
   0,65 €, DJ 300 €, decoración 180 €, Welcome Coffee 1,80 €, cóctel 1,85 €,
   add-on +4 €/h a partir de la segunda hora, y los PVP de `precioCatalogo()`.
 - **Escandallado del Manual Maestro Integral 2026**: los 54 bocados (0,282 € a
-  1,014 €), los 4 menús, el coste de consumición (0,38 € y 1,45 €).
+  1,014 €), los 4 menús (3 a la venta como paquetes Bronce, Plata y Oro), el coste de consumición (0,38 € y 1,45 €).
   Los datos en crudo están en `datos/`.
 - **Pendiente de validar por dirección** — no presentarlo como cerrado:
   - Suplemento por franja `T.franja` = 0 / 5 / 8 / 12 €/pax. **Propuesta, no tarifa.**
   - Coste de los desayunos `costeB1` 4,75 € y `costeB2` 6,00 €. Estimación.
   - Conflicto abierto: el Manual Maestro tarifa la barra a 7 €/h; dirección
     la fijó en 11/19. Hoy conviven las dos cifras en documentos distintos.
-  - `RO_OBJ` 25 %: las 8 propuestas reales del catálogo rinden entre 35 % y 58 %
-    (mediana 53 %). El precio real de la Recomendada supera al recomendado entre
-    6 y 41 €/pax según la plantilla (18 € de media).
-    Dirección tiene que elegir el nuevo objetivo.
+- **`RO_OBJ` 25 %: confirmado por Lian** (19-09-2026) como objetivo para el
+  precio mínimo. Referencia: las 8 propuestas reales del catálogo rinden entre
+  35 % y 58 % de RO en su Recomendada (mediana 53 %).
 
 ---
 
@@ -217,7 +225,7 @@ implementaciones → lápiz → Versión: Nueva versión. Guardar no basta.
 
 ## 8. Lo que falta
 
-1. Recalibrar `RO_OBJ` cuando dirección decida (§3).
+1. ~~Recalibrar `RO_OBJ`~~ Decidido: 25 %, ahora fija el precio mínimo (§3).
 2. Hoja de producción de cocina: unidades de cada bocado para N personas, con
    escandallo y alérgenos. Es el paso que convierte esto de calculadora en
    sistema. **Los datos están a medias** (ver §9): `datos/catalogo.json` tiene
