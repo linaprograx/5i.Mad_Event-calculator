@@ -266,8 +266,8 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
     <h4>Qué hace y qué no</h4>
     <p>No suma tarifa pública línea a línea: eso daba precios que no vendéis. Calcula el <b>coste real por persona</b> al mínimo facturable, le aplica los umbrales de margen y te da un suelo y un precio recomendado. El precio final lo pones tú, como en vuestras propuestas de 60 €, 75 € o 86,40 €.</p>
     <h4>De dónde salen los menús</h4>
-    <p>Los cuatro menús cerrados y sus 54 bocados vienen del <b>Manual Maestro Integral 2026</b> de Ismael. Cada bocado lleva su coste de materia prima real, sumado ingrediente a ingrediente: <code>0,28 €</code> el más barato (brocheta de fruta con menta), <code>1,01 €</code> el más caro (mini burger 5Iron). El coste del menú es la suma de sus bocados, no una estimación.</p>
-    <p>After-work &amp; Networking, 9 bocados, <code>4,37 €</code> de coste y <code>22,73 €</code> de PVP neto. Trend &amp; Bistró, 12 bocados, <code>6,41 €</code> y <code>29,09 €</code>. Celebración Corporativa, 15 bocados, <code>9,87 €</code> y <code>36,36 €</code>. Gala &amp; Grand Selection, 18 bocados, <code>12,98 €</code> y <code>45,45 €</code>. Con <b>Menú a medida</b> eliges los bocados uno a uno y la herramienta suma el coste real, propone el PVP al <code>25 %</code> de food cost y avisa si el menú se descompensa entre frío, caliente y dulce.</p>
+    <p>Los tres paquetes de cocina y sus bocados vienen del <b>Manual Maestro Integral 2026</b> de Ismael. Cada bocado lleva su coste de materia prima real, sumado ingrediente a ingrediente: <code>0,28 €</code> el más barato (brocheta de fruta con menta), <code>1,01 €</code> el más caro (mini burger 5Iron). El coste del menú es la suma de sus bocados, no una estimación.</p>
+    <p><b>Bronce</b>: After-work &amp; Networking, 9 bocados, <code>4,37 €</code> de coste y <code>22,73 €</code> de PVP neto. <b>Plata</b>: Trend &amp; Bistró, 12 bocados, <code>6,41 €</code> y <code>29,09 €</code>. <b>Oro</b>: Celebración Corporativa, 15 bocados, <code>9,87 €</code> y <code>36,36 €</code>. El menú Gala del Manual Maestro (18 bocados) queda fuera de venta. Como excepción, con <b>Menú a medida</b> eliges los bocados uno a uno y la herramienta suma el coste real, propone el PVP al <code>25 %</code> de food cost y avisa si el menú se descompensa entre frío, caliente y dulce.</p>
     <h4>Resto de costes de materia prima</h4>
     <p>Welcome Coffee <code>1,80 €</code>. Cóctel de bienvenida <code>1,85 €</code>. Breakfast Experience <code>4,75 €</code>. Five Iron Breakfast <code>6,00 €</code>. Consumición de cerveza, vino o refresco <code>0,38 €</code>; premium con destilados <code>1,45 €</code>. Consumibles <code>0,65 €</code> por persona. Los de bebida también salen de los escandallos del Manual Maestro.</p>
     <h4>Precio de catálogo</h4>
@@ -359,12 +359,15 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
     {i:"BOC-54",n:"Chupito de tiramisú",t:"d",c:0.387,m:"gala"}
   ];
 
+  /* paquetes de cocina: tres menus cerrados del Manual Maestro.
+     Gala queda fuera de la venta (sin paquete) pero se conservan sus datos */
   var MENUS = {
-    after:{n:"After-work & Networking", b:9, c:4.372},
-    trend:{n:"Trend & Bistró Madrid", b:12, c:6.405},
-    celebracion:{n:"Celebración Corporativa", b:15, c:9.872},
+    after:{n:"Paquete Bronce · After-work & Networking", b:9, c:4.372},
+    trend:{n:"Paquete Plata · Trend & Bistró Madrid", b:12, c:6.405},
+    celebracion:{n:"Paquete Oro · Celebración Corporativa", b:15, c:9.872},
     gala:{n:"Gala & Grand Selection", b:18, c:12.977}
   };
+  var PAQUETES = ['after','trend','celebracion'];
 
   /* ============ parámetros de negocio ============ */
   var T = {
@@ -506,13 +509,12 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
       case 'musica': return [{v:'0',t:'Ambiente del local'},{v:'1',t:'DJ contratado'}];
       case 'comida': return [
         {v:'0',t:'Sin comida'},
-        {v:'after',t:'Cóctel After-work & Networking · 9 bocados'},
-        {v:'trend',t:'Cóctel Trend & Bistró Madrid · 12 bocados'},
-        {v:'celebracion',t:'Cóctel Celebración Corporativa · 15 bocados'},
-        {v:'gala',t:'Cóctel Gala & Grand Selection · 18 bocados'},
-        {v:'medida',t:'Menú a medida · elegir bocados uno a uno'},
+        {v:'after',t:'Paquete Bronce · After-work & Networking · 9 bocados'},
+        {v:'trend',t:'Paquete Plata · Trend & Bistró Madrid · 12 bocados'},
+        {v:'celebracion',t:'Paquete Oro · Celebración Corporativa · 15 bocados'},
         {v:'b1',t:'Breakfast Experience'},
-        {v:'b2',t:'Five Iron Breakfast · coffee station completa'}
+        {v:'b2',t:'Five Iron Breakfast · coffee station completa'},
+        {v:'medida',t:'Menú a medida · excepción, elegir bocados uno a uno'}
       ];
       case 'pases': return rango(1, 10, 1, ' pases');
       case 'modal': return [
@@ -621,8 +623,8 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
       '</div></section>';
 
     h += '<section class="grp"><h3>Comida</h3>' +
-      '<p class="note">Los cuatro menús cerrados salen del Manual Maestro, con el coste real de cada bocado. ' +
-      'Esencial baja un escalón y Premium sube uno.</p><div class="rows">' +
+      '<p class="note">Tres paquetes cerrados del Manual Maestro, con el coste real de cada bocado. ' +
+      'Esencial baja un paquete y Premium sube uno. El menú a medida es la excepción.</p><div class="rows">' +
       campo('comida', 'Formato', '', true) +
       detalleComida() +
       '<div class="f wide"><div class="checkcol">' +
@@ -788,7 +790,7 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
     if (n > 20) av.push('Con <b>' + n + ' bocados</b> te sales del formato cóctel. A partir de veinte conviene plantear menú sentado.');
     if (c < Math.round(n * 0.3)) av.push('Solo <b>' + c + '</b> bocados calientes de ' + n + '. El estándar de la casa es al menos un tercio.');
     if (f < Math.round(n * 0.25)) av.push('Solo <b>' + f + '</b> bocados fríos de ' + n + '. El arranque del servicio se queda flojo.');
-    if (d < 1) av.push('No hay ningún dulce. Los cuatro menús cerrados llevan como mínimo uno.');
+    if (d < 1) av.push('No hay ningún dulce. Los tres paquetes llevan como mínimo uno.');
     if (d > 4) av.push('<b>' + d + ' dulces</b> es mucho para ' + n + ' bocados.');
     return av;
   }
@@ -865,7 +867,7 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
 
   function variante(b, nivel){
     var v = JSON.parse(JSON.stringify(b));
-    var ESCALA = ['after','trend','celebracion','gala'];
+    var ESCALA = PAQUETES;
     function mueve(c, paso){
       var i = ESCALA.indexOf(c);
       if (i < 0) return c;
@@ -1138,7 +1140,7 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
     var gs = gastroGrupos(v);
     if (gs.length){
       o.push('GASTRONOMÍA');
-      o.push(MENUS[v.comida] ? 'Menú ' + MENUS[v.comida].n + ' · ' + bocadosDe(v).length + ' bocados por persona'
+      o.push(MENUS[v.comida] ? MENUS[v.comida].n + ' · ' + bocadosDe(v).length + ' bocados por persona'
                              : 'Menú a medida · ' + bocadosDe(v).length + ' bocados por persona');
       gs.forEach(function(g){
         o.push('');
@@ -1212,7 +1214,7 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
     { n:'Five Iron Corporate Night · 80 pax', p:['76','86','104'], c:{ cliente:'Corporate Night',
       paxmin:'80', paxmax:'80', paxfac:'70', horas:'5', dia:'V', inicio:'19:00', bays:'6', baysh:'4', excl:'2',
       f1:true, dardos:true, tour:true, coord:true, equipos:true, lounge:false, av:false, musica:'1', dec:false,
-      comida:'gala', bocados:[], wcoffee:false, wcoctel:false, suplFranja:'auto', modal:'2', btipo:'1', bcant:'3' } }
+      comida:'celebracion', bocados:[], wcoffee:false, wcoctel:false, suplFranja:'auto', modal:'2', btipo:'1', bcant:'3' } }
   ];
   PLANTILLAS.forEach(function(p, i){
     var op = document.createElement('option');
