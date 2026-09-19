@@ -280,7 +280,8 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
 <details id="conf">
   <summary>Conexión con Google Drive</summary>
   <div class="params">
-    <p>Con esto activado, el botón <strong>Guardar en Drive</strong> deja dos archivos de una sola vez: el
+    <p>No hace falta configurar nada: la conexión es común para todos y vive en Vercel. El botón
+    <strong>Guardar en Drive</strong> deja dos archivos de una sola vez: el
     <strong>Google Doc</strong> editable con la propuesta y el <strong>PDF de ese mismo documento</strong>, cada
     uno en su carpeta, sin descargar nada y sin salir de esta página. Es la copia de archivo.</p>
     <p>El PDF maquetado que se le manda al cliente, solo con la opción elegida, es otra cosa: se saca con el botón
@@ -292,9 +293,8 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
       <button type="button" class="big ghost" id="btnTok">Pegar la clave</button>
       <button type="button" class="big ghost" id="btnOlvidar">Olvidar conexión</button>
     </div>
-    <p style="margin-top:14px">La URL y la clave se guardan solo en este navegador. Cada persona que use
-    la herramienta tiene que pegarlas una vez en el suyo. El archivo <code>guardar_propuesta.gs</code>
-    del paquete explica cómo obtenerlas: son cinco minutos y una sola vez.</p>
+    <p style="margin-top:14px">Solo para pruebas: si pegas aquí la URL y la clave de otro conector, este
+    navegador lo usará en lugar del común. «Olvidar conexión» vuelve al común.</p>
   </div>
 </details>
 
@@ -1921,8 +1921,8 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
 
   function pintarConf(){
     var u = cfg('url'), t = cfg('token');
-    $('confEstado').textContent = (u && t) ? 'Conexión configurada. El botón Guardar en Drive está activo.'
-      : !u ? 'Falta la URL del conector.' : 'Falta la clave.';
+    $('confEstado').textContent = (u && t) ? 'Este navegador usa su propio conector, no el común.'
+      : 'Se usa la conexión común, configurada en Vercel.';
   }
   pintarConf();
 
@@ -1968,41 +1968,23 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
   });
 
   $('btnDrive').addEventListener('click', function(){
-    var url = cfg('url'), token = cfg('token'), est = $('estadoDrive');
-    if (!url || !token){
-      est.className = 'estado mal';
-      est.textContent = 'Falta configurar la conexión. Ábrela en "Conexión con Google Drive", justo debajo.';
-      $('conf').open = true;
-      return;
-    }
+    var est = $('estadoDrive'), btn = $('btnDrive');
     est.className = 'estado';
     est.textContent = 'Guardando en Drive…';
-    var btn = $('btnDrive');
     btn.disabled = true;
-    fetch(url, {
-      method:'POST',
-      headers:{ 'Content-Type':'text/plain;charset=utf-8' },
-      body: JSON.stringify({ token:token, nombre:nombreDoc(), texto:$('texto').value })
-    }).then(function(res){ return res.json(); }).then(function(d){
+    conector({ accion:'guardar_doc', nombre:nombreDoc(), texto:$('texto').value }).then(function(d){
       btn.disabled = false;
-      if (d && d.ok){
-        est.className = 'estado ok';
-        var partes = ['Guardado en Drive: <a href="' + esc(d.url) + '" target="_blank" rel="noopener">' +
-                      esc(d.nombre) + '</a>'];
-        if (d.pdf) partes.push('<a href="' + esc(d.pdf) + '" target="_blank" rel="noopener">ver el PDF</a>');
-        else if (d.pdfError) partes.push('<span style="color:var(--warn)">el documento sí, el PDF no: ' +
-                                         esc(d.pdfError) + '</span>');
-        est.innerHTML = partes.join(' · ');
-      } else {
-        est.className = 'estado mal';
-        est.textContent = 'El conector ha respondido con un error: ' + ((d && d.error) || 'desconocido') +
-          '. Revisa que la clave coincida con la del script.';
-      }
-    }).catch(function(){
+      est.className = 'estado ok';
+      var partes = ['Guardado en Drive: <a href="' + esc(d.url) + '" target="_blank" rel="noopener">' +
+                    esc(d.nombre) + '</a>'];
+      if (d.pdf) partes.push('<a href="' + esc(d.pdf) + '" target="_blank" rel="noopener">ver el PDF</a>');
+      else if (d.pdfError) partes.push('<span style="color:var(--warn)">el documento sí, el PDF no: ' +
+                                       esc(d.pdfError) + '</span>');
+      est.innerHTML = partes.join(' · ');
+    }).catch(function(e){
       btn.disabled = false;
       est.className = 'estado mal';
-      est.textContent = 'No he podido contactar con el conector. Comprueba que la implementación de Apps Script ' +
-        'esté publicada con acceso "cualquier persona" y que la URL termine en /exec.';
+      est.textContent = 'No se ha guardado en Drive: ' + e.message + '.';
     });
   });
 
@@ -2011,16 +1993,24 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
     $('tplEstado').className = 'estado' + (clase ? ' ' + clase : '');
     $('tplEstado').textContent = txt;
   }
+  /* por defecto va por el puente de Vercel (/api/conector), que pone la clave.
+     Si este navegador tiene URL y clave propias, va directo al Apps Script */
   function conector(datos){
     var url = cfg('url'), token = cfg('token');
-    if (!url || !token) return Promise.reject(new Error('sin conexion'));
-    datos.token = token;
-    return fetch(url, {
+    var directo = !!(url && token);
+    if (directo) datos.token = token;
+    return fetch(directo ? url : '/api/conector', {
       method:'POST',
       headers:{ 'Content-Type':'text/plain;charset=utf-8' },
       body: JSON.stringify(datos)
-    }).then(function(res){ return res.json(); }).then(function(d){
-      if (!d || !d.ok) throw new Error((d && d.error) || 'respuesta desconocida');
+    }).then(function(res){ return res.json(); }, function(){
+      throw new Error('no se ha podido contactar con el conector');
+    }).then(function(d){
+      if (!d || !d.ok){
+        var e = new Error((d && d.error) || 'respuesta desconocida');
+        e.sinConfigurar = !!(d && d.sinConfigurar);
+        throw e;
+      }
       return d;
     });
   }
@@ -2030,8 +2020,8 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
       try { localStorage.setItem('5i.propuestas.cache', JSON.stringify(GUARDADAS)); } catch(e){}
       pintarTpl();
     }).catch(function(e){
-      if (e.message === 'sin conexion'){
-        estadoTpl('', 'Para ver y guardar las propuestas del equipo, configura la conexión con Google Drive, al final de la página.');
+      if (e.sinConfigurar){
+        estadoTpl('', 'La conexión con Google Drive aún no está configurada en Vercel: por ahora solo están las propuestas de fábrica.');
       } else {
         estadoTpl('mal', 'No he podido cargar las propuestas guardadas (' + e.message + '). ' +
           (GUARDADAS.length ? 'Se muestran las últimas conocidas en este navegador.' : ''));
@@ -2069,11 +2059,6 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
       estadoTpl('mal', 'Todavía no hay evento que guardar: elige asistentes, duración y al menos un simulador, comida o bebida.');
       return;
     }
-    if (!cfg('url') || !cfg('token')){
-      estadoTpl('mal', 'Falta configurar la conexión con Google Drive, al final de la página. Sin ella la propuesta no la vería nadie más.');
-      $('conf').open = true;
-      return;
-    }
     var sel = $('tpl').value;
     var b = brief();
     var sugerido = sel.indexOf('g:') === 0 ? sel.slice(2)
@@ -2091,8 +2076,8 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
         });
       }).catch(function(e){
         btn.disabled = false;
-        estadoTpl('mal', e.message === 'sin conexion' ? 'Falta configurar la conexión con Google Drive.'
-          : 'No se ha guardado: ' + e.message + '. Revisa la conexión y que el conector esté republicado con la versión nueva.');
+        estadoTpl('mal', 'No se ha guardado: ' + e.message + '.' + (e.sinConfigurar ? '' :
+          ' Revisa que el conector de Apps Script esté republicado con la versión nueva.'));
       });
     }, sugerido);
   });

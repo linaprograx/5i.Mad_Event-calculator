@@ -33,8 +33,10 @@
  *    Ejecutar como: Yo, Acceso: Cualquier persona.
  *    Copia la URL que termina en /exec.
  *
- * 5. Pega esa URL y la clave en el tarifador, en
- *    "Conexion con Google Drive".
+ * 5. En Vercel (proyecto 5i-web > Settings > Environment
+ *    Variables) crea CONECTOR_URL con esa URL y CONECTOR_CLAVE
+ *    con la clave, y vuelve a desplegar. Asi funciona para todos
+ *    sin que nadie pegue nada en su navegador (api/conector.js).
  *
  * Si cambias este codigo, republica: Implementar > Gestionar
  * implementaciones > lapiz > Version: Nueva version.

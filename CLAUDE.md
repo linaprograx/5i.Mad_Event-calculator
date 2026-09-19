@@ -242,13 +242,20 @@ web. Hace dos cosas, siempre con la clave:
   con el JSON que restaura la propuesta. Mismo nombre = sustituir (la app
   pregunta antes). Borrar una propuesta = borrar su fila en la hoja.
 
-Sin conector configurado en el navegador, la app no puede guardar ni ver las
-propuestas del equipo; solo las 8 de fábrica. Cada navegador guarda una copia
-de la última lista (`5i.propuestas.cache`) por si el conector no responde.
+**Nadie configura nada en su navegador.** El tarifador llama a
+`api/conector.js`, una función de Vercel sin dependencias que añade la clave y
+reenvía al Apps Script. La URL `/exec` y la clave viven en las variables de
+entorno de Vercel `CONECTOR_URL` y `CONECTOR_CLAVE`, nunca en el repositorio.
+Solo admite POST con `listar_propuestas`, `guardar_propuesta` o `guardar_doc`.
+Cualquiera con el enlace del sitio puede ver y guardar propuestas: es el
+acceso que Lian decidió. Si un navegador tiene URL y clave propias en
+«Conexión con Google Drive», va directo a ese conector (solo para pruebas).
+Cada navegador guarda una copia de la última lista (`5i.propuestas.cache`).
+Tras cambiar las variables en Vercel hay que volver a desplegar.
 
-Para probarlo sin tocar el Apps Script real: ejecutar el `.gs` en Node con
-`vm` y `SpreadsheetApp` simulado, y desviar `script.google.com` con
-`context.route` de Playwright.
+Para probarlo sin tocar el Apps Script real: un servidor Node local que sirva
+el sitio, ejecute `api/conector.js` y detrás el `.gs` en `vm` con
+`SpreadsheetApp` simulado.
 
 **No conviertas el HTML de la propuesta a PDF en Apps Script.** Se intentó con
 `Utilities.newBlob(html).getAs('application/pdf')` y el conversor de Google
