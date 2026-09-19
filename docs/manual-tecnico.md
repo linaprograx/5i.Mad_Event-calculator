@@ -61,7 +61,7 @@ Contenido de T:
   costeWCoctel: 1.85     coste del cóctel de bienvenida por persona
   costeB1: 4.75          coste del Breakfast Experience por persona
   costeB2: 6.00          coste del Five Iron Breakfast por persona
-  costeCons: [0, 1.35, 1.85]
+  costeCons: [0, 0.38, 1.45]
                          coste por consumición. Posición 1 = cerveza/vino/refresco.
                          Posición 2 = premium con destilados. La posición 0 no se usa.
 

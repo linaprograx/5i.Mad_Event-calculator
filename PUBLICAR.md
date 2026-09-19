@@ -2,11 +2,11 @@
 
 Tres páginas, tres orígenes distintos. **No son la misma.**
 
-| Ruta publicada        | Qué es                         | Origen |
-|-----------------------|--------------------------------|--------|
+| Ruta publicada        | Qué es                         | Archivo |
+|-----------------------|--------------------------------|---------|
 | `/`                   | Índice de herramientas         | `index.html` |
-| `/tarifador`          | La aplicación                  | `tarifador_5i.html` |
-| `/docs/tarifador`     | El documento explicativo       | `como_funciona_tarifador.html` |
+| `/tarifador`          | La aplicación                  | `tarifador/index.html` |
+| `/docs/tarifador`     | El documento explicativo       | `docs/tarifador/index.html` |
 
 ## Aviso
 
