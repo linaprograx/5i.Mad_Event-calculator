@@ -7,3 +7,7 @@ node_modules
 *CONFIGURADO*
 *_local.*
 .env
+
+# Ajustes personales de Claude Code
+.claude/settings.local.json
+CLAUDE.local.md

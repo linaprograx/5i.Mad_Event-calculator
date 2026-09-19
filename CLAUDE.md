@@ -105,7 +105,20 @@ línea de `T`, nunca tocar una fórmula.**
 
 ---
 
-## 4. Reglas de trabajo
+## 4. Git y despliegue
+
+`.claude/settings.json` ya pre-aprueba las operaciones de git, así que puedes
+commitear y empujar sin pedir permiso cada vez. Pero **un push a `main` despliega
+en producción**, y la usan Lian e Ismael para dar precios a clientes. Así que:
+
+- Commitea a menudo, con mensajes que digan **qué cambió y por qué**, no
+  "cambios" ni marcas de tiempo.
+- **Empuja solo cuando el cambio esté verificado y completo.** Nunca a mitad de
+  un trabajo, nunca sin haber ejecutado la comprobación de §1 y §5.
+- Antes de empujar, dile a Lian qué vas a subir.
+- `git push --force` y `git reset --hard` están denegados a propósito.
+
+## 5. Reglas de trabajo
 
 **Verifica ejecutando, no leyendo.** Este proyecto ha tenido tres fallos que un
 repaso visual del código no habría cogido: un desbordamiento en el PDF, columnas
@@ -135,7 +148,7 @@ código, en español y sin tildes (Apps Script se atraganta con algunas).
 
 ---
 
-## 5. Identidad de marca
+## 6. Identidad de marca
 
 Del documento `5i-Mad. Calendar Protocol v3.0`. Los valores están muestreados
 del PDF original, no inventados.
@@ -161,7 +174,7 @@ presentación usan la de marca.
 
 ---
 
-## 6. Conector de Drive
+## 7. Conector de Drive
 
 `apps-script/guardar_propuesta.gs` es un Apps Script publicado como aplicación
 web. Recibe la propuesta en texto, crea un Google Doc y guarda **el PDF de ese
@@ -178,7 +191,7 @@ implementaciones → lápiz → Versión: Nueva versión. Guardar no basta.
 
 ---
 
-## 7. Lo que falta
+## 8. Lo que falta
 
 1. Recalibrar `RO_OBJ` cuando dirección decida (§3).
 2. Hoja de producción de cocina: unidades de cada bocado para N personas, con
