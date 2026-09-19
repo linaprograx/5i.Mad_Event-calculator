@@ -97,6 +97,11 @@ select.alerta{border-color:var(--bad);box-shadow:0 0 0 1px var(--bad)}
   font-family:var(--mono);font-size:11px;color:var(--ink-faint);font-variant-numeric:tabular-nums}
 .metrics b{color:var(--ink-dim);font-weight:500}
 .reason{margin:9px 0 0;font-size:11.5px;line-height:1.45;color:var(--warn)}
+.presentar{margin-top:12px;font-family:var(--body);font-size:12px;font-weight:600;cursor:pointer;border-radius:var(--r);
+  padding:9px 12px;background:transparent;color:var(--ink-dim);border:1px solid var(--line)}
+.presentar:hover{color:var(--ink);border-color:var(--fairway-deep)}
+.offer.elegida{border-color:var(--fairway);box-shadow:0 0 0 1px var(--fairway)}
+.offer.elegida .presentar{background:var(--fairway);color:#06180D;border-color:var(--fairway)}
 .reason.stop{color:var(--bad)}
 
 .bloqueo{margin-top:20px;border:1px solid var(--line);border-left:2px solid var(--brass);border-radius:var(--r);background:var(--surface);padding:14px 16px}
@@ -153,7 +158,8 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
   /* tres columnas siempre, pase lo que pase con el ancho de papel */
   #ofertas{grid-template-columns:repeat(3,1fr)!important}
   /* fuera todo lo que es control de pantalla */
-  #form,.actions,.switch,details,#salida,footer,.plantilla,.pblock select,.sug button{display:none!important}
+  #form,.actions,.switch,details,#salida,footer,.plantilla,.pblock select,.sug button,.presentar{display:none!important}
+  .offer.elegida{box-shadow:none!important}
   header.top{padding-block:0 7px;border-color:var(--line)}
   h1{font-size:18px}
   .brandline{margin-bottom:3px}
@@ -181,6 +187,13 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
     border-color:var(--line)!important;border-left-color:var(--brass)!important;margin-top:9px;padding:10px 12px}
   .bloqueo p{color:var(--ink-dim)!important}
   .bloqueo b{color:var(--ink)!important}
+  /* compacto para que el panel quepa en una hoja con cualquier plantilla */
+  .inc{font-size:9.5px;line-height:1.3;gap:1px}
+  .sug,.reason{font-size:9.5px;line-height:1.35}
+  .reason{margin-top:5px}
+  .factura,.metrics{font-size:10px}
+  .factura{gap:1px 10px}
+  .bloqueo p{font-size:10px;line-height:1.45}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
@@ -232,7 +245,7 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
     <button type="button" class="big ghost" id="btnCopy">Copiar texto</button>
     <span class="copied hidden" id="copiado">Copiado</span>
   </div>
-  <p class="hint" style="margin-top:8px">El PDF lleva las tres opciones explicadas. Se abre en una pestaña
+  <p class="hint" style="margin-top:8px">El PDF lleva solo la opción elegida arriba. Se abre en una pestaña
   nueva con el diálogo de impresión: elige <strong>Guardar como PDF</strong> y activa
   <strong>Gráficos de fondo</strong> en "Más ajustes", o la portada saldrá en blanco.</p>
   <p class="estado" id="estadoDrive"></p>
@@ -245,7 +258,7 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
     <p>Con esto activado, el botón <strong>Guardar en Drive</strong> deja dos archivos de una sola vez: el
     <strong>Google Doc</strong> editable con la propuesta y el <strong>PDF de ese mismo documento</strong>, cada
     uno en su carpeta, sin descargar nada y sin salir de esta página. Es la copia de archivo.</p>
-    <p>El PDF maquetado de nueve páginas que se le manda al cliente es otra cosa: se saca con el botón
+    <p>El PDF maquetado que se le manda al cliente, solo con la opción elegida, es otra cosa: se saca con el botón
     <strong>Propuesta en PDF</strong> y se guarda desde el diálogo de impresión. Ese no pasa por Drive porque
     Google no sabe convertir su maquetación.</p>
     <p id="confEstado" style="color:var(--ink)"></p>
@@ -1080,7 +1093,8 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
                 : r.aprobacion && r.estado === 'warn' ? '<span class="badge b-warn">Requiere aprobación</span>'
                 : r.estado === 'warn' ? '<span class="badge b-warn">Visto bueno</span>'
                 : '<span class="badge b-bad">Bloqueada</span>';
-      html += '<article class="offer' + (i===1?' reco':'') + '" style="--tier:' + TIER[i] + '">';
+      var elegida = !$('salida').classList.contains('hidden') && parseInt($('cual').value,10) === i;
+      html += '<article class="offer' + (i===1?' reco':'') + (elegida?' elegida':'') + '" style="--tier:' + TIER[i] + '">';
       html += '<div class="offer-top"><span class="offer-name">' + NOMBRES[i] + '</span>' + (cliente ? '' : badge) + '</div>';
       html += '<div class="pblock"><span class="big">' + eur0.format(r.precio) + '</span>' +
               '<span class="u">por persona · sin IVA' +
@@ -1123,6 +1137,8 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
         html += '</div>';
         if (r.motivos.length) html += '<p class="reason' + (r.estado==='bad'?' stop':'') + '">' + esc(r.motivos.join(' ')) + '</p>';
       }
+      html += '<button type="button" class="presentar" data-presentar="' + i + '">' +
+              (elegida ? 'Opción elegida para el cliente' : 'Presentar esta opción') + '</button>';
       html += '</article>';
     });
     $('ofertas').innerHTML = html;
@@ -1153,6 +1169,14 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
       $('aviso').innerHTML = '';
     }
 
+    Array.prototype.forEach.call(document.querySelectorAll('[data-presentar]'), function(btn){
+      btn.addEventListener('click', function(){
+        $('cual').value = btn.getAttribute('data-presentar');
+        $('salida').classList.remove('hidden');
+        renderResultados();
+        $('salida').scrollIntoView({ behavior:'smooth', block:'start' });
+      });
+    });
     Array.prototype.forEach.call(document.querySelectorAll('[data-usa]'), function(btn){
       btn.addEventListener('click', function(){
         PRECIOS[parseInt(btn.getAttribute('data-usa'),10)] = btn.getAttribute('data-v');
@@ -1339,11 +1363,11 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
   }
 
   $('modo').addEventListener('change', renderResultados);
-  $('cual').addEventListener('change', generarTexto);
+  $('cual').addEventListener('change', renderResultados);
   $('btnGen').addEventListener('click', function(){
     if (!R.length) return;
     $('salida').classList.remove('hidden');
-    generarTexto();
+    renderResultados();
     $('salida').scrollIntoView({ behavior:'smooth', block:'start' });
   });
   $('btnPrint').addEventListener('click', function(){ window.print(); });
@@ -1411,7 +1435,7 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
 
   function docPropuesta(){
     var b = brief();
-    var pf = R[1].pf;
+    var pf = R[parseInt($('cual').value,10)].pf;
     var grupo = b.paxmin === b.paxmax ? b.paxmin + ' personas' : b.paxmin + ' a ' + b.paxmax + ' personas';
     var TIERP = ['#5E7385', '#2F6B43', '#A8793B'];
     var ROT = ['La opción contenida', 'Nuestra recomendación', 'La experiencia completa'];
@@ -1493,26 +1517,14 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
       '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;600&display=swap">' +
       '<style>' + css + '</style></head><body>';
 
-    /* ---- cartas distintas entre las tres opciones ---- */
-    var CARTAS = [];
-    R.forEach(function(r, i){
-      var v = r.v, gs = gastroGrupos(v);
-      if (!gs.length) return;
-      var clave = v.comida + '|' + bocadosDe(v).map(function(b){ return b.i; }).join(',');
-      var ya = CARTAS.filter(function(c){ return c.clave === clave; })[0];
-      if (ya){ ya.quien.push(NOMBRES[i]); return; }
-      CARTAS.push({ clave:clave, grupos:gs, n:bocadosDe(v).length, tier:TIERP[i],
-        nombre: MENUS[v.comida] ? MENUS[v.comida].n : 'Menú a medida', quien:[NOMBRES[i]] });
-    });
-    var TOTALPAG = 2 + R.length + CARTAS.length + 1;
+    /* ---- solo la opcion elegida: la que se presenta al cliente ---- */
+    var i = parseInt($('cual').value,10), r = R[i], v = r.v;
+    var gs = gastroGrupos(v);
+    var TOTALPAG = 2 + (gs.length ? 1 : 0) + 1;
     var pag = 0;
     function folio(izq){
       pag++;
       return '<div class="folio"><span>' + izq + '</span><span>' + pag + ' / ' + TOTALPAG + '</span></div>';
-    }
-    function lista(arr){
-      if (arr.length === 1) return arr[0];
-      return arr.slice(0, -1).join(', ') + ' y ' + arr[arr.length - 1];
     }
 
     /* ---- portada ---- */
@@ -1523,38 +1535,15 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
       '<p class="meta">' + grupo + ' · ' + hh(b.horas) + ' de experiencia' +
       (b.fecha ? '<br>' + esc(b.fecha) : '') +
       '<br>' + b.inicio + ' – ' + fin(b.inicio, b.horas) + '</p>' +
-      '<div class="tres">';
-    R.forEach(function(r, i){
-      h += '<div><div class="n">' + NOMBRES[i] + '</div><div class="p">' + eur0.format(r.precio) +
-           '</div><div class="u">por persona</div></div>';
-    });
-    h += '</div><p class="pie">Tres opciones para el mismo grupo. Precios por persona, sin IVA. ' +
-         'Tarifa calculada para un mínimo facturable de ' + pf + ' asistentes.</p></section>';
-
-    /* ---- comparativa ---- */
-    h += '<section class="hoja"><p class="eyebrow">De un vistazo</p>' +
-      '<h2>Las tres opciones, comparadas</h2>' +
-      '<p>Las tres montan el mismo evento para el mismo grupo: cambian la gastronomía, la carta de ' +
-      'barra y la capa de ambiente. La actividad y el espacio reservado son los mismos en todas.</p>' +
-      '<div class="cmp">';
-    R.forEach(function(r, i){
-      h += '<div class="col" style="--t:' + TIERP[i] + '"><div class="n">' + NOMBRES[i] + '</div>' +
-           '<div class="rot">' + ROT[i] + '</div>' +
-           '<div class="p">' + eur0.format(r.precio) + '</div><div class="u">por persona, sin IVA</div><ul>';
-      inclusiones(r.v).forEach(function(x){ h += '<li>' + esc(x) + '</li>'; });
-      h += '</ul></div>';
-    });
-    h += '</div>';
-
+      '<div class="tres"><div><div class="n">' + NOMBRES[i] + '</div><div class="p">' + eur0.format(r.precio) +
+      '</div><div class="u">por persona</div></div></div>' +
+      '<p class="pie">Precio por persona, sin IVA. ' +
+      'Tarifa calculada para un mínimo facturable de ' + pf + ' asistentes.</p></section>';
     pag = 1; /* la portada no lleva folio pero cuenta */
-    h += folio(esc(b.cliente) + ' · Five Iron Golf Madrid') + '</section>';
 
-
-    /* ---- una página por opción ---- */
-    R.forEach(function(r, i){
-      var v = r.v, pf = r.pf;
+    /* ---- la opcion ---- */
       h += '<section class="hoja op" style="--t:' + TIERP[i] + '">' +
-        '<div class="cab"><div class="izq"><div class="n">Opción ' + (i+1) + ' de 3</div>' +
+        '<div class="cab"><div class="izq"><div class="n">' + ROT[i] + '</div>' +
         '<h2>' + NOMBRES[i] + '</h2></div>' +
         '<div class="der"><div class="p">' + eur0.format(r.precio) + '</div>' +
         '<div class="u">por persona · sin IVA<br>' + eur2.format(r.precio * (1 + v.iva)) + ' con IVA</div></div></div>';
@@ -1583,16 +1572,14 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
            'Si el grupo final es menor, se factura ese mínimo.</p></div>';
 
       h += folio(NOMBRES[i] + ' · ' + eur0.format(r.precio) + ' por persona') + '</section>';
-    });
 
-    /* ---- una pagina por carta distinta ---- */
-    CARTAS.forEach(function(c){
-      h += '<section class="hoja carta" style="--t:' + c.tier + '">' +
+    /* ---- su carta ---- */
+    if (gs.length){
+      h += '<section class="hoja carta" style="--t:' + TIERP[i] + '">' +
         '<p class="eyebrow">La propuesta gastronómica</p>' +
-        '<h2>' + esc(c.nombre) + '</h2>' +
-        '<p class="quien">' + c.n + ' bocados por persona · ' +
-        (CARTAS.length > 1 ? 'opción ' + esc(lista(c.quien)) : 'en las tres opciones') + '</p>';
-      c.grupos.forEach(function(g){
+        '<h2>' + esc(MENUS[v.comida] ? MENUS[v.comida].n : 'Menú a medida') + '</h2>' +
+        '<p class="quien">' + bocadosDe(v).length + ' bocados por persona</p>';
+      gs.forEach(function(g){
         h += '<div class="g"><div class="t">' + esc(g.t) + '</div><ul>';
         g.items.forEach(function(x){ h += '<li>' + esc(x) + '</li>'; });
         h += '</ul></div>';
@@ -1601,13 +1588,13 @@ footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:v
         'experiencia, para que el grupo no tenga que parar la actividad para comer. Informamos de ' +
         'alérgenos en el momento del servicio y adaptamos el menú a intolerancias y opciones ' +
         'vegetarianas sin cambio de precio.</p>' +
-        folio(esc(c.nombre)) + '</section>';
-    });
+        folio(esc(MENUS[v.comida] ? MENUS[v.comida].n : 'Menú a medida')) + '</section>';
+    }
 
     /* ---- condiciones ---- */
     h += '<section class="hoja"><p class="eyebrow">Para cerrar</p><h2>Condiciones y próximos pasos</h2>' +
-      '<p>Así se desarrolla la jornada con la opción recomendada. El horario se ajusta al detalle una vez confirmada la fecha.</p>';
-    var v1 = R[1].v;
+      '<p>Así se desarrolla la jornada. El horario se ajusta al detalle una vez confirmada la fecha.</p>';
+    var v1 = v;
     h += '<div class="dia"><h3>El día del evento</h3><div class="t">' +
       '<b>' + b.inicio + '</b><span>Llegada del grupo' + (v1.tour ? ', recepción y Welcome Tour por las instalaciones' : '') +
         (v1.wcoffee ? '. Welcome Coffee servido a la llegada' : (v1.wcoctel ? '. Cóctel de bienvenida' : '')) + '.</span>';

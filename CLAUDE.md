@@ -66,7 +66,7 @@ Producción: `https://5i-web.vercel.app/tarifador/`
   evaluar(v,p)     precio mínimo, mínimo facturable, catálogo, semáforo
   inclusiones(v)   las líneas de "qué incluye"
   generarTexto()   propuesta en texto plano
-  docPropuesta()   propuesta maquetada en HTML para imprimir a PDF
+  docPropuesta()   propuesta maquetada de la opción elegida, para imprimir a PDF
 ```
 
 ---
@@ -170,10 +170,14 @@ márcalo como pendiente de validar. Un número inventado en esta herramienta sal
 en una propuesta a un cliente.
 
 **Dos PDF distintos, no los confundas:**
-- *Propuesta en PDF* — para el cliente, fondo claro, portada verde. Entre 6 y 9
-  páginas: una por cada carta de comida distinta entre las tres opciones.
+- *Propuesta en PDF* — para el cliente, fondo claro, portada verde. **Solo la
+  opción elegida** (botón «Presentar esta opción» en cada tarjeta, o el selector
+  `#cual`): portada, la opción, su carta si lleva comida, y condiciones. 3 o 4
+  páginas; cada sección tiene que ocupar exactamente una.
 - *Imprimir* — el panel interno con costes y márgenes, **fondo negro**, A4
   apaisado, una página. Nunca lo pongas en blanco: fue un fallo explícito.
+  Hasta el 19-09-2026 la Corporate Night salía en dos páginas; cualquier línea
+  nueva en las tarjetas puede volver a partirlo. Compruébalo con las 8 plantillas.
 
 **Idioma.** Todo de cara al usuario en español de España. Los comentarios del
 código, en español y sin tildes (Apps Script se atraganta con algunas).
