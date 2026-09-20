@@ -96,23 +96,14 @@ dos cifras que no se eligen a mano** (decisión de Lian):
   Corporate Night de 80 personas salía con 16 de mínimo facturable.
 - **Catálogo** — suma de tarifas publicadas. Es un techo, no un precio.
 
-`RO_MIN` (12 %) y `MC_MIN` (60 %) siguen marcando «Bloqueada». Dos suelos comerciales
-fijados por Lian el 20-09-2026, netos sin IVA:
+`RO_MIN` (12 %) y `MC_MIN` (60 %) siguen marcando «Bloqueada».
 
-- `T.minPax` 15 €/pax, **solo si la propuesta lleva comida o bebida**.
-- `T.facturaMin` 200 € de factura por evento, **siempre**. Sin comida ni bebida
-  no hay suelo por persona: se alquilan espacio y simuladores, que no cuestan
-  más por venir más gente, así que el precio por persona baja con el grupo
-  (10 pax → 20 €, 20 pax → 10 €) y la factura no baja de 200 €.
-
-Sin el segundo, la oferta mínima daba el mismo precio con 10 que con 40
-personas, que fue lo que detectó Lian.
-
-**Grupos pequeños** (`pax <= T.PEQUENO`, 20 personas; decisión de Lian del
-20-09-2026): una sola persona cubre sala, barra y cocina —se cobra a la tarifa
-más alta de los papeles que asuma— y el montaje baja de 1,5 h a 0,5 h
-(`T.montaje` / `T.montajePeq`). Limpieza y técnico siguen aparte. Esto bajó el
-precio mínimo de Team Building Social de 60 € a 35 €.
+**No hay suelos comerciales en el motor.** El 20-09-2026 se probaron un suelo
+de 15 €/pax y una factura mínima de 200 €, y se revirtieron: Lian quiere el
+cálculo intacto y la oferta barata resuelta con una plantilla de precio fijo
+(«Oferta mínima · 15 € por persona»). Lo mismo con el reparto de personal para
+grupos pequeños: se probó y se deshizo. **El motor de coste y precio es el que
+funciona; los cambios de negocio van en plantillas, no en las fórmulas.**
 
 **Las tres opciones son fijas** y solo cambian comida y bebida: Esencial =
 paquete Bronce + barra básica; Recomendada = Plata + básica; Premium = Oro +
