@@ -96,9 +96,17 @@ dos cifras que no se eligen a mano** (decisión de Lian):
   Corporate Night de 80 personas salía con 16 de mínimo facturable.
 - **Catálogo** — suma de tarifas publicadas. Es un techo, no un precio.
 
-`RO_MIN` (12 %) y `MC_MIN` (60 %) siguen marcando «Bloqueada». El precio mínimo
-nunca baja de `T.minPax` (15 €), suelo comercial fijado por Lian el 20-09-2026:
-sin él, una oferta mínima para 20 personas salía a 5 €/pax.
+`RO_MIN` (12 %) y `MC_MIN` (60 %) siguen marcando «Bloqueada». Dos suelos comerciales
+fijados por Lian el 20-09-2026, netos sin IVA:
+
+- `T.minPax` 15 €/pax, **solo si la propuesta lleva comida o bebida**.
+- `T.facturaMin` 200 € de factura por evento, **siempre**. Sin comida ni bebida
+  no hay suelo por persona: se alquilan espacio y simuladores, que no cuestan
+  más por venir más gente, así que el precio por persona baja con el grupo
+  (10 pax → 20 €, 20 pax → 10 €) y la factura no baja de 200 €.
+
+Sin el segundo, la oferta mínima daba el mismo precio con 10 que con 40
+personas, que fue lo que detectó Lian.
 
 **Grupos pequeños** (`pax <= T.PEQUENO`, 20 personas; decisión de Lian del
 20-09-2026): una sola persona cubre sala, barra y cocina —se cobra a la tarifa

@@ -355,7 +355,7 @@ footer .pie{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;f
     <h4>Las tres opciones</h4>
     <p>Son fijas y solo cambia lo que se come y se bebe. <b>Esencial</b>: paquete Bronce y barra básica. <b>Recomendada</b>: paquete Plata y barra básica. <b>Premium</b>: paquete Oro, barra premium con destilados y cóctel de bienvenida. Asistentes, horas, simuladores y extras son los mismos en las tres. Con desayuno, Esencial lleva el Breakfast Experience y Premium el Five Iron Breakfast. Si el formato no deja diferenciarlas (sin comida, por ejemplo), la tarjeta lo avisa. En una propuesta nueva, cada opción sale al menos 5 € por encima de la anterior.</p>
     <h4>Precio mínimo y mínimo facturable</h4>
-    <p>El precio mínimo por persona es el que deja un resultado operativo del <code>25 %</code> con cualquier grupo dentro del rango de asistentes, redondeado al alza al múltiplo de 5 €, y nunca baja de <code>15 €</code>, que es el suelo comercial de la casa. Se puede ofrecer por debajo, pero la opción sale como <b>requiere aprobación de dirección</b>.</p>
+    <p>El precio mínimo por persona es el que deja un resultado operativo del <code>25 %</code> con cualquier grupo dentro del rango de asistentes, redondeado al alza al múltiplo de 5 €. Nunca baja de los suelos comerciales de la casa: <code>15 €</code> por persona si hay comida o bebida, y una <b>factura mínima de <code>200 €</code> por evento</b>, siempre. Sin comida ni bebida lo que se alquila son los simuladores y el espacio, que no cuestan más por venir más gente: ahí el precio por persona baja según crece el grupo. Se puede ofrecer por debajo, pero la opción sale como <b>requiere aprobación de dirección</b>.</p>
     <p>El mínimo facturable no se elige. Nunca baja del número mínimo de asistentes; si el precio queda por debajo del mínimo, sube hasta el número de personas con el que el resultado vuelve al <code>25 %</code>. Por debajo del <code>12 %</code> de resultado o del <code>60 %</code> de margen de contribución, la opción sale bloqueada.</p>
     <h4>Valor de bloqueo</h4>
     <p>Lo que ganaríais vendiendo esos simuladores al público durante esas horas, a <code>39 €/h</code> off-peak o <code>49 €/h</code> peak. No se resta del margen, pero si se come una parte grande de la factura el evento no compensa. El umbral de aviso está en el <code>40 %</code>.</p>
@@ -460,9 +460,11 @@ footer .pie{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;f
     ch:{ sala:18, barra:18, cocina:20, anfitrion:16, tecnico:25, seguridad:22, limpieza:16 },
     gruposOrientativa:[25,50,100], gruposMinima:[10,15,20],
     PEQUENO:20, montaje:1.5, montajePeq:0.5,
-    /* suelo comercial por persona (Lian, 20-09-2026): por debajo de esto no se
-       ofrece nada, aunque el coste lo permita */
-    minPax:15,
+    /* suelos comerciales (Lian, 20-09-2026), netos sin IVA:
+       - minPax: por persona, solo en propuestas con comida o bebida
+       - facturaMin: por evento, en todos. Sin comida ni bebida se alquilan el
+         espacio y los simuladores, y eso no cuesta mas por venir mas gente */
+    minPax:15, facturaMin:200,
     RO_MIN:0.12, RO_OBJ:0.25, MC_MIN:0.60, DTO_MAX:10, AFORO:120, PAX_BAY:6, BLOQUEO_MAX:0.40,
     addon1h:8, addon2h:12, addonHoraExtra:4,
     nombresBarra:['','cerveza, vino, refrescos y agua','premium con destilados']
@@ -540,7 +542,7 @@ footer .pie{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;f
   }
   function listaPrecios(){
     var out = [];
-    for (var p = 15; p <= 250; p += 5) out.push({ v:String(p), t:eur0.format(p) });
+    for (var p = 5; p <= 250; p += 5) out.push({ v:String(p), t:eur0.format(p) });
     return out;
   }
 
@@ -1081,7 +1083,7 @@ footer .pie{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;f
     var precio = precioBase + pAdd + pSup;
     var pnet = precio * (1 - dto);
 
-    var pMin = Math.max(T.minPax, precioMinimo(v, pmin, px, T.RO_OBJ, dto));
+    var pMin = Math.max(sueloPax(v, pmin, dto), precioMinimo(v, pmin, px, T.RO_OBJ, dto));
     /* decision de Lian: nunca por debajo del minimo de asistentes. El RO no cuenta
        lo que se deja de vender al bloquear simuladores o cerrar el local */
     var F = precio > 0 ? minimoFacturable(v, pnet, px) : 0;
@@ -1130,12 +1132,19 @@ footer .pie{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;f
              estado:estado, motivos:motivos, dto:dto };
   }
 
+  /* suelo por persona segun lo que lleve la propuesta */
+  function sueloPax(v, n, dto){
+    /* la factura minima del evento vale para todos; el suelo por persona solo
+       cuando hay comida o bebida */
+    var hayFB = v.comida !== '0' || (v.modal > 0 && v.bcant > 0) || v.wcoffee || v.wcoctel;
+    return Math.max(hayFB ? T.minPax : 0, techo5(T.facturaMin / Math.max(1, n) / (1 - dto)));
+  }
   /* propuesta orientativa: precio por persona y total para cada tamano de grupo.
      El precio de cada tamano es su propio minimo al RO objetivo, redondeado a 5 EUR */
   function tablaGrupos(v, dto, pAdd, pSup){
     var grupos = (v.paxmax && v.paxmax <= T.PEQUENO) ? T.gruposMinima : T.gruposOrientativa;
     var minimos = grupos.map(function(n){
-      return Math.max(T.minPax, techo5(precioNecesario(v, n, T.RO_OBJ, dto)));
+      return Math.max(sueloPax(v, n, dto), techo5(precioNecesario(v, n, T.RO_OBJ, dto)));
     });
     /* el precio por persona nunca puede subir al crecer el grupo: quedaria raro en la
        tabla. Cada tamano toma el mayor de los minimos de ese tamano en adelante, asi
