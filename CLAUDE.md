@@ -96,7 +96,15 @@ dos cifras que no se eligen a mano** (decisión de Lian):
   Corporate Night de 80 personas salía con 16 de mínimo facturable.
 - **Catálogo** — suma de tarifas publicadas. Es un techo, no un precio.
 
-`RO_MIN` (12 %) y `MC_MIN` (60 %) siguen marcando «Bloqueada».
+`RO_MIN` (12 %) y `MC_MIN` (60 %) siguen marcando «Bloqueada». El precio mínimo
+nunca baja de `T.minPax` (15 €), suelo comercial fijado por Lian el 20-09-2026:
+sin él, una oferta mínima para 20 personas salía a 5 €/pax.
+
+**Grupos pequeños** (`pax <= T.PEQUENO`, 20 personas; decisión de Lian del
+20-09-2026): una sola persona cubre sala, barra y cocina —se cobra a la tarifa
+más alta de los papeles que asuma— y el montaje baja de 1,5 h a 0,5 h
+(`T.montaje` / `T.montajePeq`). Limpieza y técnico siguen aparte. Esto bajó el
+precio mínimo de Team Building Social de 60 € a 35 €.
 
 **Las tres opciones son fijas** y solo cambian comida y bebida: Esencial =
 paquete Bronce + barra básica; Recomendada = Plata + básica; Premium = Oro +
@@ -115,7 +123,7 @@ excepciones metidas en funciones, que habrá que ir subiendo a `T`:
   food cost 0,25 del menú a medida.
 - `precioCatalogo()`: consumición 2,9 y 7,7 €, Welcome Coffee 3,5 €, cóctel 4,1 €.
 - `costes()`: ratios de personal (25 / 40 / 40 / 50 pax, anfitrión desde 40,
-  técnico desde 4 simuladores, seguridad desde 80), limpieza 2 h, montaje 1,5 h.
+  técnico desde 4 simuladores, seguridad desde 80), limpieza 2 h.
 - Textos que repiten a mano cifras de `T`: «60 %», «12 %», «120 personas»,
   «40 %», «+8 € 1 h · +12 € 2 h». Si cambias `T`, cambia también el texto.
 - El bloque «Cómo calcula y con qué números» del propio HTML repite todas las
